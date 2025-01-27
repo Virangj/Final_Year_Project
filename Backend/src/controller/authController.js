@@ -80,3 +80,13 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const logout = (req, res) => {
+    try {
+      res.cookie("jwt", "", { maxAge: 0 });
+      res.status(200).json({ message: "Logged Out" });
+    } catch (error) {
+      console.log("Error in Logout Controller", error.message);
+      res.status(500).json({ message: "Server Error" });
+    }
+  };
