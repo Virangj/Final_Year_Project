@@ -37,6 +37,11 @@ const userschema = new mongoose.Schema(
       type: "string",
       required: true,
     },
+    role:{
+      type: "string",
+      enum: ["normal" , "artist"],
+      require : true,
+    },
   },
   {
     timestamps: true,

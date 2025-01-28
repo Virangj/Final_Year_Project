@@ -3,18 +3,18 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
 export const signup = async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    phone,
-  } = req.body;
+  const { firstName, lastName, email, password, phone, role } = req.body;
   try {
     if (password.length < 6) {
       return res
         .status(400)
         .json({ message: "Password must be at least 6 characters" });
+    }
+
+    if (role !== "normal" && role !== "artist") {
+      return res
+        .status(400)
+        .json({ message: "Role should normal user or artist user Only! " });
     }
 
     const user = await User.findOne({ email });
@@ -32,6 +32,7 @@ export const signup = async (req, res) => {
       lastName,
       email,
       phone,
+      role,
       password: hashedPassword,
     });
 
@@ -44,6 +45,7 @@ export const signup = async (req, res) => {
         firstname: newUser.firstName,
         email: newUser.email,
         phone: newUser.phone,
+        role: newUser.role,
         profilePic: newUser.profilePic,
       });
     } else {
@@ -82,11 +84,11 @@ export const login = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-    try {
-      res.cookie("jwt", "", { maxAge: 0 });
-      res.status(200).json({ message: "Logged Out" });
-    } catch (error) {
-      console.log("Error in Logout Controller", error.message);
-      res.status(500).json({ message: "Server Error" });
-    }
-  };
+  try {
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged Out" });
+  } catch (error) {
+    console.log("Error in Logout Controller", error.message);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
