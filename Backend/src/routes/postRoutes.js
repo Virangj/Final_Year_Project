@@ -1,14 +1,15 @@
 import express from "express";
-import { addpost,updatemypost,randompost,getmypost } from "../controller/postController";
+import { addpost,updatemypost,randompost,getmypost } from "../controller/postController.js";
+import { multerUpload } from "../middleware/multerMiddlware.js";
 
-const postrouter = express.Router();
+const postRoutes = express.Router();
 
-postrouter.post("/addpost", addpost);
+postRoutes.post("/addpost", multerUpload.array('files'), addpost);
 
-postrouter.put("/updatemypost",updatemypost);
+postRoutes.put("/updatemypost",updatemypost);
 
-postrouter.get("/getmypost", getmypost);
+postRoutes.get("/getmypost", getmypost);
 
-postrouter.get("/randompost",randompost);
+postRoutes.get("/randompost",randompost);
 
-export default postrouter;
+export default postRoutes;

@@ -1,41 +1,66 @@
 import mongoose from "mongoose";
 
-const postschema = new mongoose.Schema(
-  {
-    title: {
-      type: "string",
-      required: true,
-    },
-    description: {
-      type: "string",
-      required: true,
-    },
-    image: {
-      type: "string",
-      required: true,
-    },
-    like: {
-      type: "number",
-    },
-    comment: {
-      type: "string",
+const postschema = new mongoose.Schema({
+    postId: {
+        type: Number,
+        unique: true,  // Ensures each post has a unique identifier
+        required: true,
     },
     username: {
-      type: "string",
-      require: true,
+        type: String,
+        required: true,
+        trim: true,  // Automatically trims extra spaces
     },
-    userid: {
-      type: "string",
+    title: {
+        type: String,
+        required: true,
+        trim: true,  // Automatically trims extra spaces
     },
-    artistid: {
-      type: "string",
-      require: true,
+    description: {
+        type: String,
+        required: true,
     },
-  },
-  {
-    timestamps: true,
-  }
-);
+    image: [{
+      type: String,  // This can be a URL to the image
+      required: true,
+    }],
+    likes: [{
+        userlike: {
+            type: Number,
+            default: 0,  // Default value of likes is 0
+        },
+        username: {
+            type: String,
+        },
+    }],
+    comments: [{
+        username: {
+            type: String,  // Assuming you have a User model
+        },
+        text: {
+            type: String,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        }
+    }],
+    createdAt: {
+        type: Date,
+        
+    },
+    updatedAt: {
+        type: Date,
+        
+    },
+});
 
-const Post = mongoose.models("Post", postschema);
+// Set up a pre-save hook to update the updatedAt field before saving the post
+/*postSchema.pre('save', function (next) {
+    this.updatedAt = Date.now();
+    next();
+});*/
+
+
+const Post = mongoose.model("Post", postschema);
 export default Post;

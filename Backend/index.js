@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { ConnectDB } from "./src/lib/db.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/authRoutes.js";
-import postrouter from "./src/routes/postroutes.js";
+import postRoutes from "./src/routes/postroutes.js";
 
 
 // Configuration of dotenv 
@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 // Creating All API's
 app.use("/api/auth", authRoutes);
-app.use("/api/post",postrouter);
+app.use("/api/post",postRoutes);
 
 app.listen(PORT, () =>{
     ConnectDB()
