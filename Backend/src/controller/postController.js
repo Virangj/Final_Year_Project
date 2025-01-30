@@ -32,12 +32,8 @@ const uploader = async (files) => {
 // API Route to Add Post
 export const addpost = async (req, res) => {
   try {
-    console.log("req.files", req.files);
-    console.log("req.body", req.body);
     const { postId, username, title, description } = req.body;
-    console.log(postId);
 
-    // Upload image to Cloudinary
     // const result = await cloudinary.uploader.upload(req);
     const upload_resp = await uploader(req.files);
     console.log("upload_resp", upload_resp);
@@ -76,7 +72,8 @@ export const addpost = async (req, res) => {
 export const getmypost = async (req, res) => {
   try {
     // Get the artist's name from the request parameters
-    const { username } = req.query.username;
+    const {username} = req.query;
+    console.log(username);
 
     // Find all posts by the given artist
     const posts = await Post.find({ username });
@@ -84,9 +81,8 @@ export const getmypost = async (req, res) => {
     if (posts.length === 0) {
       return res
         .status(404)
-        .json({ message: "No posts found for this artist" });
+        .json({ message: "No posts found for this artist: " +username});
     }
-
     // Respond with the posts found
     res.status(200).json({
       message: `Posts found for artist: ${username}`,
@@ -104,15 +100,14 @@ export const getmypost = async (req, res) => {
 export const updatemypost = async (req, res) => {
   try {
     const { postId } = req.body;
-    const { title, description, image } = req.body;
+    const { title, description } = req.body;
 
     // Find the post by postId and update it
-    const updatedPost = await Post.findByIdAndUpdate(
-      postId,
+    const updatedPost = await Post.findOneAndUpdate(
+      {postId: postId},
       {
         title,
         description,
-        image,
         updatedAt: Date.now(), // Set the updatedAt field to the current date
       },
       { new: true } // Return the updated document
