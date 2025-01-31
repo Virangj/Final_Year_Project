@@ -5,6 +5,10 @@ const userschema = new mongoose.Schema(
     profilePic: {
       type: "string",
     },
+    name:{
+      type:String,
+      require: true,
+    },
     username: {
       type: String,
       require: true,

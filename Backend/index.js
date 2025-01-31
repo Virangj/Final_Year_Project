@@ -6,7 +6,6 @@ import authRoutes from "./src/routes/authRoutes.js";
 import postRoutes from "./src/routes/postroutes.js";
 import messageRoutes from "./src/routes/messageRoute.js";
 
-
 // Configuration of dotenv 
 dotenv.config();
 

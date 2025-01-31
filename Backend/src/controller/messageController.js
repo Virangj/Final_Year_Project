@@ -33,17 +33,17 @@ export const getMessage = async (req, res) =>{
     }
 }
 
-export const sendMessage = async (req, res) => {
+export const sendMessage = async (req, res, io) => {
     try {
-        const { text , image } = req.body
-        const {id: receiverId} = req.params
-        const senderId = req.user._id
+        const { text, image } = req.body;
+        const { id: receiverId } = req.params;
+        const senderId = req.user._id;
 
-        let imageURL
+        let imageURL;
 
-        if(image){
-            const uploadResponse = await cloudinary.uploader.upload(image)
-            imageURL = uploadResponse.secure_url
+        if (image) {
+            const uploadResponse = await cloudinary.uploader.upload(image);
+            imageURL = uploadResponse.secure_url;
         }
 
         const newMessage = new Message({
@@ -51,14 +51,16 @@ export const sendMessage = async (req, res) => {
             receiverId,
             text,
             image: imageURL,
-        }) 
+        });
 
-        await newMessage.save()
+        await newMessage.save();
 
-        res.status(201).json(newMessage)
-        
+        // Emit the message via Socket.io
+        io.to(receiverId).emit("receiveMessage", newMessage);
+
+        res.status(201).json(newMessage);
     } catch (error) {
-        console.log("sendMessage Controller Error: " , error.message)
-        res.status(500).json({ message: "Internal Server Error" })   
+        console.error("sendMessage Controller Error:", error.message);
+        res.status(500).json({ message: "Internal Server Error" });
     }
-}
+};

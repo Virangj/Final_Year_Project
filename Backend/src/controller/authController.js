@@ -1,4 +1,4 @@
-import {sendVerificationEmail, sendWelcomeEmail} from "../lib/email.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../lib/email.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
@@ -120,4 +120,37 @@ export const emailVerificationCheck = async (req, res) => {
       .status(500)
       .json({ message: "Error checking verification", error: error.message });
   }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { profilePic, dob, gender, country, city, name } = req.body;
+    const userId = req.user._id;
+  
+    if (!profilePic) {
+      return res.status(404).json({ message: "ProfilePic is required" });
+    }
+    
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { 
+        profilePic: uploadResponse.secure_url ,
+        dob,
+        gender,
+        country,
+        city,
+        name,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.status(200).json({ success: true, message: "Profile updated successfully", data: updatedUser });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ success: false, message: "Error updating profile", error: error.message });
+  }
+  
 };
