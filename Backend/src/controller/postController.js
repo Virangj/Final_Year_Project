@@ -2,32 +2,31 @@ import cloudinary from "../lib/cloudinary.js"; // Notice the .js extension
 import Post from "../models/postModel.js"; // Post model is in 'models/Post.js'
 import { Readable } from "stream";
 
-const uploadtocloudinary = async (buffer)=>{
-  return new Promise(async (resolve,reject)=>{
+const uploadtocloudinary = async (buffer) => {
+  return new Promise(async (resolve, reject) => {
     let cld_upload_stream = cloudinary.uploader.upload_stream(
       { folder: "test" },
       function (error, result) {
         console.log(error, result);
-        if(error){
+        if (error) {
           return reject(error);
         }
         return resolve({ public_id: result.public_id, url: result.secure_url });
       }
     );
-    
+
     Readable.from(buffer).pipe(cld_upload_stream);
-  })
-}
+  });
+};
 
 const uploader = async (files) => {
-    const resp = [];
-    for (let i = 0; i < files.length; i++) {
-      const buffer = files[i].buffer;;
-      const result = await uploadtocloudinary(buffer);
-      resp.push(result);
-    }
-    return resp
-
+  const resp = [];
+  for (let i = 0; i < files.length; i++) {
+    const buffer = files[i].buffer;
+    const result = await uploadtocloudinary(buffer);
+    resp.push(result);
+  }
+  return resp;
 };
 // API Route to Add Post
 export const addpost = async (req, res) => {
@@ -37,10 +36,10 @@ export const addpost = async (req, res) => {
     // const result = await cloudinary.uploader.upload(req);
     const upload_resp = await uploader(req.files);
     console.log("upload_resp", upload_resp);
-    const image_arr = []
-    for(let i=0;i<upload_resp.length;i++){
-      const uploadedImage = upload_resp[i]
-      image_arr.push(uploadedImage.url)
+    const image_arr = [];
+    for (let i = 0; i < upload_resp.length; i++) {
+      const uploadedImage = upload_resp[i];
+      image_arr.push(uploadedImage.url);
     }
     // Create new post
     const newPost = new Post({
@@ -72,7 +71,7 @@ export const addpost = async (req, res) => {
 export const getmypost = async (req, res) => {
   try {
     // Get the artist's name from the request parameters
-    const {username} = req.query;
+    const { username } = req.query;
     console.log(username);
 
     // Find all posts by the given artist
@@ -81,7 +80,7 @@ export const getmypost = async (req, res) => {
     if (posts.length === 0) {
       return res
         .status(404)
-        .json({ message: "No posts found for this artist: " +username});
+        .json({ message: "No posts found for this artist: " + username });
     }
     // Respond with the posts found
     res.status(200).json({
@@ -104,7 +103,7 @@ export const updatemypost = async (req, res) => {
 
     // Find the post by postId and update it
     const updatedPost = await Post.findOneAndUpdate(
-      {postId: postId},
+      { postId: postId },
       {
         title,
         description,
@@ -140,7 +139,7 @@ export const randompost = async (req, res) => {
 
     // Fetch posts and total count
     const posts = await Post.find().skip(skip).limit(limit).exec();
-    const totalposts = await Post.countDocument();
+    const totalposts = await Post.countDocuments();
 
     res
       .status(200)
@@ -150,5 +149,36 @@ export const randompost = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching posts", error: error.message });
+  }
+};
+
+export const deletemypost = async (req, res) => {
+  try {
+    const { postId } = req.query;
+
+    if (!postId) {
+      return res.status(400).json({ message: "Post ID is required. " });
+    }
+
+    const deletePost = await Post.findOneAndDelete({postId:postId});
+
+    if (!deletePost) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Post not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error deleting post",
+        error: error.message,
+      });
   }
 };
