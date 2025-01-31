@@ -5,8 +5,8 @@ const userschema = new mongoose.Schema(
     profilePic: {
       type: "string",
     },
-    name:{
-      type:String,
+    name: {
+      type: String,
       require: true,
     },
     username: {
@@ -16,7 +16,7 @@ const userschema = new mongoose.Schema(
     },
     email: {
       type: "string",
-      required: true
+      required: true,
     },
     phone: {
       type: "number",
@@ -38,16 +38,18 @@ const userschema = new mongoose.Schema(
       type: "string",
       required: true,
     },
-    role:{
+    role: {
       type: "string",
-      enum: ["normal" , "artist"],
-      require : true,
+      enum: ["normal", "artist"],
+      require: true,
     },
-    isVerified:{
+    isVerified: {
       type: Boolean,
       default: false,
     },
-    verificationCode: String
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // List of followers
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // List of users they follow
+    verificationCode: String,
   },
   {
     timestamps: true,

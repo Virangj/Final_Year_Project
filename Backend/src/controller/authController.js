@@ -3,6 +3,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
+
 export const signup = async (req, res) => {
   const { username, email, password, phone, role } = req.body;
   try {
@@ -122,35 +123,12 @@ export const emailVerificationCheck = async (req, res) => {
   }
 };
 
-export const updateProfile = async (req, res) => {
+export const checkAuth = (req, res) => {
   try {
-    const { profilePic, dob, gender, country, city, name } = req.body;
-    const userId = req.user._id;
-  
-    if (!profilePic) {
-      return res.status(404).json({ message: "ProfilePic is required" });
-    }
-    
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { 
-        profilePic: uploadResponse.secure_url ,
-        dob,
-        gender,
-        country,
-        city,
-        name,
-      },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
-    }
-    res.status(200).json({ success: true, message: "Profile updated successfully", data: updatedUser });
+    res.status(200).json(req.user);
   } catch (error) {
-    console.error("Error updating profile:", error);
-    res.status(500).json({ success: false, message: "Error updating profile", error: error.message });
+    console.log("Error in check controller", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
-  
 };
+

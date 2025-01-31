@@ -4,7 +4,8 @@ import { ConnectDB } from "./src/lib/db.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/authRoutes.js";
 import postRoutes from "./src/routes/postroutes.js";
-import messageRoutes from "./src/routes/messageRoute.js";
+import messageRoutes from "./src/routes/messageRoutes.js";
+import updateRoutesoutes from "./src/routes/updateRoutes.js";
 
 // Configuration of dotenv 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/post",postRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/update", updateRoutesoutes);
 
 app.listen(PORT, () =>{
     ConnectDB()
