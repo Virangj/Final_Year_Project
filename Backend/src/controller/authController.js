@@ -1,9 +1,10 @@
+import {sendVerificationEmail, sendWelcomeEmail} from "../lib/email.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
 export const signup = async (req, res) => {
-  const { firstName, lastName, email, password, phone, role } = req.body;
+  const { username, email, password, phone, role } = req.body;
   try {
     if (password.length < 6) {
       return res
@@ -26,15 +27,20 @@ export const signup = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
 
     const newUser = new User({
-      firstName,
-      lastName,
+      username,
       email,
       phone,
       role,
       password: hashedPassword,
+      verificationCode,
     });
+
+    sendVerificationEmail(email, verificationCode);
 
     if (newUser) {
       generateToken(newUser._id, res);
@@ -42,11 +48,12 @@ export const signup = async (req, res) => {
 
       res.status(201).json({
         _id: newUser._id,
-        firstname: newUser.firstName,
+        username: newUser.username,
         email: newUser.email,
         phone: newUser.phone,
         role: newUser.role,
         profilePic: newUser.profilePic,
+        verificationCode: newUser.verificationCode,
       });
     } else {
       res.status(400).json({ message: "Invalid User data" });
@@ -90,5 +97,27 @@ export const logout = (req, res) => {
   } catch (error) {
     console.log("Error in Logout Controller", error.message);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const emailVerificationCheck = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const user = await User.findOne({
+      verificationCode: code,
+    });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Code or Expired Code." });
+    }
+    user.isVerified = true;
+    user.verificationCode = undefined;
+    await user.save();
+    sendWelcomeEmail(user.email);
+    return res.status(200).json({ message: "User isVerified! " });
+  } catch (error) {
+    console.log("Error in checking email verifcation: ", error);
+    res
+      .status(500)
+      .json({ message: "Error checking verification", error: error.message });
   }
 };

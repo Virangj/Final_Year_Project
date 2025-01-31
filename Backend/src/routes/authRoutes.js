@@ -1,9 +1,11 @@
 import express from "express";
-import { login, logout, signup } from "../controller/authController.js";
+import { emailVerificationCheck, login, logout, signup } from "../controller/authController.js";
 
 const router = express.Router();
 
-router.post("/signup", signup);
+router.post("/signup" ,signup);
+
+router.post("/emailcheck", emailVerificationCheck);
 
 router.post("/login", login);
 

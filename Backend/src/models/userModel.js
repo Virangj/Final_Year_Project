@@ -5,13 +5,10 @@ const userschema = new mongoose.Schema(
     profilePic: {
       type: "string",
     },
-    firstName: {
-      type: "string",
-      required: true,
-    },
-    lastName: {
-      type: "string",
-      required: true,
+    username: {
+      type: String,
+      require: true,
+      unique: true,
     },
     email: {
       type: "string",
@@ -42,6 +39,11 @@ const userschema = new mongoose.Schema(
       enum: ["normal" , "artist"],
       require : true,
     },
+    isVerified:{
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: String
   },
   {
     timestamps: true,
