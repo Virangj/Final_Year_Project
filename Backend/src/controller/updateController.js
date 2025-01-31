@@ -7,7 +7,6 @@ const uploadtocloudinary = async (buffer) => {
     let cld_upload_stream = cloudinary.uploader.upload_stream(
       { folder: "test" },
       function (error, result) {
-        console.log(error, result);
         if (error) {
           return reject(error);
         }
@@ -31,7 +30,7 @@ export const updateProfile = async (req, res) => {
     const { dob, gender, country, city, name } = req.body;
     const userId = req.user._id;
 
-    const imageURL = null;
+    let imageURL = null;
 
     if (req.file != null) {
       const upload_resp = await uploader(req.file);

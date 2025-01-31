@@ -54,7 +54,6 @@ export const signup = async (req, res) => {
         phone: newUser.phone,
         role: newUser.role,
         profilePic: newUser.profilePic,
-        verificationCode: newUser.verificationCode,
       });
     } else {
       res.status(400).json({ message: "Invalid User data" });
