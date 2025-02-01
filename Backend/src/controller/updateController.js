@@ -30,31 +30,22 @@ export const updateProfile = async (req, res) => {
     const { dob, gender, country, city, name } = req.body;
     const userId = req.user._id;
 
-    let imageURL = null;
+    // Create an object with only fields that should be updated
+    let updateFields = { dob, gender, country, city, name };
 
-    if (req.file != null) {
+    // Only update profilePic if a new image is uploaded
+    if (req.file) {
       const upload_resp = await uploader(req.file);
-      imageURL = upload_resp.url;
+      updateFields.profilePic = upload_resp.url;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        profilePic: imageURL,
-        dob,
-        gender,
-        country,
-        city,
-        name,
-      },
-      { new: true }
-    );
+    // Find and update the user without modifying profilePic if no new image is uploaded
+    const updatedUser = await User.findByIdAndUpdate(userId, { $set: updateFields }, { new: true });
 
     if (!updatedUser) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
+
     res.status(200).json({
       success: true,
       message: "Profile updated successfully",
