@@ -160,7 +160,7 @@ export const deletemypost = async (req, res) => {
       return res.status(400).json({ message: "Post ID is required. " });
     }
 
-    const deletePost = await Post.findOneAndDelete({postId:postId});
+    const deletePost = await Post.findOneAndDelete({ postId: postId });
 
     if (!deletePost) {
       return res
@@ -182,3 +182,4 @@ export const deletemypost = async (req, res) => {
       });
   }
 };
+
