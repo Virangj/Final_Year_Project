@@ -1,17 +1,16 @@
 import express from "express";
-import { addpost,updatemypost,randompost,getmypost, deletemypost } from "../controller/postController.js";
+import { addpost,updatemypost,getmypost, deletemypost } from "../controller/postController.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
+import { Checkrole } from "../middleware/roleMiddlerware.js";
 
 const postRoutes = express.Router();
 
-postRoutes.post("/addpost", multerUpload.array('files'), addpost);
+postRoutes.post("/addpost",Checkrole, multerUpload.array('files'), addpost);
 
-postRoutes.put("/updatemypost",updatemypost);
+postRoutes.put("/updatemypost",Checkrole,updatemypost);
 
-postRoutes.get("/getmypost", getmypost);
+postRoutes.get("/getmypost",Checkrole, getmypost);
 
-postRoutes.get("/randompost",randompost);
-
-postRoutes.delete("/delete", deletemypost);
+postRoutes.delete("/delete",Checkrole, deletemypost);
 
 export default postRoutes;
