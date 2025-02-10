@@ -15,7 +15,7 @@ function App() {
   //       element: <><Login /></>
   //     },
   //   ])
-  const authUser = false
+  const authUser = false;
 
   return (
     // <>
@@ -23,10 +23,10 @@ function App() {
 
     // </>
     <Routes>
-        <Route
-          path="/"
-          element={authUser ? <Home /> : <Navigate to="/login" />}
-        />
+      <Route
+        path="/"
+        element={authUser ? <Home /> : <Navigate to="/login" />}
+      />
       <Route
         path="/login"
         element={!authUser ? <Login /> : <Navigate to="/" />}

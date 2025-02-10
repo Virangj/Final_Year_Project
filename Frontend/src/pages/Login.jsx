@@ -1,77 +1,60 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useaAuthStore } from "../store/authStore";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const { login, isLoggingIn } = useaAuthStore();
+  const [login, setlogin] = useState({ email: "", password: "" })
+  const [check_login, check_setlogin] = useState(true)
+  const [signup, setsignup] = useState({ username: "", email: "", password: "", role: "" })
+  const navigate=useNavigate();
+  const [loginres,setloginres]=useState()
+  const [signupres,setsignupres]=useState()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    login(formData);
-  };
-  // const [login, setlogin] = useState({ email: "", password: "" })
-  // const [check_login, check_setlogin] = useState(true)
-  // const [signup, setsignup] = useState({ username: "", email: "", password: "", role: "" })
-  // const navigate=useNavigate();
-  // const [loginres,setloginres]=useState()
-  // const [signupres,setsignupres]=useState()
+  const login_handlechange = (e) => {
+      setlogin({ ...login, [e.target.name]: e.target.value })
+  }
 
-  // const login_handlechange = (e) => {
-  //     setlogin({ ...login, [e.target.name]: e.target.value })
-  // }
+  const signup_handlechange = (e) => {
+      setsignup({ ...signup, [e.target.name]: e.target.value })
+  }
 
-  // const signup_handlechange = (e) => {
-  //     setsignup({ ...signup, [e.target.name]: e.target.value })
-  // }
+  const Change = () => {
+      check_setlogin(!check_login)
+  }
 
-  // const Change = () => {
-  //     check_setlogin(!check_login)
-  // }
+  const setrole= async(e)=>{
+      setsignup({...signup,[e.target.name]:e.target.value})
+  }
 
-  // const setrole= async(e)=>{
-  //     setsignup({...signup,[e.target.name]:e.target.value})
-  // }
+  const savelogin = async () => {
+      let a = await fetch("http://localhost:5001/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(login) })
+      let res = await a.json()
+      if (res._id) {
+          navigate("/")
+      }
+      else {
+          console.log(res.message)
+          setloginres(res.message)
+      }
 
-  // const savelogin = async () => {
-  //     console.log(login)
-  //     let a = await fetch("http://localhost:5001/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(login) })
-  //     console.log(a);
-  //     let res = await a.json()
-  //     if (res._id) {
-  //         console.log(res)
-  //         navigate("/")
+      setlogin({ email: "", password: "" })
+  }
 
-  //     }
-  //     else {
-  //         console.log(res.message)
-  //         setloginres(res.message)
-  //     }
+  const savesignup=async()=>{
+      let a = await fetch("http://localhost:5001/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(signup) })
+      let res= await a.json()
+      if (res._id) {
+          console.log(res._id)
+          navigate("/")
 
-  //     setlogin({ email: "", password: "" })
-  // }
+      }
+      else {
+          console.log(res.message)
+          setsignupres(res.message)
+      }
 
-  // const savesignup=async()=>{
-  //     console.log(signup)
-  //     let a = await fetch("http://localhost:5001/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(signup) })
-  //     let res= await a.json()
-  //     if (res._id) {
-  //         console.log(res._id)
-  //         navigate("/")
+      setsignup({ username: "", email: "", password: "", role: "" })
 
-  //     }
-  //     else {
-  //         console.log(res.message)
-  //         setsignupres(res.message)
-  //     }
-
-  //     setsignup({ username: "", email: "", password: "", role: "" })
-
-  // }
+  }
   return (
     <>
       <div className="w-full h-screen flex justify-center items-center bg-slate-600">
