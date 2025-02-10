@@ -7,7 +7,7 @@ const postRoutes = express.Router();
 
 postRoutes.post("/addpost",Checkrole, multerUpload.array('files'), addpost);
 
-postRoutes.put("/updatemypost",Checkrole,updatemypost);
+postRoutes.patch("/updatemypost",Checkrole,updatemypost);
 
 postRoutes.get("/getmypost",Checkrole, getmypost);
 

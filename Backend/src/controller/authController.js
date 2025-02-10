@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 
 export const signup = async (req, res) => {
-  const { username, email, password, phone, role } = req.body;
+  const { username, email, password,  role } = req.body;
   try {
     if (password.length < 6) {
       return res
