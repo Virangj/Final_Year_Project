@@ -56,7 +56,6 @@ export const sendMessage = async (req, res, io) => {
         await newMessage.save();
 
         // Emit the message via Socket.io
-        io.to(receiverId).emit("receiveMessage", newMessage);
 
         res.status(201).json(newMessage);
     } catch (error) {

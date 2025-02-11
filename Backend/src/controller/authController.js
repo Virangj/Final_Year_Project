@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 
 export const signup = async (req, res) => {
   const { username, email, password,  role } = req.body;
+  // console.log(req.body);  
   try {
     if (password.length < 6) {
       return res
@@ -35,7 +36,6 @@ export const signup = async (req, res) => {
     const newUser = new User({
       username,
       email,
-      phone,
       role,
       password: hashedPassword,
       verificationCode,
@@ -80,7 +80,6 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       _id: user._id,
-      firstname: user.firstName,
       email: user.email,
       profilePic: user.profilePic,
     });

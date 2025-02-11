@@ -42,13 +42,13 @@ const postschema = new mongoose.Schema(
             },
             replies: [{
                 userId: {
-                    type: string,
+                    type: String,
                 },
                 text: {
-                    type: string,
+                    type: String,
                 },
                 createdAt: {
-                    type: dtae,
+                    type: Date,
                     default: Date.now,
                 },
             }]

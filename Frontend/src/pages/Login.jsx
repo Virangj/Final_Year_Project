@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" })
@@ -9,6 +10,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loginres, setloginres] = useState()
   const [signupres, setsignupres] = useState()
+  const {authUser , signup1 , login1} = useAuthStore()
 
   const login_handlechange = (e) => {
     setlogin({ ...login, [e.target.name]: e.target.value })
@@ -27,33 +29,37 @@ const Login = () => {
   }
 
   const savelogin = async () => {
-    console.log(login)
-    let res = await axiosInstance.post("/auth/login", login, { headers: { "Content-Type": "application/json" }, })
-    if (res.data._id) {
-      navigate("/")
-    }
-    else {
-      console.log(res.data.message)
-      setloginres(res.data.message)
-    }
-
-    setlogin({ email: "", password: "" })
+    // console.log(login)
+    login1(login)
+    // let res = await axiosInstance.post("/auth/login", login, { headers: { "Content-Type": "application/json" }, })
+    // if (res.data._id) {
+    //   await navigate("/")
+    // }
+    // else {
+    //   console.log(res.data.message)
+    //   setloginres(res.data.message)
+    // }
+    
+    // setlogin({ email: "", password: "" })
   }
-
+  
   const savesignup = async () => {
-    console.log(signup)
-    let res = await axiosInstance.post("/auth/signup", signup, { headers: { "Content-Type": "application/json" }, })
-    if (res.data._id) {
-      console.log(res._id)
-      navigate("/")
+    // console.log(signup)
+    signup1(signup)
+    // let res = await axiosInstance.post("/auth/signup", signup, { headers: { "Content-Type": "application/json" }, })
+    // console.log(res);    
+    // if (res.data._id) {
+    // console.log(res.data._id)
+    //   set({authUser:true})
+    //   await navigate("/")
 
-    }
-    else {
-      console.log(res.data.message)
-      setsignupres(res.data.message)
-    }
+    // }
+    // else {
+    //   console.log(res.data.message)
+    //   setsignupres(res.data.message)
+    // }
 
-    setsignup({ username: "", email: "", password: "", role: "" })
+    // setsignup({ username: "", email: "", password: "", role: "" })
 
   }
   return (

@@ -8,15 +8,17 @@ import {
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Gmail_verification from "./pages/Gmail_verification";
+import { useAuthStore } from "./store/useAuthStore";
 
 function App() {
-  //   const router = createBrowserRouter([
-  //     {
-  //       path: "/login",
-  //       element: <><Login /></>
-  //     },
-  //   ])
-  const authUser = false;
+    // const router = createBrowserRouter([
+    //   {
+    //     path: "/login",
+    //     element: <><Login /></>
+    //   },
+    // ])
+  // const authUser = false;
+  const {authUser} = useAuthStore()
 
   return (
     // <>

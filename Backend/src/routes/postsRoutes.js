@@ -1,5 +1,5 @@
 import express from "express";
-import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts } from "../controller/postsController";
+import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts } from "../controller/postsController.js";
 
 const postsRoutes = express.Router();
 
