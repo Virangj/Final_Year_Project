@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Gmail_verification from "./pages/Gmail_verification";
 
 function App() {
   //   const router = createBrowserRouter([
@@ -30,6 +31,10 @@ function App() {
       <Route
         path="/login"
         element={!authUser ? <Login /> : <Navigate to="/" />}
+      />
+      <Route
+        path="/verification"
+        element={<Gmail_verification />}
       />
     </Routes>
   );

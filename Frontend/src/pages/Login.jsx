@@ -1,58 +1,59 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../lib/axios";
 
 const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" })
   const [check_login, check_setlogin] = useState(true)
   const [signup, setsignup] = useState({ username: "", email: "", password: "", role: "" })
-  const navigate=useNavigate();
-  const [loginres,setloginres]=useState()
-  const [signupres,setsignupres]=useState()
+  const navigate = useNavigate();
+  const [loginres, setloginres] = useState()
+  const [signupres, setsignupres] = useState()
 
   const login_handlechange = (e) => {
-      setlogin({ ...login, [e.target.name]: e.target.value })
+    setlogin({ ...login, [e.target.name]: e.target.value })
   }
 
   const signup_handlechange = (e) => {
-      setsignup({ ...signup, [e.target.name]: e.target.value })
+    setsignup({ ...signup, [e.target.name]: e.target.value })
   }
 
   const Change = () => {
-      check_setlogin(!check_login)
+    check_setlogin(!check_login)
   }
 
-  const setrole= async(e)=>{
-      setsignup({...signup,[e.target.name]:e.target.value})
+  const setrole = async (e) => {
+    setsignup({ ...signup, [e.target.name]: e.target.value })
   }
 
   const savelogin = async () => {
-      let a = await fetch("http://localhost:5001/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(login) })
-      let res = await a.json()
-      if (res._id) {
-          navigate("/")
-      }
-      else {
-          console.log(res.message)
-          setloginres(res.message)
-      }
+    console.log(login)
+    let res = await axiosInstance.post("/auth/login", login, { headers: { "Content-Type": "application/json" }, })
+    if (res.data._id) {
+      navigate("/")
+    }
+    else {
+      console.log(res.data.message)
+      setloginres(res.data.message)
+    }
 
-      setlogin({ email: "", password: "" })
+    setlogin({ email: "", password: "" })
   }
 
-  const savesignup=async()=>{
-      let a = await fetch("http://localhost:5001/api/auth/signup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(signup) })
-      let res= await a.json()
-      if (res._id) {
-          console.log(res._id)
-          navigate("/")
+  const savesignup = async () => {
+    console.log(signup)
+    let res = await axiosInstance.post("/auth/signup", signup, { headers: { "Content-Type": "application/json" }, })
+    if (res.data._id) {
+      console.log(res._id)
+      navigate("/")
 
-      }
-      else {
-          console.log(res.message)
-          setsignupres(res.message)
-      }
+    }
+    else {
+      console.log(res.data.message)
+      setsignupres(res.data.message)
+    }
 
-      setsignup({ username: "", email: "", password: "", role: "" })
+    setsignup({ username: "", email: "", password: "", role: "" })
 
   }
   return (
@@ -87,7 +88,7 @@ const Login = () => {
               </div>
               <label className="pl-4 mb-1 font-semibold">Email</label>
               <input
-                className="bg-white  rounded-md mx-4 mb-2 pl-2 "
+                className="bg-white  outline-none  rounded-md mx-4 mb-2 pl-2 "
                 type="text"
                 value={login.email}
                 onChange={login_handlechange}
@@ -95,7 +96,7 @@ const Login = () => {
               />
               <label className="pl-4 mb-1 font-semibold ">Password</label>
               <input
-                className="bg-white  rounded-md mx-4 mb-2 pl-2"
+                className="bg-white   outline-none rounded-md mx-4 mb-2 pl-2"
                 type="password"
                 value={login.password}
                 onChange={login_handlechange}
@@ -114,7 +115,7 @@ const Login = () => {
                 <div className="pr-4 text-xs">Forget Password</div>
               </div>
               <button
-                className="bg-black mx-4 rounded-md text-white h-8 mb-4 "
+                className="bg-black mx-4 rounded-md text-white h-8 mb-4  cursor-pointer  "
                 onClick={savelogin}
               >
                 Login
@@ -150,15 +151,15 @@ const Login = () => {
               </div>
               <label className="pl-4 mb-1 font-semibold">UserName</label>
               <input
-                className="bg-white  rounded-md mx-4 mb-2 pl-2 "
+                className="bg-white  outline-none  rounded-md mx-4 mb-2 pl-2 "
                 type="text"
                 value={signup.username}
                 onChange={signup_handlechange}
                 name="username"
               />
-              <label className="pl-4 mb-1 font-semibold">Email</label>
+              <label className="pl-4   mb-1 font-semibold">Email</label>
               <input
-                className="bg-white  rounded-md mx-4 mb-2 pl-2 "
+                className="bg-white  outline-none  rounded-md mx-4 mb-2 pl-2 "
                 type="text"
                 value={signup.email}
                 onChange={signup_handlechange}
@@ -166,7 +167,7 @@ const Login = () => {
               />
               <label className="pl-4 mb-1 font-semibold ">Password</label>
               <input
-                className="bg-white  rounded-md mx-4 mb-2 pl-2"
+                className="bg-white  outline-none  rounded-md mx-4 mb-2 pl-2"
                 type="password"
                 value={signup.password}
                 onChange={signup_handlechange}
@@ -177,7 +178,7 @@ const Login = () => {
                 value={signup.role}
                 name="role"
                 onChange={setrole}
-                className="rounded-md mx-4 mb-3 pl-2 font-normal"
+                className="rounded-md mx-4 mb-3 pl-2 font-normal "
               >
                 <option value="">Account Type</option>
                 <option value="normal"> User</option>
@@ -190,7 +191,7 @@ const Login = () => {
               )}
 
               <button
-                className="bg-black mx-4 rounded-md text-white h-8 mb-4 "
+                className="bg-black mx-4 rounded-md text-white h-8 mb-4 cursor-pointer  "
                 onClick={savesignup}
               >
                 SignUp
