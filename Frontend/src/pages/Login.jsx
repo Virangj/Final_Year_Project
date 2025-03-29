@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
+import { validate } from "email-validator";
 
 const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" })
@@ -9,8 +10,8 @@ const Login = () => {
 
   const navigate = useNavigate();
   const [error, seterror] = useState()
- 
-  const { authUser, signup1, login1 } = useAuthStore()
+
+  const { user, } = useAuthStore()
 
   const login_handlechange = (e) => {
     setlogin({ ...login, [e.target.name]: e.target.value })
@@ -19,24 +20,43 @@ const Login = () => {
 
 
   const savelogin = async () => {
-    // console.log(login)
-    login1(login)
-    // let res = await axiosInstance.post("/auth/login", login, { headers: { "Content-Type": "application/json" }, })
-    // if (res.data._id) {
-    //   await navigate("/")
-    // }
-    // else {
-    //   console.log(res.data.message)
-    //   seterror(res.data.message)
-    // }
-
-    // setlogin({ email: "", password: "" })
+    // // console.log(login)
+    // login1(login)
+    if (!validate(login.email)) {
+      seterror("invalid email")
+      return;
+    }
+    try {
+      const res = await axiosInstance.post("/auth/login", login,)
+      const data = {
+        username: res.data.username,
+        email: res.data.email,
+        _id: res.data._id,
+        profilePic: res.data.profilePic,
+        role: res.data.role,
+        phone: res.data.phone,
+      }
+      if (!res.data.emailverification) {
+        await user(data)
+        window.location.href = "/emailverification"
+      } else {
+        await user(data)
+        await checkAuth()
+        navigate("/")
+      }
+      setlogin({ email: "", password: "" })
+    } catch (error) {
+      console.log(error.response.data.message)
+      if (error.response.data.message) {
+        seterror(error.response.data.message)
+      }
+    }
   }
 
-  
+
   return (
     <>
-      <div className="w-full h-screen flex justify-center items-center bg-[url('public/background_Image.png')] ">
+      <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover] ">
 
         <div className="w-72  h-fit  my-auto sm:w-96 ">
           <h2 className="mt-3 text-center font-bold text-2xl text-white">
@@ -92,7 +112,7 @@ const Login = () => {
                 <input type="checkbox" />
                 <p className="pl-1 ">Remember me</p>
               </div>
-              <div className="pr-4 text-xs cursor-pointer" onClick={()=>navigate("/emailaddress")}>Forget Password</div>
+              <div className="pr-4 text-xs cursor-pointer" onClick={() => navigate("/emailaddress")}>Forget Password</div>
             </div>
             <button
               className="bg-black mx-4 rounded-md text-white h-8 mb-4  cursor-pointer  "

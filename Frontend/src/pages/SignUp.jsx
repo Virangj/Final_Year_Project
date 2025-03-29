@@ -2,49 +2,41 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
+import { validate } from "email-validator";
 
 const SignUp = () => {
-
-
     const [signup, setsignup] = useState({ username: "", email: "", password: "", role: "" })
     const navigate = useNavigate();
-
     const [error, seterror] = useState()
-    const { authUser, signup1, login1 } = useAuthStore()
-
-
+    const { user, } = useAuthStore()
 
     const signup_handlechange = (e) => {
         setsignup({ ...signup, [e.target.name]: e.target.value })
     }
 
-
-
-
-
-
     const savesignup = async () => {
         // console.log(signup)
-        signup1(signup)
-        // let res = await axiosInstance.post("/auth/signup", signup, { headers: { "Content-Type": "application/json" }, })
-        // console.log(res);    
-        // if (res.data._id) {
-        // console.log(res.data._id)
-        //   set({authUser:true})
-        //   await navigate("/")
+        // signup1(signup)
+        if (!validate(signup.email)) {
+            seterror("invalid email")
+            return;
+        }
+        try {
+            const res = await axiosInstance.post("/auth/signup", signup,)
+            await user(res.data)
+            await navigate("/emailverification")
+            setsignup({ username: "", email: "", password: "", role: "" })
+        } catch (error) {
+            console.log(error.response.data.message)
+            if (error.response.data.message) {
+                seterror(error.response.data.message)
+            }
+        }
+    };
 
-        // }
-        // else {
-        //   console.log(res.data.message)
-        //   seterror(res.data.message)
-        // }
-
-        // setsignup({ username: "", email: "", password: "", role: "" })
-
-    }
     return (
         <>
-            <div className="w-full h-screen flex justify-center items-center bg-[url('public/background_Image.png')] ">
+            <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover">
                 <div className="w-72  h-fit sm:w-96 ">
                     <h2 className="mt-3 text-center font-bold text-2xl text-white">
                         Creative Threads
@@ -104,7 +96,7 @@ const SignUp = () => {
                             name="role"
                             required
                             onChange={signup_handlechange}
-                            className="rounded-md mx-4 mb-3 pl-2 font-normal "
+                            className="rounded-md mx-4 mb-3 p-1 font-normal bg-white outline-none"
                         >
                             <option value="">Account Type</option>
                             <option value="normal"> User</option>
