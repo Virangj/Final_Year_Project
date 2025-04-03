@@ -31,7 +31,7 @@ const Gmail_verification = () => {
          <div className='w-72  h-fit flex-col  my-auto sm:w-96 flex'>
             <h2 className='mt-3 text-center font-bold text-2xl'>Creative Threads</h2>
             <h4 className='mt-3 text-center font-medium text-xl'>Verify Your email address</h4>
-            <p className='mt-3 mb-4 text-center font-normal'>Enter the verification code we sent to shresthasagar@gmail.com. if you don't see it, check your spam folder</p>
+            <p className='mt-3 mb-4 text-center font-normal'>Enter the verification code we sent to your email if you don't see it, check your spam folder</p>
             <div className='relative mb-2'>
                 <span className='fixed -mt-3 ml-1.5 bg-white w-20 text-center text-blue-700'>Enter code</span>
                 <input type="text" value={code} onChange={handlechange} className=' w-full h-10 pl-2 border-2 border-blue-700 outline-none'></input>
