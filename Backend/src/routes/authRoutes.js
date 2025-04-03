@@ -1,6 +1,7 @@
 import express from "express";
 import {
   checkAuth,
+  emailAddressCheck,
   emailVerificationCheck,
   login,
   logout,
@@ -12,7 +13,9 @@ const router = express.Router();
 
 router.post("/signup", signup);
 
-router.post("/emailcheck", emailVerificationCheck);
+router.post("/verificationcode", emailVerificationCheck);
+
+router.post("/emailaddress",emailAddressCheck)
 
 router.post("/login", login);
 
