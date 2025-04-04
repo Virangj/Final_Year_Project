@@ -15,7 +15,10 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send a verification email
-export const sendVerificationEmail = async (recipientEmail, verificationCode) => {
+export const sendVerificationEmail = async (
+  recipientEmail,
+  verificationCode
+) => {
   try {
     const emailHTML = `
       <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; background: linear-gradient(135deg, #6dd5ed, #2193b0); color: #ffffff; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
@@ -53,10 +56,10 @@ export const sendVerificationEmail = async (recipientEmail, verificationCode) =>
 };
 
 export const sendWelcomeEmail = async (recipientEmail) => {
-    try {
-      const dashboardLink = "https://yourwebsite.com/dashboard"; // Replace with actual dashboard link
-  
-      const emailHTML = `
+  try {
+    const dashboardLink = "https://yourwebsite.com/dashboard"; // Replace with actual dashboard link
+
+    const emailHTML = `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; background: linear-gradient(135deg, #6dd5ed, #2193b0); color: #ffffff; border-radius: 10px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
             <h1 style="margin-bottom: 10px;">🎉 Welcome to CreativeThreads! 🎉</h1>
             <p style="font-size: 16px; margin-bottom: 15px;">Congratulations! Your email has been successfully verified.</p>
@@ -70,18 +73,17 @@ export const sendWelcomeEmail = async (recipientEmail) => {
             <p style="font-size: 14px; margin-top: 15px;">Best regards,<br><strong>CreativeThreads Team</strong></p>
         </div>
       `;
-  
-      const info = await transporter.sendMail({
-        from: `"CreativeThreads" <${process.env.NODE_EMAIL}>`,
-        to: recipientEmail,
-        subject: "🎉 Welcome to CreativeThreads!",
-        html: emailHTML,
-      });
-  
+
+    const info = await transporter.sendMail({
+      from: `"CreativeThreads" <${process.env.NODE_EMAIL}>`,
+      to: recipientEmail,
+      subject: "🎉 Welcome to CreativeThreads!",
+      html: emailHTML,
+    });
+
     //   console.log("Welcome email sent to:", recipientEmail);
     //   console.log("Message ID:", info.messageId);
-    } catch (error) {
-      console.error("Error sending welcome email:", error);
-    }
-  };
-
+  } catch (error) {
+    console.error("Error sending welcome email:", error);
+  }
+};

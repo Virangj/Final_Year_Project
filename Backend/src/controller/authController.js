@@ -3,10 +3,9 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 
-
 export const signup = async (req, res) => {
   const { username, email, password, role } = req.body;
-  // console.log(req.body);  
+  // console.log(req.body);
   try {
     if (password.length < 6) {
       return res
@@ -77,11 +76,13 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
 
     if (!user.isVerified) {
-      console.log(user.isVerified)
-      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      console.log(user.isVerified);
+      const verificationCode = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
       await User.findOneAndUpdate(
         { email },
-        { verificationCode: verificationCode },
+        { verificationCode: verificationCode }
       );
       sendVerificationEmail(user.email, verificationCode);
       return res.status(200).json({
@@ -125,7 +126,7 @@ export const emailVerificationCheck = async (req, res) => {
   try {
     const { code, email } = req.body;
     const user = await User.findOne({
-      email
+      email,
     });
     if (!user) {
       return res.status(400).json({ message: "Invalid Code or Expired Code." });
@@ -149,10 +150,11 @@ export const emailVerificationCheck = async (req, res) => {
 
 export const checkAuth = (req, res) => {
   try {
-    if (req.user.userId) return res.status(200).json({ message: "token is provided" })
-    res.status(401).json({ message: "token not provided" })
+    if (req.user)
+      return res.status(200).json({ message: "token is provided" });
+    res.status(401).json({ message: "token not provided" });
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -161,9 +163,12 @@ export const emailAddressCheck = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      user.verificationCode = Math.floor(
+      const verificationCode = Math.floor(
         100000 + Math.random() * 900000
       ).toString();
+      
+      user.verificationCode = verificationCode
+
       await user.save()
       sendVerificationEmail(email, verificationCode);
       res.status(200).json({ message: "code send successfully" })
@@ -178,4 +183,3 @@ export const emailAddressCheck = async (req, res) => {
       .json({ message: "Error in checking email address", error: error.message });
   }
 }
-
