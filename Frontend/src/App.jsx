@@ -7,18 +7,20 @@ import {
 } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import Gmail_verification from "./pages/Gmail_verification";
+import Email_verification from "./pages/Email_verification";
 import { useAuthStore } from "./store/useAuthStore";
+import SignUp from "./pages/SignUp";
+import Email_address from "./pages/Email_address";
 
 function App() {
-    // const router = createBrowserRouter([
-    //   {
-    //     path: "/login",
-    //     element: <><Login /></>
-    //   },
-    // ])
+  // const router = createBrowserRouter([
+  //   {
+  //     path: "/login",
+  //     element: <><Login /></>
+  //   },
+  // ])
   // const authUser = false;
-  const {authUser} = useAuthStore()
+  const { authUser, token } = useAuthStore()
 
   return (
     // <>
@@ -28,15 +30,23 @@ function App() {
     <Routes>
       <Route
         path="/"
-        element={authUser ? <Home /> : <Navigate to="/login" />}
+        element={token && authUser ? <Home /> : <Navigate to="/login" replace:true />}
       />
       <Route
         path="/login"
-        element={!authUser ? <Login /> : <Navigate to="/" />}
+        element={!token ? <Login /> : <Navigate to="/" replace:true />}
       />
       <Route
-        path="/verification"
-        element={<Gmail_verification />}
+        path="/emailverification"
+        element={!token && authUser ? <Email_verification /> : <Navigate to="/" replace:true />}
+      />
+      <Route
+        path="/signup"
+        element={!token ? <SignUp /> : <Navigate to="/" replace:true />}
+      />
+      <Route
+        path="/emailaddress"
+        element={!token ? <Email_address /> : <Navigate to="/" replace:true />}
       />
     </Routes>
   );

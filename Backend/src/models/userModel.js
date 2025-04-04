@@ -45,13 +45,24 @@ const userschema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // List of followers
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // List of users they follow
-    verificationCode: String,
+    followers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }], // List of followers
+    following: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }], // List of users they follow
+    verificationCode: {
+      type: "string",
+      default: null,
+      expire: "60*10"
+    },
   },
   {
     timestamps: true,
-  }
+  },
+
 );
 
 const User = mongoose.model("User", userschema);
