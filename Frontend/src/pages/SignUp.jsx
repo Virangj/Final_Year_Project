@@ -96,17 +96,13 @@ const SignUp = () => {
                             name="role"
                             required
                             onChange={signup_handlechange}
-                            className="rounded-md mx-4 mb-3 p-1 font-normal bg-white outline-none"
+                            className="rounded-md mx-4 mb-2 p-1 font-normal bg-white outline-none"
                         >
                             <option value="">Account Type</option>
                             <option value="normal"> User</option>
                             <option value="artist">Artist</option>
                         </select>
-                        {error && (
-                            <div className="text-red-700 font-light" mb-3>
-                                {error}
-                            </div>
-                        )}
+                        {error && <p className='pl-4 mb-1 text-red-600 text-xs'>{error}</p>}
 
                         <button
                             className="bg-black mx-4 rounded-md text-white h-8 mb-4 cursor-pointer  "

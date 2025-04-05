@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import React from 'react'
 import { axiosInstance } from '../lib/axios'
-import { useNavigate } from 'react-router-dom'
+import { replace, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/useAuthStore'
 
 const Email_verification = () => {
@@ -23,7 +23,7 @@ const Email_verification = () => {
             const data = { email: authUser.email, code: code }
             await axiosInstance.post("/auth/verificationcode", data)
             await checkAuth()
-            navigate("/")
+            navigate("/", { replace: true })
             setcode("")
         } catch (error) {
             console.log(error.response.data.message)
@@ -41,7 +41,7 @@ const Email_verification = () => {
         <>
             <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover">
                 <div className='w-72  h-fit flex-col  my-auto sm:w-96 flex p-5 rounded-md bg-slate-300'>
-                    <h2 className='mt-3 text-center font-bold text-2xl'>Creative Threads</h2>
+                    <h2 className=' text-center font-bold text-2xl'>Creative Threads</h2>
                     <h4 className='mt-3 text-center font-medium text-xl'>Verify Your email address</h4>
                     <p className='mt-3 mb-4 text-center font-normal'>Enter the verification code we sent to shresthasagar@gmail.com. if you don't see it, check your spam folder</p>
                     <div className='relative mb-1'>
@@ -53,8 +53,6 @@ const Email_verification = () => {
                         <button onClick={back} className='text-blue-700 font-medium   cursor-pointer'>Back</button>
                         <button onClick={savecode} className=' bg-blue-700 font-medium text-white text-center cursor-pointer w-20  rounded-md'>Next</button>
                     </div>
-
-
                 </div>
             </div>
 

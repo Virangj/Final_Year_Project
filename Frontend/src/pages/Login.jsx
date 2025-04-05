@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [error, seterror] = useState()
 
-  const { user, } = useAuthStore()
+  const { user, checkAuth} = useAuthStore()
 
   const login_handlechange = (e) => {
     setlogin({ ...login, [e.target.name]: e.target.value })
@@ -27,7 +27,7 @@ const Login = () => {
       return;
     }
     try {
-      const res = await axiosInstance.post("/auth/login", login,)
+      const res = await axiosInstance.post("/auth/login", login)
       const data = {
         username: res.data.username,
         email: res.data.email,
@@ -46,7 +46,7 @@ const Login = () => {
       }
       setlogin({ email: "", password: "" })
     } catch (error) {
-      console.log(error.response.data.message)
+      console.log(error)
       if (error.response.data.message) {
         seterror(error.response.data.message)
       }
@@ -56,7 +56,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover] ">
+      <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover ">
 
         <div className="w-72  h-fit  my-auto sm:w-96 ">
           <h2 className="mt-3 text-center font-bold text-2xl text-white">
@@ -102,11 +102,7 @@ const Login = () => {
               onChange={login_handlechange}
               name="password"
             />
-            {error && (
-              <div className="text-red-700 font-light" mb-3>
-                {error}
-              </div>
-            )}
+            {error && <p className='pl-4 text-red-600 text-xs'>{error}</p>}
             <div className="flex flex-row mb-3 w-full justify-between">
               <div className="flex pl-4 text-xs">
                 <input type="checkbox" />

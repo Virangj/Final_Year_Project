@@ -7,6 +7,13 @@ const postschema = new mongoose.Schema(
             required: true,
             trim: true,  // Automatically trims extra spaces
         },
+        userimage: {
+            type: String,
+            required: true,
+        },
+        userrole: {
+            type: String,
+        },
         title: {
             type: String,
             required: true,

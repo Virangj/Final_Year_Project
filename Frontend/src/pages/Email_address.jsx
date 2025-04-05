@@ -42,7 +42,7 @@ const Email_address = () => {
     <>
       <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover">
         <div className='w-72  h-fit flex-col  my-auto sm:w-96 flex bg-slate-300  rounded-md p-5'>
-          <h2 className='mt-3 text-center font-bold text-2xl'>Creative Threads</h2>
+          <h2 className=' text-center font-bold text-2xl'>Creative Threads</h2>
           <h4 className='mt-3 text-center font-medium text-xl'>Find your Account</h4>
           <p className='mt-3 mb-4  font-normal'>Enter your email address</p>
           <div className='relative mb-1'>
@@ -54,8 +54,6 @@ const Email_address = () => {
             <button onClick={() => navigate("/signup")} className='text-blue-700 font-medium  cursor-pointer '>Create Account</button>
             <button onClick={save_email} className=' bg-blue-700 font-medium text-white text-center cursor-pointer w-20  r'>Next</button>
           </div>
-
-
         </div>
       </div>
     </>

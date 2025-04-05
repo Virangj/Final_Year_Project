@@ -1,4 +1,4 @@
-import { sendVerificationEmail, sendWelcomeEmail } from "../lib/email.js";
+import { sendVerificationEmail, sendWelcomeEmail, sendOtpEmail, sendPasswordChangeEmail } from "../lib/email.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
@@ -21,6 +21,7 @@ export const signup = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
+    console.log("1")
 
     if (user)
       return res
@@ -43,21 +44,18 @@ export const signup = async (req, res) => {
 
     sendVerificationEmail(email, verificationCode);
 
-    if (newUser) {
-      generateToken(newUser._id, res);
-      await newUser.save();
+    //generateToken(newUser._id, res);
+    await newUser.save();
 
-      res.status(201).json({
-        _id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        phone: newUser.phone,
-        role: newUser.role,
-        profilePic: newUser.profilePic,
-      });
-    } else {
-      res.status(400).json({ message: "Invalid User data" });
-    }
+    res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      phone: newUser.phone,
+      role: newUser.role,
+      profilePic: newUser.profilePic,
+    });
+
   } catch (error) {
     console.log("Error Signup Controller", error.message);
     res.status(500).json({ message: "Server Error" });
@@ -69,7 +67,7 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) return res.status(400).json({ message: "user doesn`t exists" });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -94,10 +92,10 @@ export const login = async (req, res) => {
         phone: user.phone,
       });
     }
-
     generateToken(user._id, res);
 
     res.status(200).json({
+      emailverification: true,
       _id: user._id,
       email: user.email,
       profilePic: user.profilePic,
@@ -134,6 +132,7 @@ export const emailVerificationCheck = async (req, res) => {
       user.isVerified = true;
       user.verificationCode = null;
       await user.save();
+      generateToken(User._id, res);
       sendWelcomeEmail(user.email);
       return res.status(200).json({ message: "User isVerified! " });
     } else {
@@ -177,5 +176,95 @@ export const emailAddressCheck = async (req, res) => {
       .status(500)
       .json({ message: "Error in checking email address", error: error.message });
   }
-}
+};
+
+export const resetpassword = async (req, res) => {
+  try {
+    const { oldpassword, newpassword } = req.body;
+
+    const user = await User.findById(req.user.userId);
+
+    if (!user) return res.status(404).json({ message: "user not found" })
+
+    const isPasswordCorrect = await bcrypt.compare(oldpassword, user.password);
+    if (!isPasswordCorrect)
+      return res.status(400).json({ message: "Incorrect password" });
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newpassword, salt);
+    await User.findByIdAndUpdate(req.user.userId, { password: hashedPassword })
+
+    sendPasswordChangeEmail(user.email, req.userActivity);
+
+    res.status(200).json({ message: "password change successfully" })
+  } catch (error) {
+    console.log("error :", error)
+    res.status(500).json({ message: "internal server error" })
+  }
+};
+
+export const sendOtp = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      user.verificationCode = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      await user.save()
+      sendOtpEmail(email, user.verificationCode);
+      res.status(200).json({ username: user.username, email: user.email, })
+    }
+    else {
+      res.status(401).json({ message: "user does'nt exists" })
+    }
+  } catch (error) {
+    console.log("Error in checking email address: ", error);
+    res
+      .status(500)
+      .json({ message: "Error in sending OTP", error: error.message });
+  }
+};
+
+export const checkOtp = async (req, res) => {
+  try {
+    const { code, email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid Code or Expired Code." });
+    }
+    if (user.verificationCode === code) {
+      user.verificationCode = null;
+      await user.save();
+      return res.status(200).json({ message: "User isVerified! " });
+    } else {
+      return res.status(404).json({ message: "incorrect code " });
+    }
+  } catch (error) {
+    console.log("Error in checking otp : ", error);
+    res
+      .status(500)
+      .json({ message: "Error checking OTP", error: error.message });
+  }
+};
+
+export const changepassword = async (req, res) => {
+  try {
+    const { newPassword } = req.body;
+    const user = await User.findById(req.user.userId);
+
+    if (!user) return res.status(404).json({ message: "user not found" })
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await User.findByIdAndUpdate(req.user.userId, { password: hashedPassword })
+
+    sendPasswordChangeEmail(user.email, req.userActivity);
+
+    res.status(200).json({ message: "password change successfully" })
+  } catch (error) {
+    console.log("error :", error)
+    res.status(500).json({ message: "internal server error" })
+  }
+};
 
