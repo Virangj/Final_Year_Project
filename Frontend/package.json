@@ -7,13 +7,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite"
   },
+  "proxy": "https://creativethreads.onrender.com",
+
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.5",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.9",
     "email-validator": "^2.0.4",
+    "http-proxy-middleware": "^3.0.3",
     "lucide-react": "^0.487.0",
     "postcss": "^8.5.1",
     "react": "^19.0.0",
