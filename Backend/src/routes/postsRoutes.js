@@ -1,5 +1,7 @@
 import express from "express";
-import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts } from "../controller/postsController.js";
+import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts,addpost,updatemypost,getmypost, deletemypost } from "../controller/postsController.js";
+import { Checkrole } from "../middleware/roleMiddlerware.js";
+import { multerUpload } from "../middleware/multerMiddleware.js";
 
 const postsRoutes = express.Router();
 
@@ -16,5 +18,13 @@ postsRoutes.patch("/updatereply",updatereply);
 postsRoutes.delete("/deletereply",deletereply);
 
 postsRoutes.get("/randomposts",randomposts);
+
+postsRoutes.post("/addpost",Checkrole, multerUpload.array('files'), addpost);
+
+postsRoutes.patch("/updatemypost",Checkrole,updatemypost);
+
+postsRoutes.get("/getmypost",Checkrole, getmypost);
+
+postsRoutes.delete("/delete",Checkrole, deletemypost);
 
 export default postsRoutes;
