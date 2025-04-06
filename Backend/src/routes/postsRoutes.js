@@ -1,5 +1,5 @@
 import express from "express";
-import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts,addpost,updatemypost,getmypost, deletemypost } from "../controller/postsController.js";
+import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts,addpost,updatemypost,getmypost, deletemypost, postlike, postunlike } from "../controller/postsController.js";
 import { Checkrole } from "../middleware/roleMiddlerware.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
 
@@ -10,6 +10,10 @@ postsRoutes.post("/addcomment",addcomment);
 postsRoutes.patch("/updatecomment",updatecomment);
 
 postsRoutes.delete("/deletecomment",deletecomment);
+
+postsRoutes.post("/likepost" , postlike)
+
+postsRoutes.post("/unlikepost" , postunlike)
 
 postsRoutes.post("/addreply",addreply);
 

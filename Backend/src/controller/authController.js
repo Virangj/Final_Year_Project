@@ -93,6 +93,7 @@ export const login = async (req, res) => {
         role: user.role,
         username: user.username,
         phone: user.phone,
+        isVerified: user.isVerified,
       });
     }
 
