@@ -89,10 +89,8 @@ export const login = async (req, res) => {
         emailverification: false,
         _id: user._id,
         email: user.email,
-        profilePic: user.profilePic,
         role: user.role,
         username: user.username,
-        phone: user.phone,
         isVerified: user.isVerified,
       });
     }
@@ -102,10 +100,9 @@ export const login = async (req, res) => {
     res.status(200).json({
       _id: user._id,
       email: user.email,
-      profilePic: user.profilePic,
       role: user.role,
       username: user.username,
-      phone: user.phone,
+      isVerified: user.isVerified,
     });
   } catch (error) {
     console.log("Error in Login Controller", error.message);
@@ -129,6 +126,7 @@ export const emailVerificationCheck = async (req, res) => {
     const user = await User.findOne({
       email,
     });
+    // console.log(email);
     if (!user) {
       return res.status(400).json({ message: "Invalid Code or Expired Code." });
     }
@@ -136,9 +134,11 @@ export const emailVerificationCheck = async (req, res) => {
       user.isVerified = true;
       user.verificationCode = null;
       await user.save();
+      // console.log("Verification");
       sendWelcomeEmail(user.email);
       return res.status(200).json({ message: "User isVerified! " });
     } else {
+      // console.log("Verification failed");
       return res.status(404).json({ message: "incorrect code " });
     }
   } catch (error) {
