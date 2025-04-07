@@ -5,68 +5,95 @@ import User from "../models/userModel.js";
 
 export const postlike = async (req, res) => {
   const { postId } = req.body;
-  // const userId = req.cookies.jwt;
   const decoded = req.decoded;
-  console.log(decoded);
+
   try {
     const post = await Post.findById(postId);
-    console.log(post);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    const userId = await User.findById(decoded.userId).select("-password");
 
-    if (!userId) {
+    const user = await User.findById(decoded.userId).select("_id");
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    console.log(userId);
-    // Check if user already liked the post
-    if (post.likes.userId.includes(userId._id.toString())) {
+
+    const userIdStr = user._id.toString();
+
+    // Check if the user already liked the post
+    if (post.likes.userId.includes(userIdStr)) {
       return res.status(400).json({ message: "User already liked this post" });
     }
-    console.log("next");
 
+    // Add userId to likes array
+    post.likes.userId.push(userIdStr);
 
-    // Increase like count and add user to likedBy array
-    post.likes.Totallike += 1;
-    post.likes.userId._id.push(userId._id.toString());
+    // Update total like count based on unique user IDs
+    post.likes.Totallike = post.likes.userId.length;
+
     await post.save();
 
-    res.json({
+    return res.status(200).json({
       message: "Post liked successfully",
-      likes: post.likes.Totallike,
+      likes: {
+        Totallike: post.likes.Totallike,
+        userId: post.likes.userId,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    console.error("Error in postlike:", error.message);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 export const postunlike = async (req, res) => {
   const { postId } = req.body;
-  const userId = req.cookies.jwt;
+  const decoded = req.decoded;
 
   try {
     const post = await Post.findById(postId);
-
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
-    // Check if user already liked the post
-    if (post.likes.userId.includes(userId)) {
-      // Increase like count and add user to likedBy array
-      post.likes.Totallike -= 1;
-      post.likes.userId = post.likes.userId.filter(
-        (id) => id.tostring() !== userId.tostring()
-      );
-      await post.save();
 
-      res.json({
-        message: "Post Unliked successfully",
-        likes: post.likes.Totallike,
-      });
+    const user = await User.findById(decoded.userId).select("_id");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
+
+    const userIdStr = user._id.toString();
+
+    // Check if user has not liked the post
+    if (!post.likes.userId.includes(userIdStr)) {
+      return res.status(400).json({ message: "User has not liked this post" });
+    }
+
+    // Remove userId from likes array
+    post.likes.userId = post.likes.userId.filter(
+      (id) => id.toString() !== userIdStr
+    );
+
+    // Update total like count
+    post.likes.Totallike = post.likes.userId.length;
+
+    await post.save();
+
+    return res.status(200).json({
+      message: "Post unliked successfully",
+      likes: {
+        Totallike: post.likes.Totallike,
+        userId: post.likes.userId,
+      },
+    });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error", error });
+    console.error("Error in unlikePost:", error.message);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
@@ -181,6 +208,7 @@ export const addreply = async (req, res) => {
     res.status(500).json({ message: "Error adding reply", error });
   }
 };
+
 export const deletereply = async (req, res) => {
   try {
     const { postId, commentIndex, replyIndex } = req.params;
@@ -217,6 +245,7 @@ export const deletereply = async (req, res) => {
     res.status(500).json({ message: "Error deleting reply", error });
   }
 };
+
 export const updatereply = async (req, res) => {
   try {
     const { postId, commentIndex, replyIndex } = req.body;
@@ -258,6 +287,29 @@ export const updatereply = async (req, res) => {
     res.status(200).json({ message: "Reply updated successfully", post });
   } catch (error) {
     res.status(500).json({ message: "Error updating reply", error });
+  }
+};
+
+export const getPostById = async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json({
+      message: "Post fetched successfully",
+      data: post,
+    });
+  } catch (error) {
+    console.error("Error fetching post:", error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
