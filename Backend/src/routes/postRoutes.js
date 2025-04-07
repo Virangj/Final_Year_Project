@@ -1,5 +1,5 @@
 import express from "express";
-import { addpost,updatemypost,getmypost, deletemypost } from "../controller/postController.js";
+import { addpost,updatemypost,getmypost, deletemypost, suggested } from "../controller/postController.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
 import { Checkrole } from "../middleware/roleMiddlerware.js";
 
@@ -12,5 +12,7 @@ postRoutes.patch("/updatemypost",Checkrole,updatemypost);
 postRoutes.get("/getmypost",Checkrole, getmypost);
 
 postRoutes.delete("/delete",Checkrole, deletemypost);
+
+postRoutes.get("/suggested",suggested)
 
 export default postRoutes;

@@ -11,8 +11,10 @@ import Email_verification from "./pages/Email_verification";
 import { useAuthStore } from "./store/useAuthStore";
 import SignUp from "./pages/SignUp";
 import Email_address from "./pages/Email_address";
-import ChangePassword from "./pages/ChangePassword";
-import PasswordReset from "./pages/PasswordReset";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/Editprofile";
+// import ChangePassword from "./pages/ChangePassword";
+// import PasswordReset from "./pages/PasswordReset";
 
 function App() {
   // const router = createBrowserRouter([
@@ -24,7 +26,7 @@ function App() {
   // const authUser = false;
   const { authUser, token } = useAuthStore()
 
-  console.log(authUser,token)
+  console.log(authUser, token)
 
   return (
     // <>
@@ -52,13 +54,21 @@ function App() {
         path="/emailaddress"
         element={!token ? <Email_address /> : <Navigate to="/" replace:true />}
       />
-      <Route
+      {/* <Route
         path="/changepassword"
         element={<ChangePassword />}
       />
       <Route
         path="/resetpassword"
         element={<PasswordReset />}
+      /> */}
+      <Route
+        path="/profile"
+        element={token && authUser ? <Profile /> : <Navigate to="/login" replace:true />}
+      />
+      <Route
+        path="/editprofile"
+        element={token && authUser ? <EditProfile /> : <Navigate to="/login" replace:true />}
       />
     </Routes>
   );

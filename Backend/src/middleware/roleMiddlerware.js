@@ -1,6 +1,6 @@
 export const Checkrole = async (req, res, next) => {
     try {
-        const role = req.body.role;
+        const role = req.query.role;
         if (role === "artist") {
             return next();
         }

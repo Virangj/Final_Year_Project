@@ -6,22 +6,16 @@ import { validate } from "email-validator";
 
 const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" })
-
-
   const navigate = useNavigate();
   const [error, seterror] = useState()
 
-  const { user, checkAuth} = useAuthStore()
+  const { user,checkAuth } = useAuthStore()
 
   const login_handlechange = (e) => {
     setlogin({ ...login, [e.target.name]: e.target.value })
   }
 
-
-
   const savelogin = async () => {
-    // // console.log(login)
-    // login1(login)
     if (!validate(login.email)) {
       seterror("invalid email")
       return;
@@ -35,6 +29,8 @@ const Login = () => {
         profilePic: res.data.profilePic,
         role: res.data.role,
         phone: res.data.phone,
+        bio:res.data.bio,
+        arttype:res.data.arttype
       }
       if (!res.data.emailverification) {
         await user(data)
@@ -47,8 +43,8 @@ const Login = () => {
       setlogin({ email: "", password: "" })
     } catch (error) {
       console.log(error)
-      if (error.response.data.message) {
-        seterror(error.response.data.message)
+      if (error) {
+        seterror(error)
       }
     }
   }

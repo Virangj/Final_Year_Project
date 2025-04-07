@@ -1,11 +1,13 @@
 import express from "express"
 import { protectedRoute } from "../middleware/authMiddleware.js";
-import {  updateProfile, followUser, unFollowUser, getFollowers, getFollowing } from "../controller/updateController.js";
+import {  updateProfile, followUser, unFollowUser, getFollowers, getFollowing, editprofile } from "../controller/updateController.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
 
 const updateRoutesoutes = express.Router();
 
-updateRoutesoutes.put("/updateProfile",multerUpload.single('file'),protectedRoute, updateProfile)
+updateRoutesoutes.patch("/updateProfile",multerUpload.single('file'),protectedRoute, updateProfile)
+
+updateRoutesoutes.patch("/editProfile",multerUpload.single('profilepic'),protectedRoute, editprofile)
 
 updateRoutesoutes.post("/:userId/follow", followUser)
 

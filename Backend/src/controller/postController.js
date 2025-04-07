@@ -1,6 +1,7 @@
 import cloudinary from "../lib/cloudinary.js"; // Notice the .js extension
 import Post from "../models/postModel.js"; // Post model is in 'models/Post.js'
 import { Readable } from "stream";
+import User from "../models/userModel.js"; 
 
 const uploadtocloudinary = async (buffer) => {
   return new Promise(async (resolve, reject) => {
@@ -71,15 +72,15 @@ export const addpost = async (req, res) => {
 export const getmypost = async (req, res) => {
   try {
     // Get the artist's name from the request parameters
-    const { username } = req.query;
+    const  username  = req.query.username;
     console.log(username);
 
     // Find all posts by the given artist
-    const posts = await Post.find({ username });
+    const posts = await Post.find({ createdBy: req.user.userId });
 
     if (posts.length === 0) {
       return res
-        .status(404)
+        .status(401)
         .json({ message: "No posts found for this artist: " + username });
     }
     // Respond with the posts found
@@ -159,4 +160,29 @@ export const deletemypost = async (req, res) => {
       });
   }
 };
+
+export const suggested = async (req, res) => {
+
+  try {
+    const currentUser = await User.findById(req.user.userId).select('following');
+
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const excludeIds = [req.user.userId, ...currentUser.following];
+
+    const suggestedUsers = await User.find({
+      _id: { $nin: excludeIds },     // not followed and not current user
+      role: 'artist'                 // only users with role "artist"
+    })
+      .limit(10)
+      .select('username profilepic arttype');
+
+    res.status(200).json({ suggestedUsers });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
 

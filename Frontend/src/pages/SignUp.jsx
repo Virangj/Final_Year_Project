@@ -15,8 +15,6 @@ const SignUp = () => {
     }
 
     const savesignup = async () => {
-        // console.log(signup)
-        // signup1(signup)
         if (!validate(signup.email)) {
             seterror("invalid email")
             return;
@@ -24,6 +22,7 @@ const SignUp = () => {
         try {
             const res = await axiosInstance.post("/auth/signup", signup,)
             await user(res.data)
+            localStorage.setItem("email", signup.email);
             await navigate("/emailverification")
             setsignup({ username: "", email: "", password: "", role: "" })
         } catch (error) {

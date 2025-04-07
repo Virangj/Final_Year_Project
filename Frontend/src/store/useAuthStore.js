@@ -15,6 +15,15 @@ export const useAuthStore = create(persist((set) => ({
     set({ authUser: data });
   },
 
+  userUpdate: (key, value) => {
+    set((state) => ({
+      authUser: {
+        ...state.authUser,
+        [key]: value,
+      },
+    }));
+  },
+
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check", { withCredentials: true });
@@ -28,19 +37,6 @@ export const useAuthStore = create(persist((set) => ({
     }
   },
 
-  signup1: async (data) => {
-    try {
-      set({ isSigningUp: true });
-      const res = await axiosInstance.post("/auth/signup", data);
-      set({ authUser: res.data });
-      toast.success("Account Created Successfully");
-    } catch (error) {
-      toast.error(error.response.data.message);
-    } finally {
-      set({ isSigningUp: false });
-    }
-  },
-
   logout: async () => {
     try {
       await axiosInstance.post("/auth/logout");
@@ -48,21 +44,6 @@ export const useAuthStore = create(persist((set) => ({
       toast.success("Logged Out Successfully");
     } catch (error) {
       toast.error(error.response.data.message);
-    }
-  },
-
-  login1: async (data) => {
-    set({ isLoggingIn: true });
-    try {
-      const res = await axiosInstance.post("/auth/login", data);
-      console.log(res.data);
-      toast.success("Logged in successfully");
-      set({ authUser: res.data });
-
-    } catch (error) {
-      toast.error("Couldn't connect")
-    } finally {
-      set({ isLoggingIn: false });
     }
   },
 }),

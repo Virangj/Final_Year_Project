@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import React from 'react'
 import { axiosInstance } from '../lib/axios'
-import { replace, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/useAuthStore'
 
 const Email_verification = () => {
-    const [code, setcode] = useState()
+    const [code, setcode] = useState("")
     const [error, seterror] = useState()
     const navigate = useNavigate()
     const { checkAuth, authUser } = useAuthStore()
@@ -14,13 +14,14 @@ const Email_verification = () => {
         setcode(e.target.value)
     }
     const savecode = async () => {
-        console.log(code)
+        // console.log(code)
         if (!code) {
             seterror("Enter 6 digit code")
             return;
         }
+        let email = localStorage.getItem("email");
         try {
-            const data = { email: authUser.email, code: code }
+            const data = { email: email, code: code }
             await axiosInstance.post("/auth/verificationcode", data)
             await checkAuth()
             navigate("/", { replace: true })

@@ -21,6 +21,7 @@ export const protectedRoute = async (req,res,next) => {
         // }
 
         req.user = decoded
+        console.log("1")
         next()
     } catch (error) {
         console.log("Error in protected middleware" , error.message)

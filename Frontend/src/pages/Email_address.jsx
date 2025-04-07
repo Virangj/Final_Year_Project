@@ -6,7 +6,7 @@ import { useAuthStore } from '../store/useAuthStore'
 import { validate } from "email-validator";
 
 const Email_address = () => {
-  const [email, setemail] = useState()
+  const [email, setemail] = useState("")
   const [error, seterror] = useState()
   const navigate = useNavigate()
   const { user } = useAuthStore();
@@ -16,7 +16,7 @@ const Email_address = () => {
   }
 
   const save_email = async () => {
-    console.log(email)
+    // console.log(email)
     if (!email) {
       seterror("Enter your Email")
       return;
@@ -25,6 +25,7 @@ const Email_address = () => {
       seterror("invalid email")
       return;
     }
+    localStorage.setItem("email", email);
     try {
       const res = await axiosInstance.post("/auth/emailaddress", { email })
       await user(res.data)

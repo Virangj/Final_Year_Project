@@ -8,6 +8,7 @@ import messageRoutes from "./src/routes/messageRoutes.js";
 import updateRoutesoutes from "./src/routes/updateRoutes.js";
 import postsRoutes from "./src/routes/postsRoutes.js";
 import cors from 'cors';
+import { protectedRoute } from "./src/middleware/authMiddleware.js";
 
 // Configuration of dotenv 
 dotenv.config();
@@ -27,7 +28,7 @@ app.use(cors({
 
 // Creating All API's
 app.use("/api/auth", authRoutes);
-app.use("/api/post",postRoutes);
+app.use("/api/post",protectedRoute,postRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/update", updateRoutesoutes);
 app.use("/api/posts",postsRoutes)
