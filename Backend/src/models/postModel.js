@@ -20,7 +20,7 @@ const postschema = new mongoose.Schema(
             type: String,  // This can be a URL to the image
             required: true,
         }],
-        likes: [{
+        likes: {
             Totallike: {
                 type: Number,
                 default: 0,  // Default value of likes is 0
@@ -28,7 +28,7 @@ const postschema = new mongoose.Schema(
             userId: [{
                 type: String,
             }],
-        }],
+        },
         comments: [{
             userId: {
                 type: String,
@@ -57,9 +57,6 @@ const postschema = new mongoose.Schema(
     { timestamps: true },
 
 );
-
-
-
 
 const Post = mongoose.model("Post", postschema);
 export default Post;

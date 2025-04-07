@@ -2,6 +2,7 @@ import express from "express";
 import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts,addpost,updatemypost,getmypost, deletemypost, postlike, postunlike } from "../controller/postsController.js";
 import { Checkrole } from "../middleware/roleMiddlerware.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
+import { protectedRoute } from "../middleware/authMiddleware.js";
 
 const postsRoutes = express.Router();
 
@@ -11,7 +12,7 @@ postsRoutes.patch("/updatecomment",updatecomment);
 
 postsRoutes.delete("/deletecomment",deletecomment);
 
-postsRoutes.post("/likepost" , postlike)
+postsRoutes.post("/likepost", protectedRoute , postlike)
 
 postsRoutes.post("/unlikepost" , postunlike)
 
@@ -23,7 +24,7 @@ postsRoutes.delete("/deletereply",deletereply);
 
 postsRoutes.get("/randomposts",randomposts);
 
-postsRoutes.post("/addpost",Checkrole, multerUpload.array('files'), addpost);
+postsRoutes.post("/addpost",protectedRoute,Checkrole, multerUpload.array('files'), addpost);
 
 postsRoutes.patch("/updatemypost",Checkrole,updatemypost);
 

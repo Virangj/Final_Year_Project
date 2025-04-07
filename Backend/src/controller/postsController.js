@@ -1,25 +1,35 @@
 import cloudinary from "../lib/cloudinary.js"; // Notice the .js extension
 import Post from "../models/postModel.js"; // Post model is in 'models/Post.js'
 import { Readable } from "stream";
+import User from "../models/userModel.js";
 
 export const postlike = async (req, res) => {
   const { postId } = req.body;
-  const userId = req.cookies.jwt;
-
+  // const userId = req.cookies.jwt;
+  const decoded = req.decoded;
+  console.log(decoded);
   try {
     const post = await Post.findById(postId);
-
+    console.log(post);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
+    const userId = await User.findById(decoded.userId).select("-password");
+
+    if (!userId) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    console.log(userId);
     // Check if user already liked the post
-    if (post.likes.userId.includes(userId)) {
+    if (post.likes.userId.includes(userId._id.toString())) {
       return res.status(400).json({ message: "User already liked this post" });
     }
+    console.log("next");
+
 
     // Increase like count and add user to likedBy array
     post.likes.Totallike += 1;
-    post.likes.userId.push(userId);
+    post.likes.userId._id.push(userId._id.toString());
     await post.save();
 
     res.json({
@@ -143,11 +153,9 @@ export const addreply = async (req, res) => {
     const userId = req.cookies.jwt;
 
     if (!postId || !commentIndex || !userId || !text) {
-      return res
-        .status(400)
-        .json({
-          message: "Post ID, Comment Index, User ID, and text are required.",
-        });
+      return res.status(400).json({
+        message: "Post ID, Comment Index, User ID, and text are required.",
+      });
     }
 
     const post = await Post.findById(postId);
@@ -275,7 +283,6 @@ export const randomposts = async (req, res) => {
       .json({ message: "Error fetching posts", error: error.message });
   }
 };
-
 
 const uploadtocloudinary = async (buffer) => {
   return new Promise(async (resolve, reject) => {
@@ -425,14 +432,10 @@ export const deletemypost = async (req, res) => {
       .json({ success: true, message: "Post deleted successfully" });
   } catch (error) {
     console.error("Error deleting post:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error deleting post",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error deleting post",
+      error: error.message,
+    });
   }
 };
-
-
