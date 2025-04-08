@@ -88,7 +88,6 @@ export const login = async (req, res) => {
         emailverification: false,
         _id: user._id,
         email: user.email,
-        profilePic: user.profilePic,
         role: user.role,
         username: user.username,
         phone: user.phone,
@@ -102,7 +101,6 @@ export const login = async (req, res) => {
       emailverification: true,
       _id: user._id,
       email: user.email,
-      profilePic: user.profilePic,
       role: user.role,
       username: user.username,
       phone: user.phone,
@@ -132,6 +130,7 @@ export const emailVerificationCheck = async (req, res) => {
     const user = await User.findOne({
       email
     });
+    // console.log(email);
     if (!user) {
       return res.status(400).json({ message: "Invalid Code or Expired Code." });
     }
@@ -141,8 +140,9 @@ export const emailVerificationCheck = async (req, res) => {
       await user.save();
       generateToken(user._id, res);
       sendWelcomeEmail(user.email);
-      return res.status(200).json({ message: "User isVerified! " });
+      return res.status(200).json({ isVerified: user.isVerified , message: "User isVerified! " });
     } else {
+      // console.log("Verification failed");
       return res.status(404).json({ message: "incorrect code " });
     }
   } catch (error) {
@@ -155,6 +155,8 @@ export const emailVerificationCheck = async (req, res) => {
 
 export const checkAuth = (req, res) => {
   try {
+    // console.log("Cookies: ",req.cookies);
+    console.log(req.user);
     if (req.user)
       return res.status(200).json({ message: "token is provided" });
     res.status(401).json({ message: "token not provided" });

@@ -4,6 +4,7 @@ import User from '../models/userModel.js'
 export const protectedRoute = async (req,res,next) => {
     try {
         const token = req.cookies.jwt
+        // console.log(token);
         if(!token){
             return res.status(401).json({message: "No Token Provided"})
         }
@@ -14,14 +15,14 @@ export const protectedRoute = async (req,res,next) => {
             return res.status(401).json({message: "Invalid Token"})
         }
 
-        //const user = await User.findById(decoded.userId).select('-password')
+        const user = await User.findById(decoded.userId).select('-password')
 
-        // if(!user){
-        //     return res.status(404).json({message: "User not found"})
-        // }
-
-        req.user = decoded
-        console.log("1")
+        if(!user){
+            return res.status(404).json({message: "User not found"})
+        }
+        
+        req.decoded = decoded
+        req.user = token
         next()
     } catch (error) {
         console.log("Error in protected middleware" , error.message)

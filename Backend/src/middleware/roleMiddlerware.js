@@ -1,3 +1,5 @@
+import User from "../models/userModel.js";
+
 export const Checkrole = async (req, res, next) => {
     try {
         const role = req.query.role;

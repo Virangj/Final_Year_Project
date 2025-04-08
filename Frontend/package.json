@@ -7,8 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "vite"
   },
+  "proxy": "https://creativethreads.onrender.com",
+
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-toast": "^1.2.6",
@@ -19,6 +22,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "email-validator": "^2.0.4",
+    "http-proxy-middleware": "^3.0.3",
     "lucide-react": "^0.487.0",
     "nprogress": "^0.2.0",
     "postcss": "^8.5.1",
