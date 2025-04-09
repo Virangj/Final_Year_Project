@@ -1,12 +1,14 @@
 import express from "express";
 import {
+  changepassword,
   checkAuth,
   emailAddressCheck,
   emailVerificationCheck,
   login,
   logout,
   signup,
-  // resetpassword,
+  sendotp,
+  verifyotp,
 } from "../controller/authController.js";
 import { protectedRoute } from "../middleware/authMiddleware.js";
 import { trackUserActivity } from "../middleware/TrackUserMiddleware.js";
@@ -25,9 +27,11 @@ router.post("/logout", logout);
 
 router.get("/check", protectedRoute, checkAuth);
 
-// router.post("/resetpassword", protectedRoute, trackUserActivity, resetpassword);
+router.patch("/changepassword", protectedRoute, trackUserActivity, changepassword);
 
-// router.post("/sendotp", protectedRoute, sendOtp);
+router.post("/sendotp", protectedRoute, sendotp);
+
+router.patch("/verifyotp", protectedRoute,verifyotp)
 
 // router.post("/checkotp", protectedRoute, checkOtp);
 

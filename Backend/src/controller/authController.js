@@ -128,7 +128,6 @@ export const logout = (req, res) => {
 export const emailVerificationCheck = async (req, res) => {
   try {
     const { code, email } = req.body;
-    console.log(email, code)
     const user = await User.findOne({
       email
     });
@@ -142,7 +141,7 @@ export const emailVerificationCheck = async (req, res) => {
       await user.save();
       generateToken(user._id, res);
       sendWelcomeEmail(user.email);
-      return res.status(200).json({ isVerified: user.isVerified , message: "User isVerified! " });
+      return res.status(200).json({ isVerified: user.isVerified, message: "User isVerified! " });
     } else {
       // console.log("Verification failed");
       return res.status(404).json({ message: "incorrect code " });
@@ -190,5 +189,74 @@ export const emailAddressCheck = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error in checking email address", error: error.message });
+  }
+};
+
+export const changepassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.decode.userId);
+
+    if (!user) return res.status(404).json({ message: "user not found" })
+
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect)
+      return res.status(404).json({ message: "Incorrect password" });
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await User.findByIdAndUpdate(req.user.userId, { password: hashedPassword })
+
+    //sendPasswordChangeEmail(user.email, req.userActivity);
+
+    res.status(200).json({ message: "password change successfully" })
+  } catch (error) {
+    console.log("error :", error)
+    res.status(500).json({ message: "internal server error" })
+  }
+};
+
+export const sendotp = async (req, res) => {
+  const { newEmail } = req.body
+  try {
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+    await User.findByIdAndUpdate(req.decode.userId, { verificationCode: verificationCode })
+    sendVerificationEmail(newEmail, verificationCode)
+    res.status(200).json({ message: "code send successfully" })
+  } catch (error) {
+    console.log("Error in checking email address: ", error);
+    res
+      .status(500)
+      .json({ message: "Error in checking email address", error: error.message });
+  }
+};
+
+
+export const verifyotp = async (req, res) => {
+
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findById(req.decode.userId);
+
+    if (!user.verificationCode) {
+      return res.status(400).json({ message: " OTP expired" });
+    }
+    if (user.verificationCode !== otp) {
+      return res.status(400).json({ message: " OTP invalid" });
+    }
+
+    // Update email
+    user.email = email;
+    user.verificationCode = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Email updated successfully" });
+  } catch (error) {
+    console.log("Error in checking email address: ", error);
+    res.status(500).json({ message: "Failed to verify OTP" });
   }
 }

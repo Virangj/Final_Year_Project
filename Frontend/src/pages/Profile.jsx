@@ -39,6 +39,11 @@ const Profile = () => {
         if (authUser.role === "artist") {
             fetchPosts();
         }
+        if (authUser.role !== "artist") {
+            fetchSuggestedUsers()
+            setActiveTab("suggested")
+            console.log(suggestedUsers)
+        }
     }, []);
 
     const showContent = (value) => {
@@ -63,8 +68,8 @@ const Profile = () => {
     return (
         <>
             <div className="bg-[#080808] min-h-screen flex flex-col md:flex-row">
-                <Navbar/>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <Navbar />
+                <div className="w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {/* Profile Header */}
                     <div className="bg-white rounded-lg border border-neutral-200/20 p-6 mb-6 w-full overflow-hidden">
                         <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
@@ -95,17 +100,17 @@ const Profile = () => {
 
                                 {/* Stats */}
                                 <div className="flex justify-center md:justify-start gap-6 mb-4">
-                                    <div className="text-center">
-                                        <p className="font-bold">245</p>
+                                    {authUser.role === "artist" && <div className="text-center">
+                                        <p className="font-bold">{posts.length}</p>
                                         <p className="text-gray-500">Posts</p>
-                                    </div>
+                                    </div>}
                                     <div className="text-center">
-                                        <p className="font-bold">15.3k</p>
+                                        <p className="font-bold">{authUser.followers || 0}</p>
                                         <p className="text-gray-500">Followers</p>
                                     </div>
                                     <div className="text-center">
-                                        <p className="font-bold">284</p>
-                                        <p className="text-gray-500">Suggested</p>
+                                        <p className="font-bold">{authUser.following || 0}</p>
+                                        <p className="text-gray-500">Following</p>
                                     </div>
                                 </div>
 
@@ -114,7 +119,7 @@ const Profile = () => {
                                     <p className={`text-sm text-gray-700 whitespace-pre-wrap break-all transition-all   duration-200 ${showFullBio ? "" : "line-clamp-3"}`}>
                                         {authUser.bio}
                                     </p>
-                                    {authUser.bio.length > 100 && (
+                                    {authUser?.bio?.length > 100 && (
                                         <button
                                             onClick={() => setShowFullBio(!showFullBio)}
                                             className="mt-1 text-xs text-black font-medium underline hover:text-gray-800"
@@ -129,15 +134,19 @@ const Profile = () => {
 
 
                     {/* <!-- Content Tabs --> */}
-                    <div  className="bg-white rounded-lg border border-neutral-200/20">
+                    <div className="bg-white rounded-lg border border-neutral-200/20">
                         {/* <!-- Tab Navigation --> */}
                         <div className="flex border-b border-neutral-200/20">
-                            <button className={`flex-1 py-4 font-medium ${activeTab === 'posts' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('posts')} >Posts</button>
-                            <button className={`flex-1 py-4 font-medium ${activeTab === 'mostliked' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('mostliked')}>Most liked</button>
+                            {authUser.role === "artist" && (
+                                <>
+                                    <button className={`flex-1 py-4 font-medium ${activeTab === 'posts' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('posts')} >Posts</button>
+                                    <button className={`flex-1 py-4 font-medium ${activeTab === 'mostliked' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('mostliked')}>Most liked</button>
+                                </>
+                            )}
                             <button className={`flex-1 py-4 font-medium ${activeTab === 'suggested' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('suggested')}>suggested</button>
                         </div>
 
-                        {activeTab === 'posts' && (
+                        {activeTab === 'posts' && authUser.role === "artist" && (
                             <div className="p-4">
                                 {posts.length > 0 && (
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -161,8 +170,8 @@ const Profile = () => {
 
 
                         {/* <!-- mostliked Posts --> */}
-                        
-                        {activeTab === 'mostliked' && (
+
+                        {activeTab === 'mostliked' && authUser.role === "artist" && (
                             <div className="p-4">
                                 {sortedmostlikedPosts.length > 0 && (
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -193,17 +202,20 @@ const Profile = () => {
                             <div className="p-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {suggestedUsers.map((user, index) => (
-                                        <div key={index} className="flex items-center space-x-4 p-4 border border-neutral-200/20 rounded-lg">
-                                            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-300">
-                                                <img src={user.profilepic} alt={user.username} className="w-full h-full object-cover" />
+                                        <div key={index} className='w-full h-full flex flex-col bg-gray-400 border border-neutral-200/20 rounded-lg space-x-4 p-4'>
+                                            <div  className="flex items-center space-x-2">
+                                                <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-300">
+                                                    <img src={user.profilePic} className="w-full h-full object-cover" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-semibold">{user.username}</h3>
+                                                    <p className="text-sm text-gray-500">{user.arttype}</p>
+                                                    < p className="text-sm text-gray-500">{user.followers.length || 0} followers</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h3 className="font-semibold">{user.username}</h3>
-                                                <p className="text-sm text-gray-500">{user.arttype}</p>
-                                                <button className="mt-2 px-4 py-1 text-sm bg-black text-white rounded-full hover:bg-gray-900">
-                                                    Follow
-                                                </button>
-                                            </div>
+                                            <button className="mt-2 px-4 py-1 text-sm bg-black text-white rounded-md hover:bg-gray-900">
+                                                Follow
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
