@@ -7,7 +7,7 @@ const updateRoutesoutes = express.Router();
 
 updateRoutesoutes.put("/updateProfile",multerUpload.single('file'),protectedRoute, updateProfile)
 
-updateRoutesoutes.post("/:userId/follow", followUser)
+updateRoutesoutes.post("/follow",protectedRoute, followUser)
 
 updateRoutesoutes.delete("/:userId/unfollow", unFollowUser);
 
