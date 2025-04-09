@@ -5,7 +5,7 @@ import User from "../models/userModel.js";
 
 export const postlike = async (req, res) => {
   const { postId } = req.body;
-  const decoded = req.decoded;
+  const decoded = req.decode;
 
   try {
     const post = await Post.findById(postId);
@@ -51,7 +51,7 @@ export const postlike = async (req, res) => {
 
 export const postunlike = async (req, res) => {
   const { postId } = req.body;
-  const decoded = req.decoded;
+  const decoded = req.decode;
 
   try {
     const post = await Post.findById(postId);
@@ -315,31 +315,13 @@ export const getPostById = async (req, res) => {
 
 // API Route to get 8 random posts (with lazy loading support)
 export const randomposts = async (req, res) => {
-  // try {
-  //   // Get the `skip` and `limit` from query parameters (defaults are set if not provided)
-  //   const page = parseInt(req.query.page) || 1;
-  //   const limit = parseInt(req.query.limit) || 10;
-  //   const skip = (page - 1) * limit; //calculate skip for pagination
-
-  //   // Fetch posts and total count
-  //   const posts = await Post.find().skip(skip).limit(limit).exec();
-  //   const totalposts = await Post.countDocuments();
-
-  //   res
-  //     .status(200)
-  //     .json({ data: posts, hasMore: skip + posts.length < totalposts });
-  // } catch (error) {
-  //   console.error("Error fetching random posts:", error);
-  //   res
-  //     .status(500)
-  //     .json({ message: "Error fetching posts", error: error.message });
-  //}
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
     const posts = await Post.find().skip(skip).limit(limit);
+    console.log("Post: ", posts);    
     res.json(posts);
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
@@ -420,6 +402,8 @@ export const getmypost = async (req, res) => {
 
     // Find all posts by the given artist
     const posts = await Post.find({ username });
+    console.log(posts);
+    
 
     if (posts.length === 0) {
       return res
@@ -501,3 +485,28 @@ export const deletemypost = async (req, res) => {
     });
   }
 };
+
+export const suggested = async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.decode.userId).select('following');
+
+    if (!currentUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const excludeIds = [req.decode.userId, ...currentUser.following];
+
+    const suggestedUsers = await User.find({
+      _id: { $nin: excludeIds },     // not followed and not current user
+      role: 'artist'                 // only users with role "artist"
+    })
+      .limit(10)
+      .select('username profilepic arttype');
+
+    res.status(200).json({ suggestedUsers });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+

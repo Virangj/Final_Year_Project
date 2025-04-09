@@ -3,7 +3,7 @@ import User from "../models/userModel.js";
 
 export const getUsers = async (req, res) => {
   try {
-    const user = await User.findById(req.decoded.userId); // You said `user` var has full user info
+    const user = await User.findById(req.decode.userId); // You said `user` var has full user info
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

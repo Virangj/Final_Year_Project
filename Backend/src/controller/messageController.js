@@ -18,7 +18,7 @@ export const getUserForSideBar = async (req, res) => {
 export const getMessage = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
-    const user = await User.findById(req.decoded.userId); // You said `user` var has full user info
+    const user = await User.findById(req.decode.userId); // You said `user` var has full user info
     const myId = user._id.toString()
     // console.log(myId);        
     // console.log(userToChatId);
@@ -41,7 +41,7 @@ export const sendMessage = async (req, res, io) => {
   try {
     const { text, image } = req.body;
     const { id: receiverId } = req.params;
-    const user = await User.findById(req.decoded.userId); // You said `user` var has full user info
+    const user = await User.findById(req.decode.userId); // You said `user` var has full user info
     const senderId = user._id.toString();
 
     let imageURL;

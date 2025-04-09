@@ -10,11 +10,11 @@ const postschema = new mongoose.Schema(
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User', // 👈 this tells Mongoose to link to the User collection
-            required: true,
+            // required: true,
         },
         profilepic: {
             type: String,
-            required: true,
+            // required: true,
         },
         arttype: {
             type: String,

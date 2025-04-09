@@ -1,6 +1,7 @@
 import express from "express";
 import {  updateProfile, followUser, unFollowUser, getFollowers, getFollowing, editprofile } from "../controller/updateController.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
+import { protectedRoute } from "../middleware/authMiddleware.js";
 
 const updateRoutesoutes = express.Router();
 
