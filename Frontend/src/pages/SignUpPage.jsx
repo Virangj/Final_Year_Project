@@ -22,11 +22,10 @@ const SignUp = () => {
 
   const savesignup = async () => {
     if (!validate(signup.email)) {
-      seterror("invalid email")
+      // seterror("invalid email")
       return;
     }
     localStorage.setItem("email", signup.email)
-    localStorage.setItem("userId", userData._id)
     try {
       const res = await axiosInstance.post("/auth/signup", signup);
       console.log(res.data);      
@@ -110,7 +109,7 @@ const SignUp = () => {
               <option value="normal"> User</option>
               <option value="artist">Artist</option>
             </select>
-            {error && <p className='pl-4 mb-1 text-red-600 text-xs'>{error}</p>}
+            {/* {error && <p className='pl-4 mb-1 text-red-600 text-xs'>{error}</p>} */}
 
             <button
               className="bg-black mx-4 rounded-md text-white h-8 mb-4 cursor-pointer"

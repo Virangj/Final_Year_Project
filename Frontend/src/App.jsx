@@ -16,7 +16,7 @@ import CreatePost from "./pages/CreatePost";
 function App() {
   const { authUser, token } = useAuthStore();
 
-  console.log(authUser, token);
+  // console.log(authUser, token);
 
   return (
     <>
