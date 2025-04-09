@@ -315,24 +315,34 @@ export const getPostById = async (req, res) => {
 
 // API Route to get 8 random posts (with lazy loading support)
 export const randomposts = async (req, res) => {
+  // try {
+  //   // Get the `skip` and `limit` from query parameters (defaults are set if not provided)
+  //   const page = parseInt(req.query.page) || 1;
+  //   const limit = parseInt(req.query.limit) || 10;
+  //   const skip = (page - 1) * limit; //calculate skip for pagination
+
+  //   // Fetch posts and total count
+  //   const posts = await Post.find().skip(skip).limit(limit).exec();
+  //   const totalposts = await Post.countDocuments();
+
+  //   res
+  //     .status(200)
+  //     .json({ data: posts, hasMore: skip + posts.length < totalposts });
+  // } catch (error) {
+  //   console.error("Error fetching random posts:", error);
+  //   res
+  //     .status(500)
+  //     .json({ message: "Error fetching posts", error: error.message });
+  //}
   try {
-    // Get the `skip` and `limit` from query parameters (defaults are set if not provided)
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit; //calculate skip for pagination
+    const skip = (page - 1) * limit;
 
-    // Fetch posts and total count
-    const posts = await Post.find().skip(skip).limit(limit).exec();
-    const totalposts = await Post.countDocuments();
-
-    res
-      .status(200)
-      .json({ data: posts, hasMore: skip + posts.length < totalposts });
-  } catch (error) {
-    console.error("Error fetching random posts:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching posts", error: error.message });
+    const posts = await Post.find().skip(skip).limit(limit);
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
   }
 };
 

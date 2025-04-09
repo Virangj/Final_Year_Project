@@ -61,6 +61,32 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const editprofile = async (req, res) => {
+  try {
+    const { username, arttype, bio } = req.body;
+
+    const updateData = {
+      username,
+      arttype,
+      bio,
+    };
+
+    if (req.file) {
+      const upload_resp = await uploader(req.file); // Pass multer's file
+      updateData.profilePic = upload_resp.url;
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.userId, updateData, {
+      new: true,
+    });
+
+    res.json({ profilePic: user.profilePic });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Update failed" });
+  }
+};
+
 export const followUser = async (req, res) => {
   try {
     const { userId } = req.params; // User being followed

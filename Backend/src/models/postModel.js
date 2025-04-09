@@ -7,6 +7,18 @@ const postschema = new mongoose.Schema(
             required: true,
             trim: true,  // Automatically trims extra spaces
         },
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User', // 👈 this tells Mongoose to link to the User collection
+            required: true,
+        },
+        profilepic: {
+            type: String,
+            required: true,
+        },
+        arttype: {
+            type: String,
+        },
         title: {
             type: String,
             required: true,
@@ -26,12 +38,14 @@ const postschema = new mongoose.Schema(
                 default: 0,  // Default value of likes is 0
             },
             userId: [{
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
             }],
         },
         comments: [{
             userId: {
-                type: String,
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
             },
             text: {
                 type: String,
@@ -42,7 +56,8 @@ const postschema = new mongoose.Schema(
             },
             replies: [{
                 userId: {
-                    type: String,
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User', 
                 },
                 text: {
                     type: String,
