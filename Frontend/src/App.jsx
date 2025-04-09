@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 import CreatePost from "./pages/CreatePost";
+import Setting from "./pages/Setting";
 
 function App() {
   const { authUser, token } = useAuthStore();
@@ -71,6 +72,12 @@ function App() {
             token && authUser ? <CreatePost /> : <Navigate to="/login" replace:true />
           }
         />
+        <Route
+          path="/setting"
+          element={
+            token && authUser ? <Setting /> : <Navigate to="/login" replace:true />
+          }
+          />
       </Routes>
     </>
   );

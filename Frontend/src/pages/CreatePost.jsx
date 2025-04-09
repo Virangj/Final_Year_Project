@@ -75,7 +75,7 @@ const CreatePost = () => {
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                className="w-full px-4 py-2 border-2 rounded-lg outline-none "
+                                className="w-full px-4 py-2 border border-gray-300 bg-white  focus:border-black focus:outline-none rounded-lg  "
                                 placeholder="Give your artwork a title"
                             />
                         </div>
@@ -114,7 +114,7 @@ const CreatePost = () => {
                             <textarea
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                className="w-full px-4 py-2  scrollbar-none   rounded-lg outline-none  border-2"
+                                className="w-full px-4 py-2  scrollbar-none   rounded-lg border border-gray-300 bg-white  focus:border-black focus:outline-none"
                                 rows="4"
                                 placeholder="Tell the story behind your artwork"
                             />

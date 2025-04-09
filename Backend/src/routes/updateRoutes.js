@@ -1,10 +1,10 @@
 import express from "express";
-import {  updateProfile, followUser, unFollowUser, getFollowers, getFollowing, editprofile } from "../controller/updateController.js";
+import {  personalinfo, followUser, unFollowUser, getFollowers, getFollowing, editprofile,  } from "../controller/updateController.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
 
 const updateRoutesoutes = express.Router();
 
-updateRoutesoutes.patch("/updateProfile",multerUpload.single('file'), updateProfile)
+updateRoutesoutes.patch("/personalinfo", personalinfo)
 
 updateRoutesoutes.patch("/editProfile",multerUpload.single('profilePic'), editprofile)
 

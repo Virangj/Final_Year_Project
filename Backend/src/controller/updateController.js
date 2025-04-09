@@ -25,22 +25,16 @@ const uploader = async (file) => {
   return result;
 };
 
-export const updateProfile = async (req, res) => {
+export const personalinfo = async (req, res) => {
   try {
-    const { dob, gender, country, city, name } = req.body;
-    const userId = req.user._id;
+    const {dob, phone, country, city, gender } = req.body;
+    //const userId = req.user._id;
 
     // Create an object with only fields that should be updated
-    let updateFields = { dob, gender, country, city, name };
-
-    // Only update profilePic if a new image is uploaded
-    if (req.file) {
-      const upload_resp = await uploader(req.file);
-      updateFields.profilePic = upload_resp.url;
-    }
+    let updateFields = {dob, phone, country, city, gender };
 
     // Find and update the user without modifying profilePic if no new image is uploaded
-    const updatedUser = await User.findByIdAndUpdate(userId, { $set: updateFields }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(req.decode.userId, { $set: updateFields }, { new: true });
 
     if (!updatedUser) {
       return res.status(404).json({ success: false, message: "User not found" });
@@ -49,7 +43,6 @@ export const updateProfile = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      data: updatedUser,
     });
   } catch (error) {
     console.error("Error updating profile:", error);
@@ -76,7 +69,7 @@ export const editprofile = async (req, res) => {
       updateData.profilePic = upload_resp.url;
     }
 
-    const user = await User.findByIdAndUpdate(req.user.userId, updateData, {
+    const user = await User.findByIdAndUpdate(req.decode.userId, updateData, {
       new: true,
     });
 
