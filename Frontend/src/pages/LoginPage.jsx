@@ -26,6 +26,7 @@ const Login = () => {
     }
 
     try {
+<<<<<<< HEAD:Frontend/src/pages/LoginPage.jsx
       const res = await axiosInstance.post("/auth/login", login);
       console.log(res);
       const {
@@ -50,6 +51,28 @@ const Login = () => {
       setlogin({ email: "", password: "" });
       navigate("/");
 
+=======
+      const res = await axiosInstance.post("/auth/login", login)
+      const data = {
+        username: res.data.username,
+        email: res.data.email,
+        _id: res.data._id,
+        profilePic: res.data.profilePic,
+        role: res.data.role,
+        phone: res.data.phone,
+        bio:res.data.bio,
+        arttype:res.data.arttype
+      }
+      if (!res.data.emailverification) {
+        await user(data)
+        window.location.href = "/emailverification"
+      } else {
+        await user(data)
+        await checkAuth()
+        navigate("/")
+      }
+      setlogin({ email: "", password: "" })
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/pages/Login.jsx
     } catch (error) {
       console.error("Login error:", error);
       const message = error?.response?.data?.message || "Login failed. Check your credentials!";
@@ -60,8 +83,9 @@ const Login = () => {
 
   return (
     <>
-      <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')] bg-cover">
-        <div className="w-72 h-fit my-auto sm:w-96">
+      <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover ">
+
+        <div className="w-72  h-fit  my-auto sm:w-96 ">
           <h2 className="mt-3 text-center font-bold text-2xl text-white">
             Creative Threads
           </h2>
@@ -98,11 +122,7 @@ const Login = () => {
               onChange={login_handlechange}
               name="password"
             />
-            {error && (
-              <div className="text-red-700 font-light text-sm pl-4 mb-2">
-                {error}
-              </div>
-            )}
+            {error && <p className='pl-4 text-red-600 text-xs'>{error}</p>}
             <div className="flex flex-row mb-3 w-full justify-between">
               <div className="flex pl-4 text-xs">
                 <input type="checkbox" />

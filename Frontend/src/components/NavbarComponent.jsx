@@ -6,6 +6,7 @@ import {
   MessageCircle,
   Bell,
   Settings,
+<<<<<<< HEAD:Frontend/src/components/NavbarComponent.jsx
   LogOut,
 } from "lucide-react";
 import { axiosInstance } from "../lib/axios";
@@ -24,6 +25,14 @@ const Navbar = () => {
     }
   };
 
+=======
+  Plus,
+} from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
+
+const Navbar = () => {
+  const { authUser } = useAuthStore((state) => state);
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/components/Navbar.jsx
   return (
     <>
       {/* Desktop Sidebar */}
@@ -51,7 +60,11 @@ const Navbar = () => {
               <span>Explore</span>
             </a>
             <a
+<<<<<<< HEAD:Frontend/src/components/NavbarComponent.jsx
               href="/Profile"
+=======
+              href="/profile"
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/components/Navbar.jsx
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <User size={22} />
@@ -72,7 +85,18 @@ const Navbar = () => {
               <span>Notifications</span>
             </a>
             <a
+<<<<<<< HEAD:Frontend/src/components/NavbarComponent.jsx
               href="/Settings"
+=======
+              href="/createpost"
+              className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
+            >
+              <Plus size={22} />
+              <span>Create Post</span>
+            </a>
+            <a
+              href="#settings"
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/components/Navbar.jsx
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Settings size={22} />
@@ -80,6 +104,7 @@ const Navbar = () => {
             </a>
           </div>
 
+<<<<<<< HEAD:Frontend/src/components/NavbarComponent.jsx
           {/* Logout Button */}
           <div className="p-6 border-t border-neutral-200/20">
             <button
@@ -89,6 +114,17 @@ const Navbar = () => {
               <LogOut size={22} />
               <span>Logout</span>
             </button>
+=======
+          {/* User Profile Section */}
+          <div className="py-6 border-t border-neutral-200/20 ">
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-white">{authUser.username}</p>
+                <p className="text-xs text-white">{authUser.email}</p>
+              </div>
+            </div>
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/components/Navbar.jsx
           </div>
         </div>
       </nav>
@@ -101,7 +137,11 @@ const Navbar = () => {
         <a href="/Explore">
           <Compass className="text-white w-6 h-6" />
         </a>
+<<<<<<< HEAD:Frontend/src/components/NavbarComponent.jsx
         <a href="/Profile">
+=======
+        <a href="/profile">
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/components/Navbar.jsx
           <User className="text-white w-6 h-6" />
         </a>
         <a href="/Chat">

@@ -10,12 +10,20 @@ import { useAuthStore } from "./store/useAuthStore";
 import SignUp from "./pages/SignUpPage";
 import Email_address from "./pages/Email_addressPage";
 import { Toaster } from "react-hot-toast";
+<<<<<<< HEAD
 import PostDetails from "./pages/PostDetailsPage";
 import Explore from "./pages/ExplorePage";
 import Chat from "./pages/ChatPage";
+=======
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/Editprofile";
+import CreatePost from "./pages/CreatePost";
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2
 
 function App() {
   const { authUser, token } = useAuthStore();
+
+  console.log(authUser,token)
 
   return (
     <>
@@ -51,9 +59,30 @@ function App() {
             !token ? <Email_address /> : <Navigate to="/" replace:true />
           }
         />
+<<<<<<< HEAD
         <Route path="/post/:postId" element={<PostDetails />} />
         <Route path="/Explore" element={<Explore />}/>
         <Route path="/Chat" element={<Chat />}/>
+=======
+         <Route
+          path="/profile"
+          element={
+            token && authUser ? <Profile /> : <Navigate to="/login" replace:true />
+          }
+        />
+         <Route
+          path="/editprofile"
+          element={
+            token && authUser ? <EditProfile /> : <Navigate to="/login" replace:true />
+          }
+        />
+        <Route
+          path="/createpost"
+          element={
+            token && authUser ? <CreatePost /> : <Navigate to="/login" replace:true />
+          }
+        />
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2
       </Routes>
     </>
   );

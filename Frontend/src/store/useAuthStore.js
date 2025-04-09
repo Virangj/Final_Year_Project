@@ -15,6 +15,15 @@ export const useAuthStore = create(persist((set) => ({
     set({ authUser: data });
   },
 
+  userUpdate: (key, value) => {
+    set((state) => ({
+      authUser: {
+        ...state.authUser,
+        [key]: value,
+      },
+    }));
+  },
+
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check", { withCredentials: true });

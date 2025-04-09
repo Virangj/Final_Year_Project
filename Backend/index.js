@@ -8,6 +8,8 @@ import updateRoutesoutes from "./src/routes/updateRoutes.js";
 import postsRoutes from "./src/routes/postsRoutes.js";
 import exploreRoutes from "./src/routes/exploreRoutes.js";
 import cors from 'cors';
+import { protectedRoute } from "./src/middleware/authMiddleware.js";
+import postRoutes from "./src/routes/postRoutes.js";
 
 // Configuration of dotenv 
 dotenv.config();
@@ -39,10 +41,17 @@ app.use(cors({
 
 // Creating All API's
 app.use("/api/auth", authRoutes);
+<<<<<<< HEAD
 app.use("/api/message", messageRoutes);
 app.use("/api/update", updateRoutesoutes);
 app.use("/api/posts",postsRoutes)
 app.use("/api/explore", exploreRoutes)
+=======
+app.use("/api/post",protectedRoute,postRoutes);
+app.use("/api/message",protectedRoute ,messageRoutes);
+app.use("/api/update",protectedRoute, updateRoutesoutes);
+app.use("/api/posts",protectedRoute,postsRoutes)
+>>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2
 
 app.listen(PORT, () =>{
     ConnectDB()

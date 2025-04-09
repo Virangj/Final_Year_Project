@@ -6,12 +6,18 @@ const userschema = new mongoose.Schema(
       type: "string",
     },
     name: {
-      type: String,
+      type: "string",
     },
     username: {
-      type: String,
+      type: "string",
       require: true,
       unique: true,
+    },
+    bio:{
+      type:"string",
+    },
+    arttype:{
+      type:"string",
     },
     email: {
       type: "string",

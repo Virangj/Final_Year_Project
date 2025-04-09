@@ -42,22 +42,20 @@ export const signup = async (req, res) => {
 
     sendVerificationEmail(email, verificationCode);
 
-    if (newUser) {
-      generateToken(newUser._id, res);
-      await newUser.save();
+    //generateToken(newUser._id, res);
+    await newUser.save();
 
-      res.status(201).json({
-        _id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-        phone: newUser.phone,
-        role: newUser.role,
-        profilePic: newUser.profilePic,
-        isVerified: newUser.isVerified,
-      });
-    } else {
-      res.status(400).json({ message: "Invalid User data" });
-    }
+    res.status(201).json({
+      _id: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      phone: newUser.phone,
+      role: newUser.role,
+      profilePic: newUser.profilePic,
+      bio: newUser.bio,
+      arttype: newUser.arttype,
+    });
+
   } catch (error) {
     console.log("Error Signup Controller", error.message);
     res.status(500).json({ message: "Server Error" });
@@ -69,7 +67,7 @@ export const login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) return res.status(400).json({ message: "user doesn`t exists" });
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
@@ -92,18 +90,24 @@ export const login = async (req, res) => {
         email: user.email,
         role: user.role,
         username: user.username,
-        isVerified: user.isVerified,
+        phone: user.phone,
+        bio: user.bio,
+        arttype: user.arttype,
+        profilePic: user.profilePic,
       });
     }
-
     generateToken(user._id, res);
 
     res.status(200).json({
+      emailverification: true,
       _id: user._id,
       email: user.email,
       role: user.role,
       username: user.username,
-      isVerified: user.isVerified,
+      phone: user.phone,
+      bio: user.bio,
+      arttype: user.arttype,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     console.log("Error in Login Controller", error.message);
@@ -124,8 +128,9 @@ export const logout = (req, res) => {
 export const emailVerificationCheck = async (req, res) => {
   try {
     const { code, email } = req.body;
+    console.log(email, code)
     const user = await User.findOne({
-      email,
+      email
     });
     // console.log(email);
     if (!user) {
@@ -135,7 +140,7 @@ export const emailVerificationCheck = async (req, res) => {
       user.isVerified = true;
       user.verificationCode = null;
       await user.save();
-      // console.log("Verification");
+      generateToken(user._id, res);
       sendWelcomeEmail(user.email);
       return res.status(200).json({ isVerified: user.isVerified , message: "User isVerified! " });
     } else {
@@ -170,7 +175,7 @@ export const emailAddressCheck = async (req, res) => {
       const verificationCode = Math.floor(
         100000 + Math.random() * 900000
       ).toString();
-      
+
       user.verificationCode = verificationCode
 
       await user.save()
