@@ -25,7 +25,6 @@ const SignUp = () => {
       seterror("invalid email")
       return;
     }
-<<<<<<< HEAD:Frontend/src/pages/SignUpPage.jsx
     localStorage.setItem("email", signup.email)
     localStorage.setItem("userId", userData._id)
     try {
@@ -35,14 +34,6 @@ const SignUp = () => {
       toast.success("Signup successful! Redirecting...");
       setsignup({ username: "", email: "", password: "", role: "" });
       navigate("/emailverification");
-=======
-    try {
-      const res = await axiosInstance.post("/auth/signup", signup,)
-      await user(res.data)
-      localStorage.setItem("email", signup.email);
-      await navigate("/emailverification")
-      setsignup({ username: "", email: "", password: "", role: "" })
->>>>>>> 863d417fd35179da1196c9a62701ea8df0c4e9d2:Frontend/src/pages/SignUp.jsx
     } catch (error) {
       console.log(error.response.data.message)
       if (error.response.data.message) {

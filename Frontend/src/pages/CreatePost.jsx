@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/NavbarComponent';
 import { axiosInstance } from '../lib/axios';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import ImagePreviewSlider from '../components/Preview';
+import ImagePreviewSlider from '../components/PreviewComponent';
 
 const CreatePost = () => {
-    const [images, setimages] = useState([]);
+    const [files, setFiles] = useState([]);
     const [previews, setpreviews] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -19,7 +19,7 @@ const CreatePost = () => {
 
     const handleimagesChange = (e) => {
         const files = Array.from(e.target.files);
-        setimages(files);
+        setFiles(files);
 
         const imagespreviews = files.map((file) => URL.createObjectURL(file));
         setpreviews(imagespreviews);
@@ -28,7 +28,7 @@ const CreatePost = () => {
     const handlePostSubmit = async () => {
         setIsSubmitting(true);
         NProgress.start();
-        if (!images || !title || !description) {
+        if (!files || !title || !description) {
             toast.error('Please fill in all fields and upload an images.');
             NProgress.done()
             setIsSubmitting(false);
@@ -37,15 +37,14 @@ const CreatePost = () => {
         const formData = new FormData();
         formData.append('title', title);
         formData.append('description', description);
-        formData.append("profilepic", authUser.profilePic);
+        // formData.append("profilepic", authUser.profilePic);
         formData.append("username", authUser.username);
         formData.append("arttype", authUser.arttype);
-        images.forEach((img) => formData.append('images', img)); // 'images' matches field name in multer
-        formData.append("role", authUser.role)
-
+        files.forEach((img) => formData.append('files', img)); // 'images' matches field name in multer
+        formData.append("role", authUser.role)        
 
         try {
-            await axiosInstance.post(`/post/addpost`, formData);
+            await axiosInstance.post(`/posts/addpost`, formData);
             console.log('Post created!');
             navigate("/profile")
         } catch (err) {

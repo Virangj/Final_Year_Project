@@ -2,32 +2,42 @@ import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { MoreVertical } from "lucide-react";
 
-const DEFAULT_AVATAR = "/default-avatar.png"; // ensure this is in public folder
+const DEFAULT_AVATAR = "/default-avatar.png"; // place this in public folder
 
 const ChatComponent = () => {
   const [users, setUsers] = useState([]);
   const [activeUser, setActiveUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showChat, setShowChat] = useState(false); // for mobile responsiveness
 
   useEffect(() => {
+    // Get current user from sessionStorage
+    const stored = sessionStorage.getItem("user-storage");
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setCurrentUser(parsed?.state?.authUser);
+    }
+
     const fetchUsers = async () => {
       try {
         const res = await axiosInstance.get("/message/users");
-        console.log(res);        
         setUsers(res.data);
       } catch (err) {
         console.error("Failed to fetch chat users", err);
       }
     };
+
     fetchUsers();
   }, []);
 
   const fetchMessages = async (userId) => {
     setActiveUser(userId);
+    setShowChat(true); // open chat on mobile
+
     try {
       const res = await axiosInstance.get(`/message/${userId}`);
-      console.log(res);      
       setMessages(res.data);
     } catch (err) {
       console.error("Failed to fetch messages", err);
@@ -53,6 +63,13 @@ const ChatComponent = () => {
       await axiosInstance.post(`/message/send/${activeUser}`, {
         text: inputMessage,
       });
+
+      // Move active user to top
+      setUsers((prev) => {
+        const updated = prev.filter((u) => u._id !== activeUser);
+        const current = prev.find((u) => u._id === activeUser);
+        return [current, ...updated];
+      });
     } catch (err) {
       console.error("Failed to send message", err);
     }
@@ -63,9 +80,13 @@ const ChatComponent = () => {
   return (
     <div className="bg-black min-h-screen text-white">
       <div className="max-w-7xl mx-auto">
-        <div className="flex h-[calc(100vh-2rem)] border border-neutral-200/20 bg-black rounded-lg">
+        <div className="flex h-screen border border-neutral-200/20 bg-black rounded-lg">
           {/* Sidebar */}
-          <div className="w-96 border-r border-neutral-200/20 flex flex-col">
+          <div
+            className={`w-96 border-r border-neutral-200/20 flex flex-col md:block ${
+              showChat ? "hidden md:flex" : "block"
+            }`}
+          >
             <div className="p-4 border-b border-neutral-200/20">
               <input
                 type="search"
@@ -89,12 +110,7 @@ const ChatComponent = () => {
                       className="w-12 h-12 rounded-full object-cover"
                     />
                     <div className="ml-4 flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold">{user.username}</h3>
-                        <span className="text-xs text-gray-400">
-                          {user.time}
-                        </span>
-                      </div>
+                      <h3 className="font-semibold">{user.username}</h3>
                       <p className="text-sm text-gray-500 truncate">
                         {user.lastMessage}
                       </p>
@@ -106,29 +122,31 @@ const ChatComponent = () => {
           </div>
 
           {/* Chat Window */}
-          <div className="flex-1 flex flex-col">
+          <div className={`flex-1 flex flex-col ${!showChat && "hidden md:flex"}`}>
             {activeUserData ? (
               <>
                 {/* Chat Header */}
                 <div className="p-4 border-b border-neutral-200/20 flex items-center justify-between">
                   <div className="flex items-center">
+                    <button
+                      onClick={() => setShowChat(false)}
+                      className="md:hidden text-gray-400 mr-4"
+                    >
+                      ←
+                    </button>
                     <img
                       src={activeUserData.profilePic || DEFAULT_AVATAR}
                       alt="active-profile"
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div className="ml-4">
-                      <h3 className="font-semibold">
-                        {activeUserData.username}
-                      </h3>
+                      <h3 className="font-semibold">{activeUserData.username}</h3>
                       <p className="text-sm text-gray-400">
                         {activeUserData.role} • Online
                       </p>
                     </div>
                   </div>
-                  <button className="p-2 hover:bg-neutral-800 rounded-full">
-                    <MoreVertical className="w-6 h-6" />
-                  </button>
+                  <MoreVertical className="w-6 h-6" />
                 </div>
 
                 {/* Messages */}
@@ -145,21 +163,21 @@ const ChatComponent = () => {
                       <img
                         src={
                           msg.fromSelf
-                            ? user?.profilePic
-                            : DEFAULT_AVATAR // Optional: replace with your own profile once available
+                            ? currentUser?.profilePic || DEFAULT_AVATAR
+                            : activeUserData.profilePic || DEFAULT_AVATAR
                         }
                         alt="sender"
                         className="w-8 h-8 rounded-full object-cover flex-shrink-0"
                       />
                       <div
-                        className={`rounded-lg p-4 max-w-xs sm:max-w-md break-words ${
+                        className={`rounded-lg px-4 py-2 break-words relative max-w-[75%] ${
                           msg.fromSelf
-                            ? "bg-gray-800 text-white"
-                            : "bg-neutral-700 text-white"
+                            ? "bg-gray-800 text-white self-end"
+                            : "bg-neutral-700 text-white self-start"
                         }`}
                       >
                         <p className="whitespace-pre-line">{msg.text}</p>
-                        <span className="text-xs block mt-1 text-gray-400">
+                        <span className="text-xs block mt-1 text-gray-400 text-right">
                           {msg.time}
                         </span>
                       </div>
@@ -167,7 +185,7 @@ const ChatComponent = () => {
                   ))}
                 </div>
 
-                {/* Message Input */}
+                {/* Input */}
                 <div className="p-4 border-t border-neutral-200/20">
                   <div className="flex items-center space-x-4">
                     <input

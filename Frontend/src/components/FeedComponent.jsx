@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
-import { Heart, MessageCircle, Share, Bookmark, Send } from "lucide-react";
+import { Heart, MessageCircle, Share, Bookmark, Send, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Feed = () => {
@@ -20,7 +20,7 @@ const Feed = () => {
   const fetchArtworks = async () => {
     try {
       const response = await axiosInstance.get("/posts/randomposts");
-      const posts = response?.data?.data || [];
+      const posts = response?.data || [];
 
       const likedStatus = {};
       const visibleMap = {};
@@ -97,6 +97,17 @@ const Feed = () => {
     } catch (err) {
       console.error("Failed to post comment", err);
       toast.error("Failed to post comment");
+    }
+  };
+
+  const handleDeleteComment = async (postId, commentId) => {
+    try {
+      await axiosInstance.post("/posts/deletecomment", { postId, commentId });
+      toast.success("Comment deleted");
+      fetchArtworks();
+    } catch (error) {
+      console.error("Failed to delete comment", error);
+      toast.error("Failed to delete comment");
     }
   };
 
@@ -207,9 +218,24 @@ const Feed = () => {
                       {(artwork.comments || [])
                         .slice(0, visibleCount)
                         .map((comment, idx) => (
-                          <p key={idx} className="text-sm text-gray-300">
-                            {comment.text}
-                          </p>
+                          <div key={idx} className="flex justify-between items-start text-sm text-gray-300">
+                            <div>
+                              <span className="font-semibold text-white">
+                                {comment.user?.username}:{" "}
+                              </span>
+                              <span>{comment.text}</span>
+                            </div>
+                            {artwork.userId === userId && (
+                              <button
+                                onClick={() =>
+                                  handleDeleteComment(artwork._id, comment._id)
+                                }
+                                className="text-red-500 text-xs ml-2"
+                              >
+                                <Trash className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
                         ))}
                       {artwork.comments?.length > 2 &&
                         visibleCount < artwork.comments.length && (

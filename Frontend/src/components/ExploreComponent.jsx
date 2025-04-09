@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 
 const ExploreComponent = () => {
   const [user, setUser] = useState([]);
-  const [post, setPost] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
 
   const fetchUser = async () => {
@@ -19,7 +19,15 @@ const ExploreComponent = () => {
   const fetchPost = async () => {
     try {
       const res = await axiosInstance.get("/posts/randomposts");
-      setPost(res.data.data);
+      // setPosts(res.data.data); // array
+      if (Array.isArray(res.data.data)) {
+        setPosts(res.data.data);
+      } else if (Array.isArray(res.data)) {
+        setPosts(res.data);
+      } else {
+        console.warn("Unexpected post data structure");
+        setPosts([]); // fallback to avoid breaking map
+      }
     } catch (err) {
       console.error("Failed to fetch explore post", err);
     }
@@ -50,8 +58,7 @@ const ExploreComponent = () => {
 
   const handleFollowing = async (username) => {
     try {
-      const res = await axiosInstance.post("/update/follow", { username });
-      console.log(res.data);
+      await axiosInstance.post("/update/follow", { username });
       fetchUser(); // Refresh users after following
     } catch (error) {
       console.error("Failed in following user", error);
@@ -114,7 +121,7 @@ const ExploreComponent = () => {
       <div>
         <h2 className="text-2xl font-bold mb-6">Trending Artworks</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-fr">
-          {post.map((artwork, i) => (
+          {posts.map((artwork, i) => (
             <div
               key={i}
               onClick={() => setSelectedArtwork(artwork)}
@@ -122,8 +129,12 @@ const ExploreComponent = () => {
               style={{ aspectRatio: "1 / 1" }}
             >
               <img
-                src={artwork.image[0]}
-                alt={artwork.title}
+                src={
+                  Array.isArray(artwork.image) && artwork.image.length > 0
+                    ? artwork.image[0]
+                    : "/fallback.jpg"
+                }
+                alt={artwork.title || "Artwork"}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-opacity-0 group-hover:bg-black/40 transition-all" />
@@ -147,8 +158,13 @@ const ExploreComponent = () => {
               <X size={28} />
             </button>
             <img
-              src={selectedArtwork.image[0]}
-              alt={selectedArtwork.title}
+              src={
+                Array.isArray(selectedArtwork.image) &&
+                selectedArtwork.image.length > 0
+                  ? selectedArtwork.image[0]
+                  : "/fallback.jpg"
+              }
+              alt={selectedArtwork.title || "Artwork"}
               className="w-full max-h-[60vh] object-contain rounded-lg mb-4"
             />
             <h2 className="text-2xl sm:text-3xl font-bold mb-2">
