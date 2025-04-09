@@ -27,27 +27,25 @@ const uploader = async (file) => {
 
 export const personalinfo = async (req, res) => {
   try {
-    const {dob, phone, country, city, gender } = req.body;
+    const { dob, phone, country, city, gender } = req.body;
     //const userId = req.user._id;
 
     // Create an object with only fields that should be updated
-    let updateFields = {dob, phone, country, city, gender };
+    let updateFields = { dob, phone, country, city, gender };
 
     // Find and update the user without modifying profilePic if no new image is uploaded
-    const updatedUser = await User.findByIdAndUpdate(req.decode.userId, { $set: updateFields }, { new: true });
+    const user = await User.findByIdAndUpdate(req.decode.userId, { $set: updateFields }, { new: true });
 
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const updateFields = { dob, gender, country, city, name };
-    
     if (req.file) {
       const uploadedImage = await uploader(req.file);
       updateFields.profilePic = uploadedImage.url;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       user._id,
       { $set: updateFields },
       { new: true }
@@ -96,7 +94,7 @@ export const editprofile = async (req, res) => {
 export const followUser = async (req, res) => {
   try {
     const follower = await User.findById(req.decoded.userId); // You said `user` var has full user info
-    const {  username } = req.body; // ID of the current user (follower)
+    const { username } = req.body; // ID of the current user (follower)
 
     // Get user to be followed by username
     const userToFollow = await User.findOne({ username });
