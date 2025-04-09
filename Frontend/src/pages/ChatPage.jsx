@@ -1,11 +1,9 @@
-import React from "react";
-import Navbar from "../components/Navbar";
-import Feed from "../components/Feed";
-import Notification from "../components/Notification";
-import { Bell } from "lucide-react";
-import "../index.css"
+import React from 'react'
+import { Bell } from 'lucide-react'
+import Navbar from '../components/NavbarComponent'
+import ChatComponent from '../components/ChatComponent'
 
-const Home = () => {
+const Chat = () => {
   return (
     <div className="bg-black min-h-screen flex flex-col lg:flex-row relative">
       {/* 🔝 Top bar for mobile */}
@@ -17,7 +15,7 @@ const Home = () => {
       </div>
 
       {/* 🧭 Sidebar for desktop */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block ">
         <Navbar />
       </div>
 
@@ -26,17 +24,12 @@ const Home = () => {
         <Navbar />
       </div>
 
-      {/* 📰 Feed */}
+      {/* 📰 Chat */}
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-16 pb-20 lg:pt-10 lg:pb-10 lg:px-8">
-        <Feed />
-      </div>
-
-      {/* 🔔 Notification (Desktop only) */}
-      <div className="hidden xl:block pr-[20px]">
-        <Notification />
+        <ChatComponent />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Chat

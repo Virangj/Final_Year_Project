@@ -27,27 +27,24 @@ const Login = () => {
 
     try {
       const res = await axiosInstance.post("/auth/login", login);
-
+      console.log(res);
       const {
         username,
         email,
         _id,
-        profilePic,
         role,
-        phone,
-        isVerified
       } = res.data;
 
-      const userData = { username, email, _id, profilePic, role, phone };
+      const userData = { username, email, _id,  role };
 
       await user(userData);
 
-      if (!isVerified) {
-        toast.error("Please verify your email to continue.");
-        navigate("/emailverification");
-        return;
-      }
-
+      // if (!isVerified) {
+      //   toast.error("Please verify your email to continue.");
+      //   navigate("/emailverification");
+      //   return;
+      // }
+      localStorage.setItem("userId", userData._id)
       await checkAuth();
       toast.success("Login successful!");
       setlogin({ email: "", password: "" });

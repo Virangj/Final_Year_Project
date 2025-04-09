@@ -18,6 +18,7 @@ export const useAuthStore = create(persist((set) => ({
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check", { withCredentials: true });
+      console.log(res);
       set({ token: true });
     } catch (error) {
       console.log("Error in CheckAuth: ", error.message);

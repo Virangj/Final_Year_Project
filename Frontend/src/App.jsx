@@ -3,13 +3,16 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import Email_verification from "./pages/Email_verification";
+import Login from "./pages/LoginPage";
+import Home from "./pages/HomePage";
+import Email_verification from "./pages/Email_verificationPage";
 import { useAuthStore } from "./store/useAuthStore";
-import SignUp from "./pages/SignUp";
-import Email_address from "./pages/Email_address";
+import SignUp from "./pages/SignUpPage";
+import Email_address from "./pages/Email_addressPage";
 import { Toaster } from "react-hot-toast";
+import PostDetails from "./pages/PostDetailsPage";
+import Explore from "./pages/ExplorePage";
+import Chat from "./pages/ChatPage";
 
 function App() {
   const { authUser, token } = useAuthStore();
@@ -48,6 +51,9 @@ function App() {
             !token ? <Email_address /> : <Navigate to="/" replace:true />
           }
         />
+        <Route path="/post/:postId" element={<PostDetails />} />
+        <Route path="/Explore" element={<Explore />}/>
+        <Route path="/Chat" element={<Chat />}/>
       </Routes>
     </>
   );
