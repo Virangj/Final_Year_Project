@@ -6,16 +6,32 @@ import {
   MessageCircle,
   Bell,
   Settings,
+  LogOut,
   Plus,
 } from "lucide-react";
+import toast from "react-hot-toast";
+
+import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
-  const { authUser } = useAuthStore((state) => state);
+  const { authUser } = useAuthStore();
+
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      sessionStorage.clear();
+      window.location.href = "/login";
+      toast.success("Logout successfully");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
+  };
+
   return (
     <>
       {/* Desktop Sidebar */}
-      <nav className="sticky top-0 h-screen w-64 bg-black border-r border-neutral-200/20 hidden lg:block">
+      <nav className="sticky top-0 h-screen w-72 bg-black border-r border-neutral-200/20 hidden lg:block">
         <div className="flex flex-col h-full px-2">
           {/* Logo */}
           <div className="p-6 border-b border-neutral-200/20">
@@ -25,14 +41,14 @@ const Navbar = () => {
           {/* Navigation Links */}
           <div className="flex-1 py-6 space-y-1">
             <a
-              href="/Feed"
+              href="/"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all active"
             >
               <Home size={22} />
               <span>Feed</span>
             </a>
             <a
-              href="#explore"
+              href="/Explore"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Compass size={22} />
@@ -46,20 +62,33 @@ const Navbar = () => {
               <span>Profile</span>
             </a>
             <a
-              href="#chat"
+              href="/Chat"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <MessageCircle size={22} />
               <span>Chat</span>
             </a>
             <a
-              href="#notifications"
+              href="/Notifications"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Bell size={22} />
               <span>Notifications</span>
             </a>
+
+            {/* 👇 Show Create Post only if user is an artist */}
+            {authUser?.role === "artist" && (
+              <a
+                href="/createpost"
+                className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
+              >
+                <Plus size={22} />
+                <span>Create Post</span>
+              </a>
+            )}
+
             <a
+<<<<<<< HEAD:Frontend/src/components/Navbar.jsx
               href="/createpost"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
@@ -68,6 +97,9 @@ const Navbar = () => {
             </a>
             <a
               href="/setting"
+=======
+              href="/settings"
+>>>>>>> 764d67320ec17aefbf193819e552620f09fbf436:Frontend/src/components/NavbarComponent.jsx
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Settings size={22} />
@@ -75,34 +107,38 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* User Profile Section */}
-          <div className="py-6 border-t border-neutral-200/20 ">
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-white">{authUser.username}</p>
-                <p className="text-xs text-white">{authUser.email}</p>
-              </div>
-            </div>
+          {/* Logout Button */}
+          <div className="p-6 border-t border-neutral-200/20">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full text-white text-xl rounded-2xl px-6 py-3 hover:bg-[#1A1A1A] transition-all"
+            >
+              <LogOut size={22} />
+              <span>Logout</span>
+            </button>
           </div>
         </div>
       </nav>
 
       {/* 📱 Bottom navbar for mobile */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-neutral-200/20 flex justify-around items-center h-16 px-4">
-        <a href="/Feed">
+        <a href="/">
           <Home className="text-white w-6 h-6" />
         </a>
-        <a href="#explore">
+        <a href="/Explore">
           <Compass className="text-white w-6 h-6" />
         </a>
-        <a href="/profile">
+        <a href="/Profile">
           <User className="text-white w-6 h-6" />
         </a>
-        <a href="#chat">
+        <a href="/Chat">
           <MessageCircle className="text-white w-6 h-6" />
         </a>
+<<<<<<< HEAD:Frontend/src/components/Navbar.jsx
         <a href="/settings">
+=======
+        <a href="/Settings">
+>>>>>>> 764d67320ec17aefbf193819e552620f09fbf436:Frontend/src/components/NavbarComponent.jsx
           <Settings className="text-white w-6 h-6" />
         </a>
       </div>

@@ -26,12 +26,15 @@ const SignUp = () => {
       seterror("invalid email")
       return;
     }
+    localStorage.setItem("email", signup.email)
+    localStorage.setItem("userId", userData._id)
     try {
-      const res = await axiosInstance.post("/auth/signup", signup,)
-      await user(res.data)
-      localStorage.setItem("email", signup.email);
-      await navigate("/emailverification")
-      setsignup({ username: "", email: "", password: "", role: "" })
+      const res = await axiosInstance.post("/auth/signup", signup);
+      console.log(res.data);      
+      await user(res.data);
+      toast.success("Signup successful! Redirecting...");
+      setsignup({ username: "", email: "", password: "", role: "" });
+      navigate("/emailverification");
     } catch (error) {
       console.log(error.response.data.message)
       if (error.response.data.message) {

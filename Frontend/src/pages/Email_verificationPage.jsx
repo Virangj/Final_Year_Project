@@ -23,7 +23,8 @@ const Email_verification = () => {
     let email = localStorage.getItem("email")
     try {
       const data = { email: email, code: code }
-      await axiosInstance.post("/auth/verificationcode", data)
+      const res = await axiosInstance.post("/auth/verificationcode", data)
+      console.log(res);      
       await checkAuth()
       toast.success("Email verified successfully!")
       setcode("")

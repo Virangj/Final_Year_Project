@@ -1,15 +1,14 @@
-import {
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import Email_verification from "./pages/Email_verification";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Login from "./pages/LoginPage";
+import Home from "./pages/HomePage";
+import Email_verification from "./pages/Email_verificationPage";
 import { useAuthStore } from "./store/useAuthStore";
-import SignUp from "./pages/SignUp";
-import Email_address from "./pages/Email_address";
+import SignUp from "./pages/SignUpPage";
+import Email_address from "./pages/Email_addressPage";
 import { Toaster } from "react-hot-toast";
+import PostDetails from "./pages/PostDetailsPage";
+import Explore from "./pages/ExplorePage";
+import Chat from "./pages/ChatPage";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 import CreatePost from "./pages/CreatePost";
@@ -18,11 +17,11 @@ import Setting from "./pages/Setting";
 function App() {
   const { authUser, token } = useAuthStore();
 
-  console.log(authUser,token)
+  console.log(authUser, token);
 
   return (
     <>
-    <Toaster position="top-right" />
+      <Toaster position="top-right" />
       <Routes>
         <Route
           path="/"
@@ -54,22 +53,60 @@ function App() {
             !token ? <Email_address /> : <Navigate to="/" replace:true />
           }
         />
-         <Route
-          path="/profile"
+        <Route
+          path="/post/:postId"
           element={
-            token && authUser ? <Profile /> : <Navigate to="/login" replace:true />
+            token && authUser ? (
+              <PostDetails />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
           }
         />
-         <Route
+        <Route
+          path="/Explore"
+          element={
+            token && authUser ? (
+              <Explore />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
+          }
+        />
+        <Route
+          path="/Chat"
+          element={
+            token && authUser ? <Chat /> : <Navigate to="/login" replace:true />
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            token && authUser ? (
+              <Profile />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
+          }
+        />
+        <Route
           path="/editprofile"
           element={
-            token && authUser ? <EditProfile /> : <Navigate to="/login" replace:true />
+            token && authUser ? (
+              <EditProfile />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
           }
         />
         <Route
           path="/createpost"
           element={
-            token && authUser ? <CreatePost /> : <Navigate to="/login" replace:true />
+            token && authUser ? (
+              <CreatePost />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
           }
         />
         <Route

@@ -26,26 +26,50 @@ const Login = () => {
     }
 
     try {
-      const res = await axiosInstance.post("/auth/login", login)
-      const data = {
-        username: res.data.username,
-        email: res.data.email,
-        _id: res.data._id,
-        profilePic: res.data.profilePic,
-        role: res.data.role,
-        phone: res.data.phone,
-        bio:res.data.bio,
-        arttype:res.data.arttype
-      }
-      if (!res.data.emailverification) {
-        await user(data)
-        window.location.href = "/emailverification"
-      } else {
-        await user(data)
-        await checkAuth()
-        navigate("/")
-      }
-      setlogin({ email: "", password: "" })
+      const res = await axiosInstance.post("/auth/login", login);
+      console.log(res);
+      const {
+        username,
+        email,
+        _id,
+        role,
+      } = res.data;
+
+      const userData = { username, email, _id,  role };
+
+      await user(userData);
+
+      // // if (!isVerified) {
+      // //   toast.error("Please verify your email to continue.");
+      // //   navigate("/emailverification");
+      // //   return;
+      // // }
+      localStorage.setItem("userId", userData._id)
+      await checkAuth();
+      toast.success("Login successful!");
+      setlogin({ email: "", password: "" });
+      navigate("/");
+
+    //   const res = await axiosInstance.post("/auth/login", login)
+    //   const data = {
+    //     username: res.data.username,
+    //     email: res.data.email,
+    //     _id: res.data._id,
+    //     profilePic: res.data.profilePic,
+    //     role: res.data.role,
+    //     phone: res.data.phone,
+    //     bio:res.data.bio,
+    //     arttype:res.data.arttype
+    //   }
+    //   if (!res.data.emailverification) {
+    //     await user(data)
+    //     window.location.href = "/emailverification"
+    //   } else {
+    //     await user(data)
+    //     await checkAuth()
+    //     navigate("/")
+    //   }
+    //   setlogin({ email: "", password: "" })
     } catch (error) {
       console.error("Login error:", error);
       const message = error?.response?.data?.message || "Login failed. Check your credentials!";

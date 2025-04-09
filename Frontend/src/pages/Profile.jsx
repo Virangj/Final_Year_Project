@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../lib/axios';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/NavbarComponent';
 
 const Profile = () => {
     const [activeTab, setActiveTab] = useState('posts'); // Set default active tab
@@ -14,7 +14,9 @@ const Profile = () => {
 
     const fetchPosts = async () => {
         try {
-            const res = await axiosInstance.get(`/post/getmypost/?role=${authUser.role}&username=${authUser.username}`); // 
+            console.log("authUser: ", authUser);            
+            const res = await axiosInstance.get(`/posts/getmypost/?username=${authUser.username}`); // 
+            console.log(res);            
             setposts(res.data.posts);
         } catch (err) {
             console.error('Error fetching user posts:', err.response.data.message);
@@ -24,10 +26,10 @@ const Profile = () => {
     // Fetch suggested users
     const fetchSuggestedUsers = async () => {
         try {
-            console.log("hi")
-            const res = await axiosInstance.get('/post/suggested');
+            // console.log("hi")
+            const res = await axiosInstance.get('/posts/suggested');
             setsuggestedUser(res.data.suggestedUsers);
-            console.log(res.data.suggestedUsers)
+            // console.log(res.data.suggestedUsers)
         } catch (err) {
             console.error('Error fetching suggested users:', err);
         }

@@ -1,6 +1,7 @@
 import express from "express";
 import {  personalinfo, followUser, unFollowUser, getFollowers, getFollowing, editprofile,  } from "../controller/updateController.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
+import { protectedRoute } from "../middleware/authMiddleware.js";
 
 const updateRoutesoutes = express.Router();
 
@@ -8,7 +9,7 @@ updateRoutesoutes.patch("/personalinfo", personalinfo)
 
 updateRoutesoutes.patch("/editProfile",multerUpload.single('profilePic'), editprofile)
 
-updateRoutesoutes.post("/:userId/follow", followUser)
+updateRoutesoutes.post("/follow",protectedRoute, followUser)
 
 updateRoutesoutes.delete("/:userId/unfollow", unFollowUser);
 
