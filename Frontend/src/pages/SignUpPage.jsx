@@ -12,6 +12,7 @@ const SignUp = () => {
     password: "",
     role: ""
   });
+  const [error, seterror] = useState("");
 
   const navigate = useNavigate();
   const { user } = useAuthStore();
