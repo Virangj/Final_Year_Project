@@ -12,9 +12,12 @@ import Email_address from "./pages/Email_address";
 import { Toaster } from "react-hot-toast";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
+import CreatePost from "./pages/CreatePost";
 
 function App() {
   const { authUser, token } = useAuthStore();
+
+  console.log(authUser,token)
 
   return (
     <>
@@ -57,9 +60,15 @@ function App() {
           }
         />
          <Route
-          path="/"
+          path="/editprofile"
           element={
             token && authUser ? <EditProfile /> : <Navigate to="/login" replace:true />
+          }
+        />
+        <Route
+          path="/createpost"
+          element={
+            token && authUser ? <CreatePost /> : <Navigate to="/login" replace:true />
           }
         />
       </Routes>

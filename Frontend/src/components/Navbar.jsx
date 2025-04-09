@@ -6,9 +6,12 @@ import {
   MessageCircle,
   Bell,
   Settings,
+  Plus,
 } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
+  const { authUser } = useAuthStore((state) => state);
   return (
     <>
       {/* Desktop Sidebar */}
@@ -36,7 +39,7 @@ const Navbar = () => {
               <span>Explore</span>
             </a>
             <a
-              href="#profile"
+              href="/profile"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <User size={22} />
@@ -57,6 +60,13 @@ const Navbar = () => {
               <span>Notifications</span>
             </a>
             <a
+              href="/createpost"
+              className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
+            >
+              <Plus size={22} />
+              <span>Create Post</span>
+            </a>
+            <a
               href="#settings"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
@@ -66,12 +76,12 @@ const Navbar = () => {
           </div>
 
           {/* User Profile Section */}
-          <div className="p-6 border-t border-neutral-200/20">
+          <div className="py-6 border-t border-neutral-200/20 ">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full bg-gray-300"></div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-white">John Doe</p>
-                <p className="text-xs text-white">john@example.com</p>
+                <p className="text-sm font-medium text-white">{authUser.username}</p>
+                <p className="text-xs text-white">{authUser.email}</p>
               </div>
             </div>
           </div>
@@ -86,7 +96,7 @@ const Navbar = () => {
         <a href="#explore">
           <Compass className="text-white w-6 h-6" />
         </a>
-        <a href="#profile">
+        <a href="/profile">
           <User className="text-white w-6 h-6" />
         </a>
         <a href="#chat">

@@ -1,7 +1,7 @@
 import cloudinary from "../lib/cloudinary.js"; // Notice the .js extension
 import Post from "../models/postModel.js"; // Post model is in 'models/Post.js'
 import { Readable } from "stream";
-import User from "../models/userModel.js"; 
+import User from "../models/userModel.js";
 
 const uploadtocloudinary = async (buffer) => {
   return new Promise(async (resolve, reject) => {
@@ -29,27 +29,35 @@ const uploader = async (files) => {
   }
   return resp;
 };
+
+
+
 // API Route to Add Post
 export const addpost = async (req, res) => {
   try {
-    const { postId, username, title, description } = req.body;
+    const { profilepic, username, arttype, title, description } = req.body;
+    const images = []
 
-    // const result = await cloudinary.uploader.upload(req);
-    const upload_resp = await uploader(req.files);
-    console.log("upload_resp", upload_resp);
-    const image_arr = [];
-    for (let i = 0; i < upload_resp.length; i++) {
-      const uploadedImage = upload_resp[i];
-      image_arr.push(uploadedImage.url);
+    if (req.files) {
+      const upload_resp = await uploader(req.files);
+      console.log("upload_resp", upload_resp);
+      const image_arr = [];
+      for (let i = 0; i < upload_resp.length; i++) {
+        const uploadedImage = upload_resp[i];
+        console.log(uploadedImage)
+        image_arr.push(uploadedImage.url);
+      }
+      images.push(...image_arr)
     }
     // Create new post
     const newPost = new Post({
-      postId,
-      username,
-      title,
-      description,
-      image: image_arr, // Store the image URL returned by Cloudinary
-      createdAt: Date.now(),
+      createdBy: req.decode.userId,
+      username: username,
+      arttype: arttype,
+      title: title,
+      description: description,
+      profilepic: profilepic,
+      image: images, // Store the image URL returned by Cloudinary
     });
 
     // Save the post to the database
@@ -58,7 +66,6 @@ export const addpost = async (req, res) => {
     // Respond with the saved post
     res.status(201).json({
       message: "Post added successfully!",
-      post: newPost,
     });
   } catch (error) {
     console.error("Error uploading post:", error);
@@ -72,11 +79,11 @@ export const addpost = async (req, res) => {
 export const getmypost = async (req, res) => {
   try {
     // Get the artist's name from the request parameters
-    const  username  = req.query.username;
+    const username = req.query.username;
     console.log(username);
 
     // Find all posts by the given artist
-    const posts = await Post.find({ createdBy: req.user.userId });
+    const posts = await Post.find({ createdBy: req.decode.userId });
 
     if (posts.length === 0) {
       return res
@@ -162,15 +169,14 @@ export const deletemypost = async (req, res) => {
 };
 
 export const suggested = async (req, res) => {
-
   try {
-    const currentUser = await User.findById(req.user.userId).select('following');
+    const currentUser = await User.findById(req.decode.userId).select('following');
 
     if (!currentUser) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const excludeIds = [req.user.userId, ...currentUser.following];
+    const excludeIds = [req.decode.userId, ...currentUser.following];
 
     const suggestedUsers = await User.find({
       _id: { $nin: excludeIds },     // not followed and not current user

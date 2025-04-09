@@ -36,6 +36,7 @@ export default function EditProfile() {
             formData.append("username", name);
             formData.append("arttype", artType);
             formData.append("bio", bio);
+            console.log(formData)
 
             const res = await axiosInstance.patch("/update/editprofile", formData);
 
@@ -48,9 +49,10 @@ export default function EditProfile() {
             navigate("/profile", { replace: true });
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
-            setIsSubmitting(false);
-            NProgress.done();
+
         }
+        setIsSubmitting(false);
+        NProgress.done();
     };
 
     const isUnchanged =
@@ -59,8 +61,8 @@ export default function EditProfile() {
         bio === authUser.bio &&
         image === authUser.profilePic;
 
-    return (
-        <div className="max-w-xl mx-auto p-6 mt-10 bg-white rounded-xl shadow-md w-full">
+    return (<div className="w-full min-h-screen bg-black p-5">
+        <div className="max-w-xl mx-auto p-6 mt-10  rounded-xl bg-white shadow-md w-full">
             <h2 className="text-2xl font-semibold mb-6 text-center">Edit Profile</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -69,7 +71,7 @@ export default function EditProfile() {
                         <img
                             src={preview}
                             className="w-full h-full object-cover"
-                            alt="Profile Preview"
+
                         />
                     </div>
 
@@ -109,7 +111,7 @@ export default function EditProfile() {
                 <div>
                     <label className="block text-sm font-medium mb-1">Bio</label>
                     <textarea
-                        className="w-full p-2 border rounded-md resize-none overflow-hidden  focus:outline-none focus:ring-2 focus:ring-black"
+                        className="w-full p-2 border rounded-md resize-none overflow-hidden scrollbar-none  focus:outline-none focus:ring-2 focus:ring-black"
                         rows={4}
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
@@ -120,13 +122,14 @@ export default function EditProfile() {
                     type="submit"
                     disabled={isUnchanged || isSubmitting}
                     className={`w-full px-4 py-2 rounded-md text-white font-medium transition ${isUnchanged || isSubmitting
-                            ? "bg-gray-400 cursor-not-allowed"
-                            : "bg-black hover:bg-gray-800"
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-black hover:bg-gray-800"
                         }`}
                 >
                     {isSubmitting ? "Saving..." : "Save Changes"}
                 </button>
             </form>
         </div>
+    </div>
     );
 }

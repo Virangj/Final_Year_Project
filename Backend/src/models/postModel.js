@@ -12,7 +12,7 @@ const postschema = new mongoose.Schema(
             ref: 'User', // 👈 this tells Mongoose to link to the User collection
             required: true,
         },
-        userimage: {
+        profilepic: {
             type: String,
             required: true,
         },

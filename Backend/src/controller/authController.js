@@ -93,6 +93,7 @@ export const login = async (req, res) => {
         phone: user.phone,
         bio: user.bio,
         arttype: user.arttype,
+        profilePic: user.profilePic,
       });
     }
     generateToken(user._id, res);
@@ -106,6 +107,7 @@ export const login = async (req, res) => {
       phone: user.phone,
       bio: user.bio,
       arttype: user.arttype,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     console.log("Error in Login Controller", error.message);

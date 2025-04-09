@@ -7,7 +7,7 @@ export default {
     extend: {},
   },
   plugins: [
-    scrollbar,
+    require('tailwind-scrollbar'),
     require('@tailwindcss/line-clamp'),
   ],
 }

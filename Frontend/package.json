@@ -11,7 +11,6 @@
     "start": "vite"
   },
   "proxy": "https://creativethreads.onrender.com",
-
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-toast": "^1.2.6",
@@ -31,6 +30,7 @@
     "react-hot-toast": "^2.5.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^7.1.5",
+    "react-swipeable": "^7.0.2",
     "swiper": "^11.2.6",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.0.5",

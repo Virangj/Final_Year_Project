@@ -60,7 +60,7 @@ const Profile = () => {
 
     return (
         <>
-            <div className="bg-[#E5E7EB] min-h-screen flex flex-col md:flex-row">
+            <div className="bg-[#080808] min-h-screen flex flex-col md:flex-row">
                 <Navbar/>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {/* Profile Header */}
@@ -85,7 +85,7 @@ const Profile = () => {
                                         >
                                             Edit Profile
                                         </button>
-                                        <button className="px-4 py-2 border border-neutral-200/20 rounded-lg hover:bg-gray-50 transition-colors">
+                                        <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
                                             Share Profile
                                         </button>
                                     </div>
@@ -109,7 +109,7 @@ const Profile = () => {
 
                                 {/* Bio */}
                                 <div className="w-full max-w-full overflow-hidden">
-                                    <p className={`text-sm text-gray-700 whitespace-pre-wrap break-all transition-all duration-200 ${showFullBio ? "" : "line-clamp-3"}`}>
+                                    <p className={`text-sm text-gray-700 whitespace-pre-wrap break-all transition-all   duration-200 ${showFullBio ? "" : "line-clamp-3"}`}>
                                         {authUser.bio}
                                     </p>
                                     {authUser.bio.length > 100 && (
@@ -127,7 +127,7 @@ const Profile = () => {
 
 
                     {/* <!-- Content Tabs --> */}
-                    <div x-data="{ activeTab: 'posts' }" className="bg-white rounded-lg border border-neutral-200/20">
+                    <div  className="bg-white rounded-lg border border-neutral-200/20">
                         {/* <!-- Tab Navigation --> */}
                         <div className="flex border-b border-neutral-200/20">
                             <button className={`flex-1 py-4 font-medium ${activeTab === 'posts' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('posts')} >Posts</button>
@@ -135,26 +135,14 @@ const Profile = () => {
                             <button className={`flex-1 py-4 font-medium ${activeTab === 'suggested' ? 'border-b-2 border-black' : ''}`} onClick={() => showContent('suggested')}>suggested</button>
                         </div>
 
-                        {/* // <!-- Posts Grid --> */}
-                        <div className="p-4">
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {/* <!-- Post Items --> */}
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                            </div>
-                        </div>
                         {activeTab === 'posts' && (
                             <div className="p-4">
                                 {posts.length > 0 && (
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                        {posts.map((post, index) => (
+                                        {posts.slice().reverse().map((post, index) => (
                                             <div key={index} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
                                                 <img
-                                                    src={post.image}
+                                                    src={post.image[0]}
                                                     alt="Post"
                                                     className="w-full h-full object-cover rounded-lg"
                                                 />
@@ -171,14 +159,7 @@ const Profile = () => {
 
 
                         {/* <!-- mostliked Posts --> */}
-                        <div x-show="activeTab === 'mostliked'" className="p-4">
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                {/* <!-- mostliked Post Items --> */}
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                                <div className="aspect-square bg-gray-100 rounded-lg"></div>
-                            </div>
-                        </div>
+                        
                         {activeTab === 'mostliked' && (
                             <div className="p-4">
                                 {sortedmostlikedPosts.length > 0 && (
@@ -189,7 +170,7 @@ const Profile = () => {
                                                 className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden"
                                             >
                                                 <img
-                                                    src={post.image}
+                                                    src={post.image[0]}
                                                     alt="mostliked Post"
                                                     className="w-full h-full object-cover"
                                                 />

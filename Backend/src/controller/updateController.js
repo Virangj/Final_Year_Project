@@ -79,7 +79,8 @@ export const editprofile = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user.userId, updateData, {
       new: true,
     });
-    res.json({ profilepic: user.profilePic });
+
+    res.json({ profilePic: user.profilePic });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Update failed" });
