@@ -3,26 +3,37 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
 import Navbar from "../components/NavbarComponent";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts"); // Set default active tab
   const [showFullBio, setShowFullBio] = useState(false);
   const [posts, setposts] = useState([]);
   const [suggestedUsers, setsuggestedUser] = useState([]);
-  const { authUser } = useAuthStore();
+  const { authUser,user } = useAuthStore();
   const navigate = useNavigate();
 
   const fetchPosts = async () => {
     try {
       console.log("authUser: ", authUser);
-      const res = await axiosInstance.get(
-        `/posts/getmypost`
-      , authUser._id); //
+      const res = await axiosInstance.get(`/posts/getmypost`, authUser._id); //
       console.log(res);
       setposts(res.data.posts);
     } catch (err) {
       console.error("Error fetching user posts:", err.response.data.message);
     }
+  };
+  const handleShare = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => {
+        toast.success("Link copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy:", err);
+        toast.error("Failed to copy the link.");
+      });
   };
 
   // Fetch suggested users
@@ -31,7 +42,7 @@ const Profile = () => {
       // console.log("hi")
       const res = await axiosInstance.get("/posts/suggested");
       setsuggestedUser(res.data.suggestedUsers);
-      console.log(res.data.suggestedUsers);
+    //   console.log(res.data.suggestedUsers);
     } catch (err) {
       console.error("Error fetching suggested users:", err);
     }
@@ -68,7 +79,7 @@ const Profile = () => {
       setsuggestedUser((prev) =>
         prev.filter((user) => user.username !== username)
       );
-    //   user();
+        user(res.data.follower);
     } catch (error) {
       console.error("Failed in following user", error);
     }
@@ -111,7 +122,10 @@ const Profile = () => {
                     >
                       Edit Profile
                     </button>
-                    <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                    <button
+                      onClick={handleShare}
+                      className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
                       Share Profile
                     </button>
                   </div>

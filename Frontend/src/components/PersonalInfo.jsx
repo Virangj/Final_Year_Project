@@ -22,7 +22,7 @@ export default function PersonalInfo() {
   // 🔥 Set initial values from authUser
   useEffect(() => {
     if (authUser) {
-      setDob(authUser?.dob?.slice(0,10) || "");
+      setDob(authUser?.dob?.slice(0, 10) || "");
       setPhone(authUser?.phone || "");
       setCountry(authUser?.country || "");
       setCity(authUser?.city || "");
@@ -106,8 +106,15 @@ export default function PersonalInfo() {
           <input
             type="tel"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              // Allow only digits and limit to 10 characters
+              const numericValue = value.replace(/\D/g, "").slice(0, 10);
+              setPhone(numericValue);
+            }}
             disabled={!editMode}
+            maxLength={10}
+            placeholder="Enter 10-digit number"
             className="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-black focus:outline-none disabled:bg-gray-100"
           />
         </div>

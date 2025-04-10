@@ -80,7 +80,7 @@ function App() {
             token && authUser ? <Chat /> : <Navigate to="/login" replace:true />
           }
         />
-        <Route
+        {/* <Route
           path="/profile"
           element={
             token && authUser ? (
@@ -88,6 +88,12 @@ function App() {
             ) : (
               <Navigate to="/login" replace:true />
             )
+          }
+        /> */}
+        <Route
+          path="/profile/:userId"
+          element={
+            token && authUser ? <Profile /> : <Navigate to="/login" replace />
           }
         />
         <Route
@@ -113,15 +119,23 @@ function App() {
         <Route
           path="/setting"
           element={
-            token && authUser ? <Setting /> : <Navigate to="/login" replace:true />
+            token && authUser ? (
+              <Setting />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
           }
-          />
+        />
         <Route
           path="/Notifications"
           element={
-            token && authUser ? <NotificationPage /> : <Navigate to="/login" replace:true />
+            token && authUser ? (
+              <NotificationPage />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
           }
-          />
+        />
       </Routes>
     </>
   );

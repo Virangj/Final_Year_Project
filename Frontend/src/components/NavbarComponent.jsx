@@ -55,7 +55,7 @@ const Navbar = () => {
               <span>Explore</span>
             </a>
             <a
-              href="/profile"
+              href={`/profile/${authUser?._id}`}
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <User size={22} />
@@ -117,7 +117,7 @@ const Navbar = () => {
         <a href="/Explore">
           <Compass className="text-white w-6 h-6" />
         </a>
-        <a href="/Profile">
+        <a href={`/profile/${authUser?._id}`}>
           <User className="text-white w-6 h-6" />
         </a>
         <a href="/Chat">
