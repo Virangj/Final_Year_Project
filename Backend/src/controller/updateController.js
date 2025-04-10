@@ -93,7 +93,7 @@ export const editprofile = async (req, res) => {
 
 export const followUser = async (req, res) => {
   try {
-    const follower = await User.findById(req.decoded.userId); // You said `user` var has full user info
+    const follower = await User.findById(req.decode.userId); // You said `user` var has full user info
     const { username } = req.body; // ID of the current user (follower)
 
     // Get user to be followed by username
@@ -122,7 +122,7 @@ export const followUser = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "Followed successfully", user: userToFollow });
+      .json({ message: "Followed successfully", user: userToFollow , follower:follower});
   } catch (error) {
     console.log("Error in followUser controller:", error.message);
     res.status(500).json({ message: "Internal server error" });

@@ -5,9 +5,9 @@ import { protectedRoute } from "../middleware/authMiddleware.js";
 
 const updateRoutesoutes = express.Router();
 
-updateRoutesoutes.patch("/personalinfo", personalinfo)
+updateRoutesoutes.patch("/personalinfo",protectedRoute, personalinfo)
 
-updateRoutesoutes.patch("/editProfile",multerUpload.single('profilePic'), editprofile)
+updateRoutesoutes.patch("/editProfile",multerUpload.single('profilePic'),protectedRoute, editprofile)
 
 updateRoutesoutes.post("/follow",protectedRoute, followUser)
 

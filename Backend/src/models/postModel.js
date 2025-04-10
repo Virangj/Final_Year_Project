@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const postschema = new mongoose.Schema(
     {
         username: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User', 
             required: true,
             trim: true,  // Automatically trims extra spaces
         },

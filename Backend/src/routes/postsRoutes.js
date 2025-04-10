@@ -6,7 +6,7 @@ import { protectedRoute } from "../middleware/authMiddleware.js";
 
 const postsRoutes = express.Router();
 
-postsRoutes.post("/addcomment",addcomment);
+postsRoutes.post("/addcomment", protectedRoute ,addcomment);
 
 postsRoutes.patch("/updatecomment",updatecomment);
 
@@ -30,11 +30,11 @@ postsRoutes.post("/addpost", multerUpload.array('files'),protectedRoute,Checkrol
 
 postsRoutes.patch("/updatemypost",Checkrole,updatemypost);
 
-postsRoutes.get("/getmypost",Checkrole, getmypost);
+postsRoutes.get("/getmypost",protectedRoute, getmypost);
 
 postsRoutes.delete("/delete",Checkrole, deletemypost);
 
-postsRoutes.get("/suggested",suggested)
+postsRoutes.get("/suggested",protectedRoute,suggested)
 
 
 export default postsRoutes;
