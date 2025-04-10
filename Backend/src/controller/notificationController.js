@@ -1,5 +1,5 @@
 // controllers/notificationController.js
-import Notification from "../models/NotificationModel.js";
+import Notification from "../models/notificationModel.js";
 // @desc Create a new notification
 export const createNotification = async (req, res) => {
   try {
