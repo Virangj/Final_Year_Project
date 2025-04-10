@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { X } from "lucide-react";
+import { useAuthStore } from "../store/useAuthStore";
 
 const ExploreComponent = () => {
   const [user, setUser] = useState([]);
   const [posts, setPosts] = useState([]);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
+  const {Myself} = useAuthStore()
 
   const fetchUser = async () => {
     try {
@@ -19,14 +21,15 @@ const ExploreComponent = () => {
   const fetchPost = async () => {
     try {
       const res = await axiosInstance.get("/posts/randomposts");
-      // setPosts(res.data.data); // array
-      if (Array.isArray(res.data.data)) {
-        setPosts(res.data.data);
-      } else if (Array.isArray(res.data)) {
+
+      // Handle structure consistently
+      if (Array.isArray(res.data)) {
         setPosts(res.data);
+      } else if (Array.isArray(res.data.data)) {
+        setPosts(res.data.data);
       } else {
         console.warn("Unexpected post data structure");
-        setPosts([]); // fallback to avoid breaking map
+        setPosts([]);
       }
     } catch (err) {
       console.error("Failed to fetch explore post", err);
@@ -39,7 +42,6 @@ const ExploreComponent = () => {
   }, []);
 
   useEffect(() => {
-    // Lock scroll when modal open
     if (selectedArtwork) {
       document.body.style.overflow = "hidden";
     } else {
@@ -57,8 +59,11 @@ const ExploreComponent = () => {
   ];
 
   const handleFollowing = async (username) => {
+    console.log(username);    
     try {
-      await axiosInstance.post("/update/follow", { username });
+      const res = await axiosInstance.post("/update/follow", { username });
+      console.log("Following data: ",res);
+      
       fetchUser(); // Refresh users after following
     } catch (error) {
       console.error("Failed in following user", error);
@@ -92,8 +97,8 @@ const ExploreComponent = () => {
             >
               <div className="flex items-center space-x-4">
                 <img
-                  src={artist.image}
-                  alt={artist.name}
+                  src={artist.profilePic || "/fallback.jpg"}
+                  alt={artist.username}
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>
@@ -140,7 +145,14 @@ const ExploreComponent = () => {
               <div className="absolute inset-0 bg-opacity-0 group-hover:bg-black/40 transition-all" />
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-black/60 text-white translate-y-full group-hover:translate-y-0 transition-transform">
                 <p className="font-semibold">{artwork.title}</p>
-                <p className="text-sm">by {artwork.username}</p>
+                <div className="flex items-center mt-1 space-x-2">
+                  <img
+                    src={artwork.username.profilePic || "/fallback.jpg"}
+                    alt="Artist"
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                  <p className="text-sm">{artwork.username.username}</p>
+                </div>
               </div>
             </div>
           ))}
@@ -170,9 +182,16 @@ const ExploreComponent = () => {
             <h2 className="text-2xl sm:text-3xl font-bold mb-2">
               {selectedArtwork.title}
             </h2>
-            <p className="text-white/70 mb-1 text-sm sm:text-base">
-              By: {selectedArtwork.username}
-            </p>
+            <div className="flex items-center gap-2 mb-2">
+              <img
+                src={selectedArtwork.username.profilePic || "/fallback.jpg"}
+                className="w-6 h-6 rounded-full object-cover"
+                alt="User profile"
+              />
+              <p className="text-white/70 text-sm sm:text-base">
+                By: {selectedArtwork.username.username}
+              </p>
+            </div>
             <p className="text-white/60 text-sm sm:text-base">
               {selectedArtwork.description}
             </p>

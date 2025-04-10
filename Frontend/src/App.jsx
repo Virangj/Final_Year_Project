@@ -9,10 +9,11 @@ import { Toaster } from "react-hot-toast";
 import PostDetails from "./pages/PostDetailsPage";
 import Explore from "./pages/ExplorePage";
 import Chat from "./pages/ChatPage";
-import Profile from "./pages/Profile";
+import Profile from "./pages/ProfilePage";
 import EditProfile from "./pages/Editprofile";
-import CreatePost from "./pages/CreatePost";
-import Setting from "./pages/Setting";
+import CreatePost from "./pages/CreatePostPage";
+import Setting from "./pages/SettingPage";
+import NotificationPage from "./pages/NotificationPage";
 
 function App() {
   const { authUser, token } = useAuthStore();
@@ -113,6 +114,12 @@ function App() {
           path="/setting"
           element={
             token && authUser ? <Setting /> : <Navigate to="/login" replace:true />
+          }
+          />
+        <Route
+          path="/Notifications"
+          element={
+            token && authUser ? <NotificationPage /> : <Navigate to="/login" replace:true />
           }
           />
       </Routes>

@@ -38,7 +38,7 @@ const CreatePost = () => {
         formData.append('title', title);
         formData.append('description', description);
         // formData.append("profilepic", authUser.profilePic);
-        formData.append("username", authUser.username);
+        formData.append("username", authUser._id);
         formData.append("arttype", authUser.arttype);
         files.forEach((img) => formData.append('files', img)); // 'images' matches field name in multer
         formData.append("role", authUser.role)        

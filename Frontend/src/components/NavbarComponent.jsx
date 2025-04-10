@@ -88,7 +88,7 @@ const Navbar = () => {
             )}
 
             <a
-              href="/settings"
+              href="/setting"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Settings size={22} />
@@ -123,7 +123,7 @@ const Navbar = () => {
         <a href="/Chat">
           <MessageCircle className="text-white w-6 h-6" />
         </a>
-        <a href="/Settings">
+        <a href="/Setting">
           <Settings className="text-white w-6 h-6" />
         </a>
       </div>

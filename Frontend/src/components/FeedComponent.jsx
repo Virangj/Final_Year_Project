@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
-import { Heart, MessageCircle, Share, Bookmark, Send, Trash } from "lucide-react";
+import { Heart, MessageCircle, Share, Bookmark, Send } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Feed = () => {
@@ -25,6 +25,7 @@ const Feed = () => {
       const likedStatus = {};
       const visibleMap = {};
       const commentInputMap = {};
+
       posts.forEach((post) => {
         likedStatus[post._id] = post.likes?.userId?.includes(userId);
         visibleMap[post._id] = 2;
@@ -88,7 +89,7 @@ const Feed = () => {
     const comment = commentInputs[postId];
     if (!comment.trim()) return;
     try {
-      const res = await axiosInstance.post("/posts/addcomment", {
+      await axiosInstance.post("/posts/addcomment", {
         postId,
         text: comment,
       });
@@ -97,17 +98,6 @@ const Feed = () => {
     } catch (err) {
       console.error("Failed to post comment", err);
       toast.error("Failed to post comment");
-    }
-  };
-
-  const handleDeleteComment = async (postId, commentId) => {
-    try {
-      await axiosInstance.post("/posts/deletecomment", { postId, commentId });
-      toast.success("Comment deleted");
-      fetchArtworks();
-    } catch (error) {
-      console.error("Failed to delete comment", error);
-      toast.error("Failed to delete comment");
     }
   };
 
@@ -153,7 +143,7 @@ const Feed = () => {
                     </Swiper>
                   ) : (
                     <img
-                      src="default_image.png"
+                      src="/default-artwork.jpg"
                       alt="Default Artwork"
                       className="w-full h-full object-cover"
                     />
@@ -162,10 +152,14 @@ const Feed = () => {
 
                 <div className="p-4 flex items-center justify-between border-b border-neutral-200/20">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-300"></div>
+                    <img
+                      src={artwork.username?.profilePic || "/default-avatar.png"}
+                      alt="User Profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
                     <div>
                       <p className="font-medium text-white text-sm sm:text-base">
-                        {artwork.username}
+                        {artwork.username?.username || "Unknown User"}
                       </p>
                       <p className="text-xs text-gray-500">Digital Artist</p>
                     </div>
@@ -218,24 +212,9 @@ const Feed = () => {
                       {(artwork.comments || [])
                         .slice(0, visibleCount)
                         .map((comment, idx) => (
-                          <div key={idx} className="flex justify-between items-start text-sm text-gray-300">
-                            <div>
-                              <span className="font-semibold text-white">
-                                {comment.user?.username}:{" "}
-                              </span>
-                              <span>{comment.text}</span>
-                            </div>
-                            {artwork.userId === userId && (
-                              <button
-                                onClick={() =>
-                                  handleDeleteComment(artwork._id, comment._id)
-                                }
-                                className="text-red-500 text-xs ml-2"
-                              >
-                                <Trash className="w-4 h-4" />
-                              </button>
-                            )}
-                          </div>
+                          <p key={idx} className="text-sm text-gray-300">
+                            {comment.text}
+                          </p>
                         ))}
                       {artwork.comments?.length > 2 &&
                         visibleCount < artwork.comments.length && (
