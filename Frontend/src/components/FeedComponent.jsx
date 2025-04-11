@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { Heart, MessageCircle, Share, Bookmark, Send } from "lucide-react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const [artworks, setArtworks] = useState([]);
@@ -185,9 +186,8 @@ const Feed = () => {
                         onClick={() => handleLikeToggle(artwork._id)}
                       >
                         <Heart
-                          className={`w-6 h-6 transition-colors ${
-                            isLiked ? "text-red-500 fill-red-500" : ""
-                          }`}
+                          className={`w-6 h-6 transition-colors ${isLiked ? "text-red-500 fill-red-500" : ""
+                            }`}
                         />
                         <span className="text-sm">
                           {artwork.likes?.Totallike || 0}

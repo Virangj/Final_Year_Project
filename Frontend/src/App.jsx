@@ -11,11 +11,14 @@ import Explore from "./pages/ExplorePage";
 import Chat from "./pages/ChatPage";
 import Profile from "./pages/ProfilePage";
 import EditProfile from "./pages/Editprofile";
-import CreatePost from "./pages/CreatePostPage";
+import CreatePost from "./pages/CreatePostPage"
 import Setting from "./pages/SettingPage";
 import NotificationPage from "./pages/NotificationPage";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
+import CreatePost from "./pages/CreatePost";
+import Setting from "./pages/Setting";
+import OtherUserProfile from "./pages/OtherUserProfile";
 
 function App() {
   const { authUser, token, checkAuth, isCheckingAuth } = useAuthStore();
@@ -136,7 +139,15 @@ function App() {
             )
           }
         />
+
+        <Route
+          path="/otheruserprofile/:username"
+          element={
+            token && authUser ? <OtherUserProfile /> : <Navigate to="/login" replace:true />
+          }
+        />
       </Routes>
+
     </>
   );
 }
