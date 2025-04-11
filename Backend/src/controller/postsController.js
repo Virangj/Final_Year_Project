@@ -501,7 +501,7 @@ export const suggested = async (req, res) => {
       role: 'artist'                 // only users with role "artist"
     })
       .limit(10)
-      .select('username profilepic arttype');
+      .select('username profilePic arttype followers');
 
     res.status(200).json({ suggestedUsers });
   } catch (err) {

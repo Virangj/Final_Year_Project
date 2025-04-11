@@ -179,7 +179,16 @@ export const emailAddressCheck = async (req, res) => {
 
       await user.save()
       sendVerificationEmail(email, verificationCode);
-      res.status(200).json({ message: "code send successfully" })
+      res.status(200).json({
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        username: user.username,
+        phone: user.phone,
+        bio: user.bio,
+        arttype: user.arttype,
+        profilePic: user.profilePic,
+      })
     }
     else {
       res.status(401).json({ message: "user does'nt exists" })
@@ -259,4 +268,15 @@ export const verifyotp = async (req, res) => {
     console.log("Error in checking email address: ", error);
     res.status(500).json({ message: "Failed to verify OTP" });
   }
-}
+};
+
+export const getotheruserprofile = async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};

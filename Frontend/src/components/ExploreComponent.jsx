@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ExploreComponent = () => {
   const [user, setUser] = useState([]);
   const [posts, setPosts] = useState([]);
   const [selectedArtwork, setSelectedArtwork] = useState(null);
+  const navigate = useNavigate()
 
   const fetchUser = async () => {
     try {
@@ -90,9 +92,9 @@ const ExploreComponent = () => {
               key={idx}
               className="bg-white text-black p-4 rounded-lg shadow-md"
             >
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4" onClick={() => navigate(`/otheruserprofile/${artist.username}`)}>
                 <img
-                  src={artist.image}
+                  src={artist.profilePic}
                   alt={artist.name}
                   className="w-16 h-16 rounded-full object-cover"
                 />

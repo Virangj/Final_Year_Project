@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { Heart, MessageCircle, Share, Bookmark, Send, Trash } from "lucide-react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const [artworks, setArtworks] = useState([]);
@@ -14,6 +15,7 @@ const Feed = () => {
   const [error, setError] = useState("");
   const [commentInputs, setCommentInputs] = useState({});
   const [visibleCommentsMap, setVisibleCommentsMap] = useState({});
+  const navigate = useNavigate()
 
   const userId = localStorage.getItem("userId");
 
@@ -161,7 +163,7 @@ const Feed = () => {
                 </div>
 
                 <div className="p-4 flex items-center justify-between border-b border-neutral-200/20">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 " onClick={() => navigate(`/otheruserprofile/${artwork.username}`)}>
                     <div className="w-10 h-10 rounded-full bg-gray-300"></div>
                     <div>
                       <p className="font-medium text-white text-sm sm:text-base">
@@ -180,9 +182,8 @@ const Feed = () => {
                         onClick={() => handleLikeToggle(artwork._id)}
                       >
                         <Heart
-                          className={`w-6 h-6 transition-colors ${
-                            isLiked ? "text-red-500 fill-red-500" : ""
-                          }`}
+                          className={`w-6 h-6 transition-colors ${isLiked ? "text-red-500 fill-red-500" : ""
+                            }`}
                         />
                         <span className="text-sm">
                           {artwork.likes?.Totallike || 0}

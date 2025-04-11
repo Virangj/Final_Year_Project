@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 import CreatePost from "./pages/CreatePost";
 import Setting from "./pages/Setting";
+import OtherUserProfile from "./pages/OtherUserProfile";
 
 function App() {
   const { authUser, token } = useAuthStore();
@@ -114,8 +115,15 @@ function App() {
           element={
             token && authUser ? <Setting /> : <Navigate to="/login" replace:true />
           }
-          />
+        />
+        <Route
+          path="/otheruserprofile/:username"
+          element={
+            token && authUser ? <OtherUserProfile /> : <Navigate to="/login" replace:true />
+          }
+        />
       </Routes>
+
     </>
   );
 }

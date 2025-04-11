@@ -1,8 +1,9 @@
 import React from 'react'
-import Navbar from '../components/Navbar'
+import Navbar from '../components/NavbarComponent'
 import ChangeEmail from '../components/ChangeEmail'
 import ChangePassword from '../components/ChangePassword'
 import PersonalInfo from '../components/PersonalInfo'
+import Logout from '../components/Logout'
 
 const Setting = () => {
     return (
@@ -10,9 +11,10 @@ const Setting = () => {
             <Navbar />
             <div className="w-[80%] mx-auto px-4 py-6 ">
                 <div className="bg-white rounded-lg border border-neutral-200/20 mb-6 flex-row space-y-3">
-                <ChangeEmail/>
-                <ChangePassword/>
-                <PersonalInfo/>
+                    <ChangeEmail />
+                    <ChangePassword />
+                    <PersonalInfo />
+                    <Logout/>
                 </div>
 
             </div>

@@ -34,7 +34,7 @@ postsRoutes.get("/getmypost",Checkrole, getmypost);
 
 postsRoutes.delete("/delete",Checkrole, deletemypost);
 
-postsRoutes.get("/suggested",suggested)
+postsRoutes.get("/suggested",protectedRoute,suggested)
 
 
 export default postsRoutes;
