@@ -1,7 +1,8 @@
 import React from 'react'
 import { Bell } from 'lucide-react'
 import Navbar from '../components/NavbarComponent'
-import ChatComponent from '../components/ChatComponent'
+// import ChatComponent from '../components/ChatComponent'
+import ChatHomeComponent from '../components/ChatComponents/ChatHomeComponent'
 
 const Chat = () => {
   return (
@@ -26,7 +27,7 @@ const Chat = () => {
 
       {/* 📰 Chat */}
       <div className="flex-1 overflow-y-auto scrollbar-hide px-4 pt-16 pb-20 lg:pt-10 lg:pb-10 lg:px-8">
-        <ChatComponent />
+        <ChatHomeComponent />
       </div>
     </div>
   )

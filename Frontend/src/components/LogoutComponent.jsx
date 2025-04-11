@@ -1,11 +1,17 @@
 import React from 'react';
 import { axiosInstance } from '../lib/axios';
+import io from "socket.io-client"
 
 const LogoutComponent = () => {
+  const SOCKET_URL = "http://localhost:5001";
+    const socket = io.connect(SOCKET_URL,{
+      // transport:["websocket"]
+    })
 
   const handleLogout = async () => {
     try {
       await axiosInstance.post('/auth/logout');
+      socket.disconnect()
       sessionStorage.clear();
       window.location.href = "/login";
     } catch (error) {

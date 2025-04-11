@@ -4,12 +4,12 @@ import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 import toast from "react-hot-toast";
 import { validate } from "email-validator";
+import { socket } from "../lib/socket";
 
 const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const [error, seterror] = useState("");
-
   const { user, checkAuth } = useAuthStore();
 
   const login_handlechange = (e) => {
@@ -24,10 +24,9 @@ const Login = () => {
       seterror("Invalid email address");
       return;
     }
-
     try {
       const res = await axiosInstance.post("/auth/login", login);
-      console.log(res);
+      // console.log(res);
       const {
         username,
         email,
@@ -61,8 +60,14 @@ const Login = () => {
       await user(userData);
       localStorage.setItem("userId", userData._id);
       await checkAuth();
-      toast.success("Login successful!");
       setlogin({ email: "", password: "" });
+      if (!socket.connected) {
+        socket.connect();
+
+        socket.on("connect", () => {
+          console.log("✅ Socket connected:", socket.id);
+        });
+      }
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);

@@ -10,16 +10,22 @@ import {
   Plus,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import io from "socket.io-client"
 
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
   const { authUser } = useAuthStore();
+  const SOCKET_URL = "http://localhost:5001";
+  const socket = io.connect(SOCKET_URL,{
+    // transport:["websocket"]
+  })
 
   const handleLogout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
+      socket.disconnect()
       sessionStorage.clear();
       window.location.href = "/login";
       toast.success("Logout successfully");

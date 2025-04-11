@@ -14,12 +14,22 @@ import EditProfile from "./pages/Editprofile";
 import CreatePost from "./pages/CreatePostPage";
 import Setting from "./pages/SettingPage";
 import NotificationPage from "./pages/NotificationPage";
+import { useEffect } from "react";
+import { Loader } from "lucide-react";
 
 function App() {
-  const { authUser, token } = useAuthStore();
+  const { authUser, token, checkAuth, isCheckingAuth } = useAuthStore();
+  // useEffect(() => {
+  //   checkAuth();
+  // }, [checkAuth]),
+  //   console.log({ authUser });
 
-  // console.log(authUser, token);
-
+  // if (isCheckingAuth && !authUser)
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <Loader className="size-10 animate-spin" />
+  //     </div>
+  //   );
   return (
     <>
       <Toaster position="top-right" />
@@ -80,16 +90,6 @@ function App() {
             token && authUser ? <Chat /> : <Navigate to="/login" replace:true />
           }
         />
-        {/* <Route
-          path="/profile"
-          element={
-            token && authUser ? (
-              <Profile />
-            ) : (
-              <Navigate to="/login" replace:true />
-            )
-          }
-        /> */}
         <Route
           path="/profile/:userId"
           element={

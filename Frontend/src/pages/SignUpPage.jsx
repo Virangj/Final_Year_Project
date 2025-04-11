@@ -4,13 +4,14 @@ import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 import { validate } from "email-validator";
 import toast from "react-hot-toast"; // ✅ toast import
+import { socket } from "../lib/socket";
 
 const SignUp = () => {
   const [signup, setsignup] = useState({
     username: "",
     email: "",
     password: "",
-    role: ""
+    role: "",
   });
   const [error, seterror] = useState("");
 
@@ -26,18 +27,17 @@ const SignUp = () => {
       // seterror("invalid email")
       return;
     }
-    localStorage.setItem("email", signup.email)
+    localStorage.setItem("email", signup.email);
     try {
       const res = await axiosInstance.post("/auth/signup", signup);
-      console.log(res.data);      
       await user(res.data);
       toast.success("Signup successful! Redirecting...");
       setsignup({ username: "", email: "", password: "", role: "" });
       navigate("/emailverification");
     } catch (error) {
-      console.log(error.response.data.message)
+      console.log(error.response.data.message);
       if (error.response.data.message) {
-        seterror(error.response.data.message)
+        seterror(error.response.data.message);
       }
     }
   };
