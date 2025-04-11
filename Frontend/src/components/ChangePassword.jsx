@@ -15,10 +15,16 @@ export default function ChangePaswword() {
             toast.error("❌ Passwords do not match.");
             return;
         }
+        if (oldPassword === newPassword) {
+            toast.error("❌ Cannot keep same password.");
+            return;
+        }
+        
         NProgress.start()
         setLoading(true);
         try {
             const res = await axiosInstance.patch("/auth/changepassword", { oldPassword, newPassword })
+            console.log(res);            
             toast.success(res.data.message)
         } catch (error) {
             console.log(error?.response?.data?.message)

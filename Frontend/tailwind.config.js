@@ -9,5 +9,6 @@ export default {
   plugins: [
     require('tailwind-scrollbar'),
     require('@tailwindcss/line-clamp'),
+    require('daisyui'),
   ],
 }

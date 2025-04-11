@@ -9,17 +9,30 @@ import { Toaster } from "react-hot-toast";
 import PostDetails from "./pages/PostDetailsPage";
 import Explore from "./pages/ExplorePage";
 import Chat from "./pages/ChatPage";
-import Profile from "./pages/Profile";
+import Profile from "./pages/ProfilePage";
 import EditProfile from "./pages/Editprofile";
+import CreatePost from "./pages/CreatePostPage"
+import Setting from "./pages/SettingPage";
+import NotificationPage from "./pages/NotificationPage";
+import { useEffect } from "react";
+import { Loader } from "lucide-react";
 import CreatePost from "./pages/CreatePost";
 import Setting from "./pages/Setting";
 import OtherUserProfile from "./pages/OtherUserProfile";
 
 function App() {
-  const { authUser, token } = useAuthStore();
+  const { authUser, token, checkAuth, isCheckingAuth } = useAuthStore();
+  // useEffect(() => {
+  //   checkAuth();
+  // }, [checkAuth]),
+  //   console.log({ authUser });
 
-  console.log(authUser, token);
-
+  // if (isCheckingAuth && !authUser)
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <Loader className="size-10 animate-spin" />
+  //     </div>
+  //   );
   return (
     <>
       <Toaster position="top-right" />
@@ -81,13 +94,9 @@ function App() {
           }
         />
         <Route
-          path="/profile"
+          path="/profile/:userId"
           element={
-            token && authUser ? (
-              <Profile />
-            ) : (
-              <Navigate to="/login" replace:true />
-            )
+            token && authUser ? <Profile /> : <Navigate to="/login" replace />
           }
         />
         <Route
@@ -113,9 +122,24 @@ function App() {
         <Route
           path="/setting"
           element={
-            token && authUser ? <Setting /> : <Navigate to="/login" replace:true />
+            token && authUser ? (
+              <Setting />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
           }
         />
+        <Route
+          path="/Notifications"
+          element={
+            token && authUser ? (
+              <NotificationPage />
+            ) : (
+              <Navigate to="/login" replace:true />
+            )
+          }
+        />
+
         <Route
           path="/otheruserprofile/:username"
           element={

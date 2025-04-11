@@ -10,16 +10,22 @@ import {
   Plus,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import io from "socket.io-client"
 
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
   const { authUser } = useAuthStore();
+  const SOCKET_URL = "http://localhost:5001";
+  const socket = io.connect(SOCKET_URL,{
+    // transport:["websocket"]
+  })
 
   const handleLogout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
+      socket.disconnect()
       sessionStorage.clear();
       window.location.href = "/login";
       toast.success("Logout successfully");
@@ -55,7 +61,7 @@ const Navbar = () => {
               <span>Explore</span>
             </a>
             <a
-              href="/profile"
+              href={`/profile/${authUser?._id}`}
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <User size={22} />
@@ -117,7 +123,7 @@ const Navbar = () => {
         <a href="/Explore">
           <Compass className="text-white w-6 h-6" />
         </a>
-        <a href="/Profile">
+        <a href={`/profile/${authUser?._id}`}>
           <User className="text-white w-6 h-6" />
         </a>
         <a href="/Chat">

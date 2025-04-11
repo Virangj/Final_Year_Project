@@ -4,6 +4,7 @@ import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
 import toast from "react-hot-toast";
 import { validate } from "email-validator";
+import { socket } from "../lib/socket";
 
 const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" });
@@ -36,27 +37,42 @@ const Login = () => {
       seterror("Invalid email address");
       return;
     }
-
     try {
       const res = await axiosInstance.post("/auth/login", login);
-      console.log(res);
+      // console.log(res);
       const {
         username,
         email,
         _id,
         role,
+        profilePic,
+        followers,
+        following,
+        dob,
+        country,
+        city,
+        phone,
+        gender,
       } = res.data;
 
       const userData = { username, email, _id, role };
+      const userData = {
+        username,
+        email,
+        _id,
+        role,
+        profilePic,
+        followers,
+        following,
+        dob,
+        country,
+        city,
+        phone,
+        gender,
+      };
 
       await user(userData);
-
-      // // if (!isVerified) {
-      // //   toast.error("Please verify your email to continue.");
-      // //   navigate("/emailverification");
-      // //   return;
-      // // }
-      localStorage.setItem("userId", userData._id)
+      localStorage.setItem("userId", userData._id);
       await checkAuth();
       if (rememberMe) {
         localStorage.setItem('rememberedEmail', email);
@@ -67,6 +83,13 @@ const Login = () => {
       }
       toast.success("Login successful!");
       setlogin({ email: "", password: "" });
+      if (!socket.connected) {
+        socket.connect();
+
+        socket.on("connect", () => {
+          console.log("✅ Socket connected:", socket.id);
+        });
+      }
       navigate("/");
 
       //   const res = await axiosInstance.post("/auth/login", login)
@@ -91,7 +114,9 @@ const Login = () => {
       //   setlogin({ email: "", password: "" })
     } catch (error) {
       console.error("Login error:", error);
-      const message = error?.response?.data?.message || "Login failed. Check your credentials!";
+      const message =
+        error?.response?.data?.message ||
+        "Login failed. Check your credentials!";
       toast.error(message);
       seterror(message);
     }
@@ -100,7 +125,6 @@ const Login = () => {
   return (
     <>
       <div className="w-full h-screen flex justify-center items-center bg-[url('/background_Image.png')]  bg-cover ">
-
         <div className="w-72  h-fit  my-auto sm:w-96 ">
           <h2 className="mt-3 text-center font-bold text-2xl text-white">
             Creative Threads
@@ -138,7 +162,7 @@ const Login = () => {
               onChange={login_handlechange}
               name="password"
             />
-            {error && <p className='pl-4 text-red-600 text-xs'>{error}</p>}
+            {error && <p className="pl-4 text-red-600 text-xs">{error}</p>}
             <div className="flex flex-row mb-3 w-full justify-between">
               <div className="flex pl-4 text-xs">
                 <input type="checkbox"

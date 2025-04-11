@@ -3,73 +3,90 @@ import mongoose from "mongoose";
 const userschema = new mongoose.Schema(
   {
     profilePic: {
-      type: "string",
+      type: String,
     },
     name: {
-      type: "string",
+      type: String,
     },
     username: {
-      type: "string",
-      require: true,
+      type: String,
+      required: true,
       unique: true,
     },
-    bio:{
-      type:"string",
+    bio: {
+      type: String,
     },
-    arttype:{
-      type:"string",
+    arttype: {
+      type: String,
     },
     email: {
-      type: "string",
+      type: String,
       required: true,
     },
     phone: {
-      type: "number",
+      type: Number,
     },
     dob: {
-      type: "Date",
+      type: Date,
     },
     gender: {
-      type: "string",
+      type: String,
     },
     country: {
-      type: "string",
+      type: String,
     },
     city: {
-      type: "string",
+      type: String,
     },
     password: {
-      type: "string",
+      type: String,
       required: true,
     },
     role: {
-      type: "string",
+      type: String,
       enum: ["normal", "artist"],
-      require: true,
+      required: true,
     },
     isVerified: {
       type: Boolean,
       default: false,
     },
-    followers: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }], // List of followers
-    following: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }], // List of users they follow
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     verificationCode: {
-      type: "string",
+      type: String,
       default: null,
-      expire: "60*10"
+      expire: "60*10",
     },
   },
   {
     timestamps: true,
-  },
-
+  }
 );
+
+// ✅ Set default profilePic based on role before saving
+userschema.pre("save", function (next) {
+  if (!this.profilePic) {
+    if (this.role === "artist") {
+      this.profilePic =
+        "https://res.cloudinary.com/dojtnawk0/image/upload/v1744267624/test/fgwlrnundr23vyqcbyuq.jpg";
+    } else {
+      this.profilePic =
+        "https://res.cloudinary.com/dojtnawk0/image/upload/v1744267591/test/jeg2eevftzovl69ap2o0.jpg";
+    }
+  }
+  next();
+});
 
 const User = mongoose.model("User", userschema);
 export default User;
