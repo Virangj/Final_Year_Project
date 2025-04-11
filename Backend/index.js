@@ -9,6 +9,7 @@ import postsRoutes from "./src/routes/postsRoutes.js";
 import exploreRoutes from "./src/routes/exploreRoutes.js";
 import cors from 'cors';
 import NotificationRoutes from "./src/routes/notificationRoutes.js";
+import { app,server } from "./src/lib/socket.js";
 //! import http from "http";
 //! import { Server } from "socket.io";
 //! import { initSocket } from "./socket/socket.io.js";
@@ -18,7 +19,6 @@ import NotificationRoutes from "./src/routes/notificationRoutes.js";
 dotenv.config();
 
 // Creating variables
-const app = express();
 const PORT = process.env.PORT;
 //! const server = http.createServer(app);
 //! const io = new Server(server, {
@@ -59,7 +59,7 @@ app.use("/api/notifications", NotificationRoutes);
 //! initSocket(io);
 
 
-app.listen(PORT, () =>{
+server.listen(PORT, () =>{
     ConnectDB()
     console.log("Server is running on port: " + PORT);
 })

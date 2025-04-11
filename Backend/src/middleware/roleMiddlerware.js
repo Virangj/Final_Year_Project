@@ -9,7 +9,7 @@ export const Checkrole = async (req, res, next) => {
             }
         }
         const role = req.body.role
-        console.log(req.body.role)
+        // console.log(req.body.role)
         if (role === "artist") {
             return next();
         }
