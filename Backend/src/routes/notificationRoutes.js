@@ -1,13 +1,13 @@
-// routes/notificationRoutes.js
-import express from "express";
-import { createNotification, getUserNotifications } from "../controller/notificationController.js";
+// // routes/notificationRoutes.js
+// import express from "express";
+// import { createNotification, getUserNotifications } from "../controller/notificationController.js";
 
-const NotificationRoutes = express.Router();
+// const NotificationRoutes = express.Router();
 
-// Create a notification (optional API)
-NotificationRoutes.post("/create", createNotification);
+// // Create a notification (optional API)
+// NotificationRoutes.post("/create", createNotification);
 
-// Get all notifications for a user
-NotificationRoutes.get("/:userId", getUserNotifications);
+// // Get all notifications for a user
+// NotificationRoutes.get("/:userId", getUserNotifications);
 
-export default NotificationRoutes;
+// export default NotificationRoutes;

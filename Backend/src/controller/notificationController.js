@@ -1,39 +1,62 @@
-// controllers/notificationController.js
 import Notification from "../models/notificationModel.js";
-// @desc Create a new notification
-export const createNotification = async (req, res) => {
-  try {
-    const { recipient, sender, type, content, postId } = req.body;
+import User from "../models/userModel.js"; // Assuming you have a User model to look up users by username
 
-    const notification = new Notification({
-      recipient,
-      sender,
-      type,
-      content,
-      postId,
-    });
+// Function to handle sending and saving notifications
+const sendNotification = async ({ senderId, receiverId, type, postId }) => {
+  let content = "";
 
-    const saved = await Notification.save();
-
-    res.status(201).json(saved);
-  } catch (err) {
-    console.error("Create Notification Error:", err);
-    res.status(500).json({ message: "Failed to create notification" });
+  // Handle the different notification types and content
+  if (type === "follow") {
+    content = "started following you.";
+  } else if (type === "like") {
+    content = "liked your post.";
+  } else if (type === "comment") {
+    content = "commented on your post.";
   }
+
+  // If receiverId is a username, we need to resolve it to the actual user ID
+  let resolvedReceiverId = receiverId;
+  if (typeof receiverId === "string") {
+    try {
+      const user = await User.findOne({ username: receiverId });
+
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      resolvedReceiverId = user._id; // Resolve the receiver's user ID
+    } catch (error) {
+      console.error("Error resolving receiver username:", error);
+      throw new Error("Error resolving receiver username.");
+    }
+  }
+
+  // Create notification in the database
+  const notification = await Notification.create({
+    recipient: resolvedReceiverId, // Ensure we are saving the user ID, not the username
+    sender: senderId,
+    type,
+    content,
+    postId,
+    createdAt: new Date().toISOString(),
+  });
+
+  return notification;
 };
 
-// @desc Get notifications for a user
-export const getUserNotifications = async (req, res) => {
-  try {
-    const userId = req.params.userId;
+// Function to emit the notification to the receiver
+const emitNotification = (io, receiverId, notification) => {
+  // Emit the notification to the receiver
+  io.to(receiverId).emit("receiveNotification", {
+    senderId: notification.sender,
+    type: notification.type,
+    content: notification.content,
+    postId: notification.postId,
+    createdAt: notification.createdAt, // Use the createdAt from the DB for consistency
+  });
+};
 
-    const notifications = await Notification.find({ recipient: userId })
-      .populate("sender", "username profilePic")
-      .sort({ createdAt: -1 });
-
-    res.status(200).json(notifications);
-  } catch (err) {
-    console.error("Get Notification Error:", err);
-    res.status(500).json({ message: "Failed to fetch notifications" });
-  }
+export default {
+  sendNotification,
+  emitNotification,
 };

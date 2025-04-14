@@ -15,9 +15,9 @@ const Profile = () => {
 
   const fetchPosts = async () => {
     try {
-      console.log("authUser: ", authUser);
+      // console.log("authUser: ", authUser);
       const res = await axiosInstance.get(`/posts/getmypost`, authUser._id); //
-      console.log(res);
+      // console.log(res);
       setposts(res.data.posts);
     } catch (err) {
       console.error("Error fetching user posts:", err.response.data.message);
@@ -73,7 +73,7 @@ const Profile = () => {
   const handleFollowing = async (username) => {
     try {
       const res = await axiosInstance.post("/update/follow", { username });
-      console.log(res);
+      // console.log(res);
 
       // Remove followed user from suggested list immediately
       setsuggestedUser((prev) =>

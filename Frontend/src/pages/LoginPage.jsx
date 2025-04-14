@@ -82,13 +82,6 @@ const Login = () => {
       }
       toast.success("Login successful!");
       setlogin({ email: "", password: "" });
-      if (!socket.connected) {
-        socket.connect();
-
-        socket.on("connect", () => {
-          console.log("✅ Socket connected:", socket.id);
-        });
-      }
       navigate("/");
 
       //   const res = await axiosInstance.post("/auth/login", login)

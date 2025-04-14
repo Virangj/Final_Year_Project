@@ -36,7 +36,7 @@ export default function EditProfile() {
             formData.append("username", name);
             formData.append("arttype", artType);
             formData.append("bio", bio);
-            console.log(formData)
+            // console.log(formData)
 
             const res = await axiosInstance.patch("/update/editprofile", formData);
 
@@ -46,7 +46,7 @@ export default function EditProfile() {
             userUpdate("profilePic", res.data.profilePic);
 
             toast.success("Profile updated successfully");
-            navigate("/profile", { replace: true });
+            navigate(`/profile/${authUser._id}`, { replace: true });
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
 

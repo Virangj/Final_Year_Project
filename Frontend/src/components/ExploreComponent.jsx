@@ -11,8 +11,12 @@ const ExploreComponent = () => {
   const [commentsOpen, setCommentsOpen] = useState({});
   const [comments, setComments] = useState({});
   const [showFullDesc, setShowFullDesc] = useState({});
+<<<<<<< Updated upstream
   const { Myself, authUser } = useAuthStore();
   const navigate = useNavigate()
+=======
+  const { authUser } = useAuthStore();
+>>>>>>> Stashed changes
 
   const fetchUser = async () => {
     try {
@@ -58,6 +62,11 @@ const ExploreComponent = () => {
   const handleFollowing = async (username, _id) => {
     try {
       await axiosInstance.post("/update/follow", { username });
+      // socket.emit("sendNotification", {
+      //   senderId: authUser._id,
+      //   receiverId: username,
+      //   type: "follow",
+      // });
       fetchUser(); // Refresh users
       const currentFollowing = authUser?.following || [];
 

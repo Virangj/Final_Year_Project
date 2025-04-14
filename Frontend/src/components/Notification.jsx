@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 // import axios from 'axios'; // Uncomment for API
-import { MoreVertical } from 'lucide-react';
+import { MoreVertical } from "lucide-react";
+import { socket } from "../lib/socket";
+import { showNotification } from "../lib/notification";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState({});
@@ -8,39 +10,43 @@ const Notification = () => {
   // Static fallback data
   const staticData = [
     {
-      id: '1',
-      sender: { username: 'Sarah Miller', profilePic: '/images/sarah.jpg' },
+      id: "1",
+      sender: { username: "Sarah Miller", profilePic: "/images/sarah.jpg" },
       message: 'liked your artwork "Digital Dreams"',
-      timeAgo: '2 hours ago',
-      group: 'Today',
+      timeAgo: "2 hours ago",
+      group: "Today",
     },
     {
-      id: '2',
-      sender: { username: 'John Doe', profilePic: '/images/john.jpg' },
-      message: 'started following you',
-      timeAgo: '5 hours ago',
-      group: 'Today',
+      id: "2",
+      sender: { username: "John Doe", profilePic: "/images/john.jpg" },
+      message: "started following you",
+      timeAgo: "5 hours ago",
+      group: "Today",
     },
     {
-      id: '3',
-      sender: { username: 'Emma Wilson', profilePic: '/images/emma.jpg' },
-      message: 'commented on your post: "This is absolutely stunning! Love the details."',
-      timeAgo: '2 days ago',
-      group: 'This Week',
+      id: "3",
+      sender: { username: "Emma Wilson", profilePic: "/images/emma.jpg" },
+      message:
+        'commented on your post: "This is absolutely stunning! Love the details."',
+      timeAgo: "2 days ago",
+      group: "This Week",
     },
     {
-      id: '4',
-      sender: { username: 'Creative Threads', profilePic: '/images/creative.jpg' },
+      id: "4",
+      sender: {
+        username: "Creative Threads",
+        profilePic: "/images/creative.jpg",
+      },
       message: 'featured your artwork in "Weekly Highlights"',
-      timeAgo: '4 days ago',
-      group: 'This Week',
+      timeAgo: "4 days ago",
+      group: "This Week",
     },
     {
-      id: '5',
-      sender: { username: 'Alex Chen', profilePic: '/images/alex.jpg' },
-      message: 'shared your artwork',
-      timeAgo: '1 week ago',
-      group: 'Earlier',
+      id: "5",
+      sender: { username: "Alex Chen", profilePic: "/images/alex.jpg" },
+      message: "shared your artwork",
+      timeAgo: "1 week ago",
+      group: "Earlier",
     },
   ];
 
@@ -73,6 +79,16 @@ const Notification = () => {
     fetchNotifications();
     */
   }, []);
+  useEffect(() => {
+    socket.on("receiveNotification", (notification) => {
+      console.log("New notification:", notification);
+      showNotification(notification); // your custom logic
+    });
+
+    return () => {
+      socket.off("receiveNotification");
+    };
+  }, []);
 
   const NotificationCard = ({ sender, message, timeAgo }) => (
     <div className="p-4 hover:bg-neutral-800 border-l-4 border-indigo-500">
@@ -84,7 +100,10 @@ const Notification = () => {
         />
         <div className="ml-4 flex-1">
           <p className="text-sm text-white">
-            <span className="font-semibold text-indigo-400">{sender.username}</span> {message}
+            <span className="font-semibold text-indigo-400">
+              {sender.username}
+            </span>{" "}
+            {message}
           </p>
           <p className="text-xs text-neutral-400 mt-1">{timeAgo}</p>
         </div>
@@ -98,7 +117,10 @@ const Notification = () => {
   return (
     <div className="space-y-4">
       {Object.keys(notifications).map((group) => (
-        <div key={group} className="bg-neutral-900 border border-neutral-700 rounded-lg">
+        <div
+          key={group}
+          className="bg-neutral-900 border border-neutral-700 rounded-lg"
+        >
           <div className="p-4 border-b border-neutral-800">
             <h3 className="font-semibold text-neutral-400">{group}</h3>
           </div>

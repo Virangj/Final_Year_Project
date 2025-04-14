@@ -3,10 +3,10 @@ import { axiosInstance } from '../lib/axios';
 import io from "socket.io-client"
 
 const LogoutComponent = () => {
-  const SOCKET_URL = "http://localhost:5001";
-    const socket = io.connect(SOCKET_URL,{
-      // transport:["websocket"]
-    })
+  // const SOCKET_URL = "http://localhost:5001";
+  //   const socket = io.connect(SOCKET_URL,{
+  //     // transport:["websocket"]
+  //   })
 
   const handleLogout = async () => {
     try {
