@@ -4,7 +4,8 @@ const postschema = new mongoose.Schema(
     {
         username: {
             required: true,
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
             unique: true,
         },
         createdBy: {

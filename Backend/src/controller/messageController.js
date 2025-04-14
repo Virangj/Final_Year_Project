@@ -1,6 +1,6 @@
 import User from "../models/userModel.js";
 import Message from "../models/messageModel.js";
-import cloudinary from "../lib/cloudinary.js"
+import cloudinary from "../lib/cloudinary.js";
 import notification from "../models/notificationModel.js";
 
 export const getUserForSideBar = async (req, res) => {
@@ -9,7 +9,7 @@ export const getUserForSideBar = async (req, res) => {
     const filteredUsers = await User.find({
       _id: { $ne: loggedInUserId },
     }).select("-password");
-    console.log(filteredUsers);    
+    console.log(filteredUsers);
     res.status(200).json(filteredUsers);
   } catch (error) {
     console.log("Message getUserForSideBar error", error.message);
@@ -61,13 +61,15 @@ export const sendMessage = async (req, res, io) => {
       imageURL = uploadResponse.secure_url;
     }
 
+    console.log("Creating message with:", { senderId, receiverId, text, image });
+
     const newMessage = new Message({
       senderId,
       receiverId,
       text,
       image: imageURL,
     });
-
+    console.log("✅ Message saved to DB:", newMessage);
     await newMessage.save();
 
     await notification.create({
