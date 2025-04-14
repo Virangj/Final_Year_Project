@@ -38,36 +38,36 @@ export const useChatStore = create((set, get) => ({
 
   sendMessages: async (messageData) => {
     const { authUser } = useAuthStore.getState();
-    const { selectedUser, messages, addNewMessageToChat } = get();
+    const { selectedUser, addNewMessageToChat } = get();
   
     const newMessage = {
-      _id: new Date().getTime(), // Temporary ID
+      _id: new Date().getTime(), // Temporary ID for frontend
       senderId: authUser._id,
       text: messageData.text || "",
       image: messageData.image || "",
       createdAt: new Date().toISOString(),
     };
   
-    // 1. Optimistically add to UI
+    // 1. Optimistically update the UI
     addNewMessageToChat(newMessage);
   
     try {
-      const res = await axiosInstance.post(`/message/send/${selectedUser._id}`, messageData);
-      
-      const messagePayload = {
+      // 2. Store message in DB
+      await axiosInstance.post(`/message/send/${selectedUser._id}`, messageData);
+  
+      // 3. Emit via socket
+      socket.emit("sendMessage", {
         senderId: authUser._id,
         receiverId: selectedUser._id,
         message: {
           text: messageData.text || "",
           image: messageData.image || "",
         },
-        createdAt: new Date().toISOString(),
-      };
-      
-      socket.emit("sendMessage", messagePayload);
+        createdAt: newMessage.createdAt,
+      });
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to send message");
+      console.log("Failed to send message:", error);
+      toast.error("Message failed to send");
     }
   },
   

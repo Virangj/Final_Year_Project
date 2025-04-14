@@ -31,7 +31,7 @@ function App() {
   //       <Loader className="size-10 animate-spin" />
   //     </div>
   //   );
-  console.log(authUser,token)
+  // console.log(authUser,token)
   return (
     <>
       <Toaster position="top-right" />

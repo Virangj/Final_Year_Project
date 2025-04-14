@@ -119,6 +119,8 @@ const Feed = () => {
       [postId]: !prev[postId],
     }));
   };
+  console.log(artworks);
+  
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
@@ -159,7 +161,7 @@ const Feed = () => {
                     </Swiper>
                   ) : (
                     <img
-                      src="/default-artwork.jpg"
+                      src={artwork.username}
                       alt="Default Artwork"
                       className="w-full h-full object-cover"
                     />
@@ -170,17 +172,17 @@ const Feed = () => {
                   <div className="flex items-center space-x-3"
                     onClick={() => {
                       if (artwork.username === authUser.username) return navigate(`/profile/${authUser._id}`)
-                      navigate(`/otheruserprofile/${artwork.username}`)
+                      navigate(`/otheruserprofile/${artwork.username.username}`)
                     }}
                   >
                     <img
-                      src={artwork.profilepic || "/default-avatar.png"}
+                      src={artwork.username.profilePic || "/default-avatar.png"}
                       alt="User Profile"
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div>
                       <p className="font-medium text-white text-sm sm:text-base">
-                        {artwork.username || "Unknown User"}
+                        {artwork.username.username || "Unknown User"}
                       </p>
                       <p className="text-xs text-gray-500">Digital Artist</p>
                     </div>

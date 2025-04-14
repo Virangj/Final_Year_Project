@@ -11,12 +11,8 @@ const ExploreComponent = () => {
   const [commentsOpen, setCommentsOpen] = useState({});
   const [comments, setComments] = useState({});
   const [showFullDesc, setShowFullDesc] = useState({});
-<<<<<<< Updated upstream
-  const { Myself, authUser } = useAuthStore();
   const navigate = useNavigate()
-=======
   const { authUser } = useAuthStore();
->>>>>>> Stashed changes
 
   const fetchUser = async () => {
     try {
@@ -94,19 +90,19 @@ const ExploreComponent = () => {
     document.body.style.overflow = selectedArtwork ? "hidden" : "unset";
   }, [selectedArtwork]);
 
-  const categories = [
-    "All",
-    "Digital Art",
-    "Photography",
-    "Illustrations",
-    "Paintings",
-    "3D Art",
-  ];
+  // const categories = [
+  //   "All",
+  //   "Digital Art",
+  //   "Photography",
+  //   "Illustrations",
+  //   "Paintings",
+  //   "3D Art",
+  // ];
 
   return (
     <div className="bg-black min-h-screen text-white px-4 py-6 max-w-7xl mx-auto relative">
       {/* Category Filter */}
-      <div className="flex overflow-x-auto space-x-4 mb-8 scrollbar-hide">
+      {/* <div className="flex overflow-x-auto space-x-4 mb-8 scrollbar-hide">
         {categories.map((cat, i) => (
           <button
             key={i}
@@ -116,7 +112,7 @@ const ExploreComponent = () => {
             {cat}
           </button>
         ))}
-      </div>
+      </div> */}
 
       {/* Trending Artists */}
       <div className="mb-12">

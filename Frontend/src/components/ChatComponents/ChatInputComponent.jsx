@@ -2,15 +2,15 @@ import React, { useRef, useState, useEffect } from "react";
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import { Image, Send, X } from "lucide-react";
-import { socket } from "../../lib/socket"; // 🔌 socket client
-import { toast } from "react-hot-toast"; // if not used, remove this line
+import { socket } from "../../lib/socket";
+import { toast } from "react-hot-toast";
 
 const ChatInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
 
-  const { selectedUser, sendMessages } = useChatStore();
+  const { sendMessages } = useChatStore();
   const { authUser } = useAuthStore();
 
   useEffect(() => {
@@ -43,31 +43,17 @@ const ChatInput = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleSendMessage = (messageData) => {
-    const { authUser } = useAuthStore.getState();
-    const { selectedUser, addNewMessageToChat } = useChatStore.getState();
+  const handleSend = async (e) => {
+    e.preventDefault();
 
-    const newMessage = {
-      _id: new Date().getTime(),
-      senderId: authUser._id,
-      text: messageData.text || "",
-      image: messageData.image || "",
-      createdAt: new Date().toISOString(),
-    };
-
-    // Add to current UI
-    addNewMessageToChat(newMessage);
-
-    // Send to backend
-    socket.emit("sendMessage", {
-      senderId: authUser._id,
-      receiverId: selectedUser._id,
-      message: {
-        text: messageData.text,
-        image: messageData.image,
-      },
-      createdAt: newMessage.createdAt,
+    await sendMessages({
+      text,
+      image: imagePreview,
     });
+
+    setText("");
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -91,16 +77,7 @@ const ChatInput = () => {
         </div>
       )}
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault(); // 🛑 Prevent form reload
-          handleSendMessage({ text, image: imagePreview });
-          setText("");
-          setImagePreview(null);
-          if (fileInputRef.current) fileInputRef.current.value = "";
-        }}
-        className="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-full"
-      >
+      <form onSubmit={handleSend} className="flex items-center gap-2 bg-zinc-900 px-4 py-2 rounded-full">
         <input
           type="text"
           placeholder="Type a message..."
@@ -119,9 +96,7 @@ const ChatInput = () => {
 
         <button
           type="button"
-          className={`p-2 rounded-full hover:bg-zinc-800 transition ${
-            imagePreview ? "text-emerald-500" : "text-zinc-400"
-          }`}
+          className={`p-2 rounded-full hover:bg-zinc-800 transition ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
           onClick={() => fileInputRef.current?.click()}
         >
           <Image size={18} />
