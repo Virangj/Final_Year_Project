@@ -74,13 +74,13 @@ const Navbar = () => {
               <MessageCircle size={22} />
               <span>Chat</span>
             </a>
-            <a
+            {/* <a
               href="/Notifications"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Bell size={22} />
               <span>Notifications</span>
-            </a>
+            </a> */}
 
             {/* 👇 Show Create Post only if user is an artist */}
             {authUser?.role === "artist" && (

@@ -12,7 +12,7 @@ const ExploreComponent = () => {
   const [comments, setComments] = useState({});
   const [showFullDesc, setShowFullDesc] = useState({});
   const navigate = useNavigate()
-  const { authUser } = useAuthStore();
+  const { authUser , userUpdate} = useAuthStore();
 
   const fetchUser = async () => {
     try {

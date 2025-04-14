@@ -128,7 +128,7 @@ function App() {
             )
           }
         />
-        <Route
+        {/* <Route
           path="/Notifications"
           element={
             token && authUser ? (
@@ -137,7 +137,7 @@ function App() {
               <Navigate to="/login" replace:true />
             )
           }
-        />
+        /> */}
 
         <Route
           path="/otheruserprofile/:username"
