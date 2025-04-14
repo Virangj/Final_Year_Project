@@ -20,11 +20,12 @@ const OtherUserProfile = () => {
         try {
             const res = await axiosInstance.get(`/auth/user/${username}`);
             setUser(res.data.user);
+        
             if (res.data.user.role === "artist") {
                 fetchUserPosts()
                 return;
             } else {
-                setActiveTab(suggestedUsers)
+                setActiveTab("suggested")
                 fetchSuggestedUsers()
             }
         } catch (err) {
@@ -34,7 +35,7 @@ const OtherUserProfile = () => {
 
     const fetchUserPosts = async () => {
         try {
-            const res = await axiosInstance.get(`/posts/getmypost?role=artist&username=${username}`);
+            const res = await axiosInstance.get(`/posts/getotheruserposts?username=${username}`);
             setPosts(res.data.posts);
         } catch (err) {
             // console.error('Error fetching posts');

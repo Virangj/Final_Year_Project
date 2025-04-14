@@ -3,10 +3,9 @@ import mongoose from "mongoose";
 const postschema = new mongoose.Schema(
     {
         username: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User', 
             required: true,
-            trim: true,  // Automatically trims extra spaces
+            type: String,
+            unique: true,
         },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
@@ -58,7 +57,7 @@ const postschema = new mongoose.Schema(
             replies: [{
                 userId: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'User', 
+                    ref: 'User',
                 },
                 text: {
                     type: String,

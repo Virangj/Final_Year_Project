@@ -55,7 +55,6 @@ const Login = () => {
         gender,
       } = res.data;
 
-      const userData = { username, email, _id, role };
       const userData = {
         username,
         email,

@@ -6,7 +6,7 @@ import User from "../models/userModel.js";
 export const postlike = async (req, res) => {
   const { postId } = req.body;
   const decoded = req.decode;
-  console.log(decoded);  
+  console.log(decoded);
   try {
     const post = await Post.findById(postId);
     if (!post) {
@@ -401,25 +401,18 @@ export const addpost = async (req, res) => {
 // API Route to get posts by artist
 export const getmypost = async (req, res) => {
   try {
-    // Get the artist's name from the request parameters
-    const currentUser = await User.findById(req.decode.userId)
-    console.log(currentUser);
-    const user = currentUser._id.toString()
-    console.log(user);    
-
     // Find all posts by the given artist
-    const posts = await Post.find({ username:user });
+    const posts = await Post.find({ createdBy: req.decode.userId });
     console.log(posts);
-    
+
 
     if (posts.length === 0) {
       return res
         .status(404)
-        .json({ message: "No posts found for this artist: " + user });
+        .json({ message: "No posts found for this artist: " + posts.username });
     }
     // Respond with the posts found
     res.status(200).json({
-      message: `Posts found for artist: ${user}`,
       posts,
     });
   } catch (error) {
@@ -511,6 +504,18 @@ export const suggested = async (req, res) => {
       .select('username profilePic arttype followers');
 
     res.status(200).json({ suggestedUsers });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getotheruserposts = async (req, res) => {
+  try {
+    const username = req.query.username;
+    const posts = await Post.findOne({ username: username })
+    if (!posts) return res.status(404).json({ message: "user have not posted " })
+    return res.status(200).json(posts)
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });

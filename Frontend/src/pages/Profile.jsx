@@ -18,7 +18,7 @@ const Profile = () => {
     const fetchPosts = async () => {
         try {
             console.log("authUser: ", authUser);
-            const res = await axiosInstance.get(`/posts/getmypost?role=${authUser.role}&username=${authUser.username}`); // 
+            const res = await axiosInstance.get(`/posts/getmypost`); // 
             console.log(res);
             setposts(res.data.posts);
         } catch (err) {
@@ -114,6 +114,19 @@ const Profile = () => {
         }
     };
 
+    const handleShare = () => {
+        const currentUrl = window.location.href;
+        navigator.clipboard
+            .writeText(currentUrl)
+            .then(() => {
+                toast.success("Link copied to clipboard!");
+            })
+            .catch((err) => {
+                console.error("Failed to copy:", err);
+                toast.error("Failed to copy the link.");
+            });
+    };
+
 
     return (
         <>
@@ -142,7 +155,9 @@ const Profile = () => {
                                         >
                                             Edit Profile
                                         </button>
-                                        <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">
+                                        <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                                            onClick={handleShare}
+                                        >
                                             Share Profile
                                         </button>
                                     </div>
