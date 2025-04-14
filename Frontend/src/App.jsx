@@ -9,13 +9,14 @@ import { Toaster } from "react-hot-toast";
 import PostDetails from "./pages/PostDetailsPage";
 import Explore from "./pages/ExplorePage";
 import Chat from "./pages/ChatPage";
-import Profile from "./pages/ProfilePage";
+import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
-import CreatePost from "./pages/CreatePostPage";
+import CreatePost from "./pages/CreatePostPage"
 import Setting from "./pages/SettingPage";
 import NotificationPage from "./pages/NotificationPage";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
+import OtherUserProfile from "./pages/OtherUserProfilePage";
 
 function App() {
   const { authUser, token, checkAuth, isCheckingAuth } = useAuthStore();
@@ -30,6 +31,7 @@ function App() {
   //       <Loader className="size-10 animate-spin" />
   //     </div>
   //   );
+  console.log(authUser,token)
   return (
     <>
       <Toaster position="top-right" />
@@ -91,7 +93,7 @@ function App() {
           }
         />
         <Route
-          path="/profile/:userId"
+          path="/profile/:id"
           element={
             token && authUser ? <Profile /> : <Navigate to="/login" replace />
           }
@@ -136,7 +138,15 @@ function App() {
             )
           }
         />
+
+        <Route
+          path="/otheruserprofile/:username"
+          element={
+            token && authUser ? <OtherUserProfile /> : <Navigate to="/login" replace:true />
+          }
+        />
       </Routes>
+
     </>
   );
 }

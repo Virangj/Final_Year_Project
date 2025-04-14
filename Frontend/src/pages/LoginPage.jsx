@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
@@ -10,11 +10,24 @@ const Login = () => {
   const [login, setlogin] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const [error, seterror] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
   const { user, checkAuth } = useAuthStore();
 
   const login_handlechange = (e) => {
     setlogin({ ...login, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    // Check if credentials were saved
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    const savedPassword = localStorage.getItem('rememberedPassword');
+
+    if (savedEmail && savedPassword) {
+      setlogin({ ...login, email: savedEmail, password: savedPassword });
+      setRememberMe(true);
+    }
+  }, []);
 
   const savelogin = async () => {
     seterror("");
@@ -60,6 +73,14 @@ const Login = () => {
       await user(userData);
       localStorage.setItem("userId", userData._id);
       await checkAuth();
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email);
+        localStorage.setItem('rememberedPassword', password);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+        localStorage.removeItem('rememberedPassword');
+      }
+      toast.success("Login successful!");
       setlogin({ email: "", password: "" });
       if (!socket.connected) {
         socket.connect();
@@ -69,6 +90,27 @@ const Login = () => {
         });
       }
       navigate("/");
+
+      //   const res = await axiosInstance.post("/auth/login", login)
+      //   const data = {
+      //     username: res.data.username,
+      //     email: res.data.email,
+      //     _id: res.data._id,
+      //     profilePic: res.data.profilePic,
+      //     role: res.data.role,
+      //     phone: res.data.phone,
+      //     bio:res.data.bio,
+      //     arttype:res.data.arttype
+      //   }
+      //   if (!res.data.emailverification) {
+      //     await user(data)
+      //     window.location.href = "/emailverification"
+      //   } else {
+      //     await user(data)
+      //     await checkAuth()
+      //     navigate("/")
+      //   }
+      //   setlogin({ email: "", password: "" })
     } catch (error) {
       console.error("Login error:", error);
       const message =
@@ -122,7 +164,10 @@ const Login = () => {
             {error && <p className="pl-4 text-red-600 text-xs">{error}</p>}
             <div className="flex flex-row mb-3 w-full justify-between">
               <div className="flex pl-4 text-xs">
-                <input type="checkbox" />
+                <input type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
                 <p className="pl-1">Remember me</p>
               </div>
               <div

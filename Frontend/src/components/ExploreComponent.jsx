@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../lib/axios";
 import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 const ExploreComponent = () => {
   const [user, setUser] = useState([]);
@@ -10,7 +11,8 @@ const ExploreComponent = () => {
   const [commentsOpen, setCommentsOpen] = useState({});
   const [comments, setComments] = useState({});
   const [showFullDesc, setShowFullDesc] = useState({});
-  const { Myself } = useAuthStore();
+  const { Myself, authUser } = useAuthStore();
+  const navigate = useNavigate()
 
   const fetchUser = async () => {
     try {
@@ -53,10 +55,15 @@ const ExploreComponent = () => {
     }
   };
 
-  const handleFollowing = async (username) => {
+  const handleFollowing = async (username, _id) => {
     try {
       await axiosInstance.post("/update/follow", { username });
       fetchUser(); // Refresh users
+      const currentFollowing = authUser?.following || [];
+
+      const updatedFollowing = [...currentFollowing, _id]; // Add
+
+      userUpdate('following', updatedFollowing);
     } catch (error) {
       console.error("Failed in following user", error);
     }
@@ -94,9 +101,8 @@ const ExploreComponent = () => {
         {categories.map((cat, i) => (
           <button
             key={i}
-            className={`px-6 py-2 rounded-full whitespace-nowrap ${
-              i === 0 ? "bg-white text-black" : "bg-black border border-white"
-            }`}
+            className={`px-6 py-2 rounded-full whitespace-nowrap ${i === 0 ? "bg-white text-black" : "bg-black border border-white"
+              }`}
           >
             {cat}
           </button>
@@ -109,7 +115,11 @@ const ExploreComponent = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {user.map((artist, idx) => (
             <div key={idx} className="bg-white text-black p-4 rounded-lg shadow-md">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-4"
+                onClick={() => {
+                  navigate(`/otheruserprofile/${artist.username}`)
+                }}
+              >
                 <img
                   src={artist.profilePic || "/fallback.jpg"}
                   alt={artist.username}
@@ -122,7 +132,7 @@ const ExploreComponent = () => {
                 </div>
               </div>
               <button
-                onClick={() => handleFollowing(artist.username)}
+                onClick={() => handleFollowing(artist.username, artist._id)}
                 className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-900 transition"
               >
                 Follow
@@ -182,7 +192,7 @@ const ExploreComponent = () => {
             <img
               src={
                 Array.isArray(selectedArtwork.image) &&
-                selectedArtwork.image.length > 0
+                  selectedArtwork.image.length > 0
                   ? selectedArtwork.image[0]
                   : "/fallback.jpg"
               }
@@ -206,9 +216,8 @@ const ExploreComponent = () => {
             {/* Description with Read More */}
             <div className="text-white/70 text-sm sm:text-base mb-4">
               <p
-                className={`whitespace-pre-line ${
-                  showFullDesc[selectedArtwork._id] ? "" : "line-clamp-4"
-                }`}
+                className={`whitespace-pre-line ${showFullDesc[selectedArtwork._id] ? "" : "line-clamp-4"
+                  }`}
               >
                 {selectedArtwork.description}
               </p>

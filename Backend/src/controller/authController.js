@@ -54,8 +54,8 @@ export const signup = async (req, res) => {
       profilePic: newUser.profilePic,
       bio: newUser.bio,
       arttype: newUser.arttype,
-      followers : newUser.followers,
-      following : newUser.following,
+      followers: newUser.followers,
+      following: newUser.following,
     });
   } catch (error) {
     console.log("Error Signup Controller", error.message);
@@ -195,9 +195,26 @@ export const emailAddressCheck = async (req, res) => {
 
       await user.save();
       sendVerificationEmail(email, verificationCode);
-      res.status(200).json({ message: "code send successfully" });
-    } else {
-      res.status(401).json({ message: "user does'nt exists" });
+      res.status(200).json({
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        username: user.username,
+        phone: user.phone,
+        bio: user.bio,
+        arttype: user.arttype,
+        profilePic: user.profilePic,
+        followers: user.followers,
+        following: user.following,
+        dob: user.dob,
+        country: user.country,
+        city: user.city,
+        phone: user.phone,
+        gender: user.gender,
+      })
+    }
+    else {
+      res.status(401).json({ message: "user does'nt exists" })
     }
   } catch (error) {
     console.log("Error in checking email address: ", error);
@@ -225,7 +242,7 @@ export const changepassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
     const hello = await User.findByIdAndUpdate(user._id, { password: hashedPassword });
-    
+
     //sendPasswordChangeEmail(user.email, req.userActivity);
 
     res.status(200).json({ message: "password change successfully" });
@@ -279,5 +296,16 @@ export const verifyotp = async (req, res) => {
   } catch (error) {
     console.log("Error in checking email address: ", error);
     res.status(500).json({ message: "Failed to verify OTP" });
+  }
+};
+
+export const getotheruserprofile = async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json({ user:user });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
   }
 };

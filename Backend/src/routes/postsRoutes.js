@@ -1,5 +1,5 @@
 import express from "express";
-import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts,addpost,updatemypost,getmypost, deletemypost, postlike, postunlike, getPostById, suggested } from "../controller/postsController.js";
+import { addcomment,addreply,updatecomment,updatereply,deletecomment,deletereply,randomposts,addpost,updatemypost,getmypost, deletemypost, postlike, postunlike, getPostById, suggested, getotheruserposts } from "../controller/postsController.js";
 import { Checkrole } from "../middleware/roleMiddlerware.js";
 import { multerUpload } from "../middleware/multerMiddleware.js";
 import { protectedRoute } from "../middleware/authMiddleware.js";
@@ -34,7 +34,9 @@ postsRoutes.get("/getmypost",protectedRoute, getmypost);
 
 postsRoutes.delete("/delete",Checkrole, deletemypost);
 
-postsRoutes.get("/suggested",protectedRoute,suggested)
+postsRoutes.get("/suggested",protectedRoute,suggested);
+
+postsRoutes.get("/getotheruserposts",getotheruserposts);
 
 
 export default postsRoutes;
