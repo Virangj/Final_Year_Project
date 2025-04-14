@@ -38,13 +38,12 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Handle notification sending with DB saving using NotificationController
   socket.on("sendNotification", async ({ senderId, receiverId, type, postId }) => {
     try {
       // Save notification to the database
       const notification = await NotificationController.sendNotification({ senderId, receiverId, type, postId });
 
-      // Emit notification to the receiver
+      // Emit notification to the receiver in real time
       NotificationController.emitNotification(io, receiverId, notification);
     } catch (error) {
       console.error("Error sending notification:", error);

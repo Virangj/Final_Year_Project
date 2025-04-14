@@ -8,7 +8,7 @@ import updateRoutesoutes from "./src/routes/updateRoutes.js";
 import postsRoutes from "./src/routes/postsRoutes.js";
 import exploreRoutes from "./src/routes/exploreRoutes.js";
 import cors from "cors";
-// import NotificationRoutes from "./src/routes/notificationRoutes.js";
+import NotificationRoutes from "./src/routes/notificationRoutes.js";
 import { app, io, server } from "./src/lib/socket.js";
 
 // Configuration of dotenv
@@ -50,7 +50,7 @@ app.use("/api/message", messageRoutes);
 app.use("/api/update", updateRoutesoutes);
 app.use("/api/posts", postsRoutes);
 app.use("/api/explore", exploreRoutes);
-// app.use("/api/notifications", NotificationRoutes);
+app.use("/api/notifications", NotificationRoutes);
 
 
 server.listen(PORT, () => {

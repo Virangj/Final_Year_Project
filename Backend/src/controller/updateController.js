@@ -1,6 +1,7 @@
 import { Readable } from "stream";
 import cloudinary from "../lib/cloudinary.js"; // Notice the .js extension
 import User from "../models/userModel.js";
+import notificationController from "./notificationController.js";
 
 const uploadtocloudinary = async (buffer) => {
   return new Promise(async (resolve, reject) => {
@@ -93,8 +94,8 @@ export const editprofile = async (req, res) => {
 
 export const followUser = async (req, res) => {
   try {
-    const follower = await User.findById(req.decode.userId); // You said `user` var has full user info
-    const { username } = req.body; // ID of the current user (follower)
+    const follower = await User.findById(req.decode.userId);
+    const { username } = req.body;
 
     // Get user to be followed by username
     const userToFollow = await User.findOne({ username });
@@ -107,22 +108,37 @@ export const followUser = async (req, res) => {
       return res.status(400).json({ message: "You cannot follow yourself" });
     }
 
-    // Already following?
     if (userToFollow.followers.includes(follower._id)) {
       return res.status(400).json({ message: "Already following this user" });
     }
 
-    // Add follower to target user's followers
+    // Add follower
     userToFollow.followers.push(follower._id);
     await userToFollow.save();
 
-    // Add target user to follower's following
     follower.following.push(userToFollow._id);
     await follower.save();
 
+    // ✅ Create a "follow" notification
+    const notification = await notificationController.sendNotification({
+      senderId: follower._id,
+      receiverId: userToFollow._id,
+      type: "follow",
+    });
+
+    // ✅ Emit notification if `req.io` is available (injected from app.js/server.js)
+    if (req.io) {
+      notificationController.emitNotification(req.io, userToFollow._id, notification);
+    }
+
     res
       .status(200)
-      .json({ message: "Followed successfully", user: userToFollow , follower:follower});
+      .json({
+        message: "Followed successfully",
+        user: userToFollow,
+        follower: follower,
+      });
+
   } catch (error) {
     console.log("Error in followUser controller:", error.message);
     res.status(500).json({ message: "Internal server error" });
