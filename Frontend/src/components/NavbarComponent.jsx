@@ -26,7 +26,7 @@ const Navbar = () => {
     try {
       await axiosInstance.post("/auth/logout");
       socket.disconnect()      
-      sessionStorage.clear();
+      localStorage.clear();
       window.location.href = "/login";
       toast.success("Logout successfully");
     } catch (err) {
