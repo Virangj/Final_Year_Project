@@ -1,4 +1,6 @@
 import { useState } from "react";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 export default function DeleteAccount() {
     const [loading, setLoading] = useState(false);
