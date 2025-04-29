@@ -401,27 +401,31 @@ export const addpost = async (req, res) => {
 // API Route to get posts by artist
 export const getmypost = async (req, res) => {
   try {
-    // Find all posts by the given artist
-    const posts = await Post.find({ createdBy: req.decode.userId });
-    console.log(posts);
+    const userId = req.decode.userId;
+    // console.log("Decoded user ID:", userId);
 
-
-    if (posts.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No posts found for this artist: " + posts.username });
+    // Step 1: Find the logged-in user by _id
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    // Respond with the posts found
-    res.status(200).json({
-      posts,
-    });
+
+    // Step 2: Find posts created by this user (by ObjectId reference)
+    const posts = await Post.find({ username: user._id });
+
+    // Step 3: Send empty array if no posts
+    if (!posts.length) {
+      return res.status(200).json({ message: "You have not posted yet", posts: [] });
+    }
+
+    // Step 4: Return posts
+    res.status(200).json({ posts });
   } catch (error) {
-    console.error("Error fetching posts by artist:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching posts", error: error.message });
+    console.error("Error fetching user's posts:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // API Route to update a post
 export const updatemypost = async (req, res) => {
@@ -512,13 +516,25 @@ export const suggested = async (req, res) => {
 
 export const getotheruserposts = async (req, res) => {
   try {
-    const username = req.query.username;
-    const posts = await Post.findOne({ username: username })
-    if (!posts) return res.status(404).json({ message: "user have not posted " })
-    return res.status(200).json(posts)
+    const { username } = req.query;
+    console.log(username, ": username");
+
+    // Step 1: Find user by string username
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Step 2: Use user._id to find posts
+    const posts = await Post.find({ username: user._id });
+
+    if (posts.length === 0) {
+      return res.status(200).json({ message: "User has not posted", posts: [] });
+    }
+
+    return res.status(200).json({ posts });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: "Server error" });
   }
-}
+};
+
 

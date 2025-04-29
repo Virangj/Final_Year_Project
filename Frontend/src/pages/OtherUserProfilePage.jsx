@@ -36,11 +36,16 @@ const OtherUserProfile = () => {
     const fetchUserPosts = async () => {
         try {
             const res = await axiosInstance.get(`/posts/getotheruserposts?username=${username}`);
-            setPosts(res.data.posts);
+            if (res.data.posts) {
+                setPosts(res.data.posts);
+            } else {
+                setPosts([]); // In case posts is missing
+            }
         } catch (err) {
-            // console.error('Error fetching posts');
+            console.error('Error fetching posts', err);
+            setPosts([]); // Safe fallback on error
         }
-    };
+    };    
 
     const sortedmostlikedPosts = () => {
         if (!posts || posts.length === 0) return []
