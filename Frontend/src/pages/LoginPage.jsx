@@ -70,7 +70,7 @@ const Login = () => {
         gender,
       };
 
-      await user(userData);
+       user(userData);
       localStorage.setItem("userId", userData._id);
       await checkAuth();
       if (rememberMe) {
