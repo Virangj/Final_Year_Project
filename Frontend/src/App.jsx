@@ -13,25 +13,12 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/Editprofile";
 import CreatePost from "./pages/CreatePostPage"
 import Setting from "./pages/SettingPage";
-import NotificationPage from "./pages/NotificationPage";
-import { useEffect } from "react";
-import { Loader } from "lucide-react";
 import OtherUserProfile from "./pages/OtherUserProfilePage";
 
 function App() {
-  const { authUser, token, checkAuth, isCheckingAuth } = useAuthStore();
-  // useEffect(() => {
-  //   checkAuth();
-  // }, [checkAuth]),
-  //   console.log({ authUser });
+  const { authUser, token} = useAuthStore();
 
-  // if (isCheckingAuth && !authUser)
-  //   return (
-  //     <div className="flex items-center justify-center h-screen">
-  //       <Loader className="size-10 animate-spin" />
-  //     </div>
-  //   );
-  // console.log(authUser,token)
+  console.log(authUser,token)
   return (
     <>
       <Toaster position="top-right" />

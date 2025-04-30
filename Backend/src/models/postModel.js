@@ -6,19 +6,6 @@ const postschema = new mongoose.Schema(
             required: true,
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
-            unique: true,
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User', // 👈 this tells Mongoose to link to the User collection
-            // required: true,
-        },
-        profilepic: {
-            type: String,
-            // required: true,
-        },
-        arttype: {
-            type: String,
         },
         title: {
             type: String,
@@ -38,10 +25,10 @@ const postschema = new mongoose.Schema(
                 type: Number,
                 default: 0,  // Default value of likes is 0
             },
-            userId: [{
+            userId:[ {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
-            }],
+            }]
         },
         comments: [{
             userId: {

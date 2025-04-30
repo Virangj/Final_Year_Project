@@ -15,9 +15,9 @@ const Profile = () => {
 
   const fetchPosts = async () => {
     try {
-      // console.log("authUser: ", authUser);
-      const res = await axiosInstance.get(`/posts/getmypost`, authUser._id); //
-      // console.log(res);
+      console.log("authUser: ", authUser);
+      const res = await axiosInstance.get(`/posts/getmypost`); //
+      console.log(res);
       setposts(res.data.posts);
     } catch (err) {
       console.error("Error fetching user posts:", err.response.data.message);
@@ -70,20 +70,22 @@ const Profile = () => {
     navigate("/editprofile");
   };
 
-  const handleFollowing = async (username) => {
-    try {
-      const res = await axiosInstance.post("/update/follow", { username });
-      // console.log(res);
+  // const handleFollowing = async (username) => {
+  //   try {
+  //     const res = await axiosInstance.post("/update/follow", { username });
+  //     console.log(res);
 
-      // Remove followed user from suggested list immediately
-      setsuggestedUser((prev) =>
-        prev.filter((user) => user.username !== username)
-      );
-        user(res.data.follower);
-    } catch (error) {
-      console.error("Failed in following user", error);
-    }
-  };
+  //     // Remove followed user from suggested list immediately
+  //     setsuggestedUser((prev) =>
+  //       prev.filter((user) => user.username !== username)
+  //     );
+  //       user(res.data.follower);
+  //   } catch (error) {
+  //     console.error("Failed in following user", error);
+  //   }
+  // };
+
+  
 
   const sortedmostlikedPosts = useMemo(() => {
     if (!posts || posts.length === 0) return [];
@@ -291,10 +293,10 @@ const Profile = () => {
                         </div>
                       </div>
                       <button
-                        onClick={() => handleFollowing(user.username)}
+                        onClick={() => toggleFollowButton(user._id)}
                         className="mt-2 px-4 py-1 text-sm bg-black text-white rounded-md hover:bg-gray-900"
                       >
-                        Follow
+                       {authUser.following?.includes(user._id) ? "Unfollow" : "Follow"}
                       </button>
                     </div>
                   ))}
