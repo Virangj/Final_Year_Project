@@ -49,7 +49,7 @@ export const useAuthStore = create(
     }),
     {
       name: "user-storage",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => sessionStorage),
     }
   )
 );
