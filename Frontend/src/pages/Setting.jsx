@@ -9,7 +9,7 @@ const Setting = () => {
     return (
         <div className="bg-black min-h-screen flex flex-col md:flex-row">
             <Navbar />
-            <div className="w-[80%] mx-auto px-4 py-6 ">
+            <div className="w-[95%] mx-auto px-4 py-6 ">
                 <div className="bg-white rounded-lg border border-neutral-200/20 mb-6 flex-row space-y-3">
                     <ChangeEmail />
                     <ChangePassword />
