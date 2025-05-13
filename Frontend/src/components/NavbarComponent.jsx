@@ -18,14 +18,14 @@ import { useAuthStore } from "../store/useAuthStore";
 const Navbar = () => {
   const { authUser } = useAuthStore();
   const SOCKET_URL = "http://localhost:5001";
-  const socket = io.connect(SOCKET_URL,{
+  const socket = io.connect(SOCKET_URL, {
     // transport:["websocket"]
   })
 
   const handleLogout = async () => {
     try {
       await axiosInstance.post("/auth/logout");
-      socket.disconnect()      
+      socket.disconnect()
       sessionStorage.clear();
       window.location.href = "/login";
       toast.success("Logout successfully");
@@ -123,6 +123,9 @@ const Navbar = () => {
         <a href="/Explore">
           <Compass className="text-white w-6 h-6" />
         </a>
+        {authUser?.role == "artist" && <a href="/createpost">
+          <Plus className="text-white w-6 h-6" />
+        </a>}
         <a href={`/profile/${authUser?._id}`}>
           <User className="text-white w-6 h-6" />
         </a>
