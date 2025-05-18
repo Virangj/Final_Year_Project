@@ -120,16 +120,16 @@ export const followUser = async (req, res) => {
     await follower.save();
 
     // ✅ Create a "follow" notification
-    const notification = await notificationController.sendNotification({
-      senderId: follower._id,
-      receiverId: userToFollow._id,
-      type: "follow",
-    });
+    // const notification = await notificationController.sendNotification({
+    //   senderId: follower._id,
+    //   receiverId: userToFollow._id,
+    //   type: "follow",
+    // });
 
-    // ✅ Emit notification if `req.io` is available (injected from app.js/server.js)
-    if (req.io) {
-      notificationController.emitNotification(req.io, userToFollow._id, notification);
-    }
+    // // ✅ Emit notification if `req.io` is available (injected from app.js/server.js)
+    // if (req.io) {
+    //   notificationController.emitNotification(req.io, userToFollow._id, notification);
+    // }
 
     res
       .status(200)

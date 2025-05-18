@@ -25,6 +25,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
   "https://creativethread-c3a89.web.app",
+  "https://creativethreads.vercel.app/",
 ];
 app.use(
   cors({
