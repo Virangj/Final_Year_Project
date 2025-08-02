@@ -5,6 +5,6 @@ export const axiosInstance = axios.create({
   baseURL:
     process.env.NODE_ENV === "development"
       ? "http://localhost:5001/api"
-      : "https://creative-theard.onrender.com/api",
+      : "https://creativethreads.onrender.com/api",
   withCredentials: true,
 });
