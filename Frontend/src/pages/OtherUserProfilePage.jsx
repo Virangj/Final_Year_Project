@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState ,useRef} from 'react';
 import { Heart } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { axiosInstance } from '../lib/axios';
 import { useAuthStore } from '../store/useAuthStore';
 import toast from 'react-hot-toast';
 import Navbar from '../components/NavbarComponent';
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+import { X } from 'lucide-react';
+import { useChatStore } from '../store/useChatStore';
 
 const OtherUserProfile = () => {
     const { username } = useParams();
@@ -15,13 +19,20 @@ const OtherUserProfile = () => {
     const [showFullBio, setShowFullBio] = useState(false);
     const [mostliked, setmostliked] = useState([])
     const [suggestedUsers, setsuggestedUser] = useState([])
-    const navigate = useNavigate()
+    const [selectedArtwork, setSelectedArtwork] = useState(null);
+    const [commentsOpen, setCommentsOpen] = useState({});
+    const [comments, setComments] = useState({});
+    const [showFullDesc, setShowFullDesc] = useState({});
+    const navigate = useNavigate();
+    const { setSelectedUser } = useChatStore();
+    const clickTimeoutRef = useRef();
+     
 
     const fetchUserProfile = async () => {
         try {
             const res = await axiosInstance.get(`/auth/user/${username}`);
             setUser(res.data.user);
-        
+
             if (res.data.user.role === "artist") {
                 fetchUserPosts()
                 return;
@@ -37,16 +48,11 @@ const OtherUserProfile = () => {
     const fetchUserPosts = async () => {
         try {
             const res = await axiosInstance.get(`/posts/getotheruserposts?username=${username}`);
-            if (res.data.posts) {
-                setPosts(res.data.posts);
-            } else {
-                setPosts([]); // In case posts is missing
-            }
+            setPosts(res.data.posts);
         } catch (err) {
-            console.error('Error fetching posts', err);
-            setPosts([]); // Safe fallback on error
+            // console.error('Error fetching posts');
         }
-    };    
+    };
 
     const sortedmostlikedPosts = () => {
         if (!posts || posts.length === 0) return []
@@ -89,7 +95,9 @@ const OtherUserProfile = () => {
     };
 
     useEffect(() => {
+        NProgress.start();
         fetchUserProfile();
+        NProgress.done();
     }, [username]);
 
     const handleLikeToggle = async (postId) => {
@@ -123,14 +131,31 @@ const OtherUserProfile = () => {
         }
     };
 
+    const handleImageClick = (post) => {
+        if (clickTimeoutRef.current) {
+            clearTimeout(clickTimeoutRef.current);
+            clickTimeoutRef.current = null;
+        }
 
+        clickTimeoutRef.current = setTimeout(() => {
+            setSelectedArtwork(post);
+            clickTimeoutRef.current = null;
+        }, 300); // Adjust delay as needed (e.g., 300ms)
+    };
+
+    const handleImageDoubleClick = (postId) => {
+        if (clickTimeoutRef.current) {
+            clearTimeout(clickTimeoutRef.current);
+            clickTimeoutRef.current = null;
+        }
+        handleLikeToggle(postId); // Your existing double-click action
+    };
 
     if (!user) return <div className="text-center text-white mt-20">Loading...</div>;
 
     return (
         <div className="bg-[#080808] min-h-screen flex flex-col md:flex-row">
-            <Navbar />
-            <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="w-[80%] mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 {/* Profile Header */}
                 <div className="bg-white rounded-lg border border-neutral-200/20 p-6 mb-6 w-full overflow-hidden">
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
@@ -148,6 +173,15 @@ const OtherUserProfile = () => {
                                 </div>
                                 <div className="flex flex-wrap gap-3 justify-end md:justify-end">
                                     <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                                        onClick={()=>{
+                                            NProgress.start();
+                                            setSelectedUser(user);
+                                            navigate("/chat");
+                                            NProgress.done();
+                                        }} >
+                                        Message
+                                    </button>
+                                    <button className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
                                         onClick={() => toggleFollowButton(user._id)}>
                                         {authUser.following?.includes(user._id) ? "Unfollow" : "Follow"}
 
@@ -158,7 +192,7 @@ const OtherUserProfile = () => {
                             {/* Stats */}
                             <div className="flex justify-center md:justify-start gap-6 mb-4">
                                 {user.role === "artist" && <div className="text-center">
-                                    <p className="font-bold">{posts.length}</p>
+                                    <p className="font-bold">{posts?.length || 0}</p>
                                     <p className="text-gray-500">Posts</p>
                                 </div>}
                                 <div className="text-center">
@@ -213,11 +247,12 @@ const OtherUserProfile = () => {
 
                     {activeTab === 'posts' && user.role === "artist" && (
                         <div className="p-4">
-                            {posts.length > 0 && (
+                            {posts?.length > 0 && (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {posts.slice().reverse().map((post, index) => (
                                         <div key={index} className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden"
-                                            onDoubleClick={() => handleLikeToggle(post._id)}
+                                        onClick={() => handleImageClick(post)}
+                                        onDoubleClick={() => handleImageDoubleClick(post._id)}
                                         >
                                             <img
                                                 src={post.image[0]}
@@ -243,13 +278,14 @@ const OtherUserProfile = () => {
 
                     {activeTab === 'mostliked' && user.role === "artist" && (
                         <div className="p-4">
-                            {mostliked.length > 0 && (
+                            {mostliked?.length > 0 && (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                     {mostliked.map((post) => (
                                         <div
                                             key={post._id}
                                             className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden"
-                                            onDoubleClick={() => handleLikeToggle(post._id)}
+                                            onClick={() => handleImageClick(post)}
+                                            onDoubleClick={() => handleImageDoubleClick(post._id)}
                                         >
                                             <img
                                                 src={post.image[0]}
@@ -277,7 +313,7 @@ const OtherUserProfile = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {suggestedUsers.map((user, index) => (
                                     <div key={index} className='w-full h-full flex flex-col bg-gray-400 border border-neutral-200/20 rounded-lg space-x-4 p-4'>
-                                        <div className="flex items-center space-x-2" onClick={() => navigate(`/otheruserprofile/${user.username}`)}>
+                                        <div className="flex items-center space-x-2 " onClick={() => navigate(`/otheruserprofile/${user.username}`)}>
                                             <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-300">
                                                 <img src={user.profilePic} className="w-full h-full object-cover" />
                                             </div>
@@ -298,6 +334,98 @@ const OtherUserProfile = () => {
                     )}
                 </div >
             </div >
+            {selectedArtwork && (
+                <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 overflow-y-auto">
+                    <div className="relative max-w-4xl w-full bg-gray-900 rounded-lg p-4 sm:p-6">
+                        <button
+                            className="absolute top-4 right-4 text-white hover:text-red-400"
+                            onClick={() => setSelectedArtwork(null)}
+                        >
+                            <X size={28} />
+                        </button>
+                        <img
+                            src={
+                                Array.isArray(selectedArtwork.image) &&
+                                    selectedArtwork.image.length > 0
+                                    ? selectedArtwork.image[0]
+                                    : "/fallback.jpg"
+                            }
+                            alt={selectedArtwork.title || "Artwork"}
+                            className="w-full max-h-[60vh] object-contain rounded-lg mb-4"
+                        />
+                        <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+                            {selectedArtwork.title}
+                        </h2>
+                        <div className="flex items-center gap-2 mb-2">
+                            <img
+                                src={selectedArtwork.username.profilePic || "/fallback.jpg"}
+                                className="w-6 h-6 rounded-full object-cover"
+                                alt="User profile"
+                            />
+                            <p className="text-white/70 text-sm sm:text-base">
+                                By: {selectedArtwork.username.username}
+                            </p>
+                        </div>
+
+                        {/* Description with Read More */}
+                        <div className="text-white/70 text-sm sm:text-base mb-4">
+                            <p
+                                className={`whitespace-pre-line ${showFullDesc[selectedArtwork._id] ? "" : "line-clamp-4"
+                                    }`}
+                            >
+                                {selectedArtwork.description}
+                            </p>
+                            {selectedArtwork.description?.length > 200 && (
+                                <button
+                                    className="text-blue-400 text-sm mt-2"
+                                    onClick={() => toggleDescription(selectedArtwork._id)}
+                                >
+                                    {showFullDesc[selectedArtwork._id] ? "Show less" : "Read more"}
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Comments Section */}
+                        <div className="bg-black/20 rounded-lg p-3">
+                            {commentsOpen[selectedArtwork._id] ? (
+                                <>
+                                    {comments[selectedArtwork._id]?.map((c, i) => (
+                                        <div key={i} className="border-t border-white/10 py-2">
+                                            <p className="text-sm">
+                                                <span className="font-semibold">{c.username}</span>: {c.text}
+                                            </p>
+                                        </div>
+                                    ))}
+                                    <button
+                                        onClick={() => toggleComments(selectedArtwork._id)}
+                                        className="text-blue-400 text-sm mt-2"
+                                    >
+                                        Less comments
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    {(comments[selectedArtwork._id]?.slice(0, 2) || []).map((c, i) => (
+                                        <div key={i} className="border-t border-white/10 py-2">
+                                            <p className="text-sm">
+                                                <span className="font-semibold">{c.username}</span>: {c.text}
+                                            </p>
+                                        </div>
+                                    ))}
+                                    {comments[selectedArtwork._id]?.length > 2 && (
+                                        <button
+                                            onClick={() => toggleComments(selectedArtwork._id)}
+                                            className="text-blue-400 text-sm mt-2"
+                                        >
+                                            View all comments
+                                        </button>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 };

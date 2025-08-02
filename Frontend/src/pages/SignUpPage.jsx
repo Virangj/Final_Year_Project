@@ -5,6 +5,8 @@ import { useAuthStore } from "../store/useAuthStore";
 import { validate } from "email-validator";
 import toast from "react-hot-toast"; // ✅ toast import
 import { socket } from "../lib/socket";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 const SignUp = () => {
   const [signup, setsignup] = useState({
@@ -24,22 +26,24 @@ const SignUp = () => {
 
   const savesignup = async () => {
     if (!validate(signup.email)) {
-      // seterror("invalid email")
+      seterror("invalid email")
       return;
     }
     localStorage.setItem("email", signup.email);
     try {
+      NProgress.start();
       const res = await axiosInstance.post("/auth/signup", signup);
       await user(res.data);
-      toast.success("Signup successful! Redirecting...");
+      toast.success("Signup successfull! Redirecting...");
       setsignup({ username: "", email: "", password: "", role: "" });
+      NProgress.done()
       navigate("/emailverification");
     } catch (error) {
-      console.log(error.response.data.message);
       if (error.response.data.message) {
         seterror(error.response.data.message);
       }
     }
+    NProgress.done();
   };
 
   return (

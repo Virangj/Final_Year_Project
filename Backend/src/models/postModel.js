@@ -15,8 +15,9 @@ const postschema = new mongoose.Schema(
         description: {
             type: String,
             required: true,
+            trim: true,
         },
-        image: [{
+        image: [{ 
             type: String,  // This can be a URL to the image
             required: true,
         }],
@@ -25,10 +26,10 @@ const postschema = new mongoose.Schema(
                 type: Number,
                 default: 0,  // Default value of likes is 0
             },
-            userId:[ {
+            userId: [{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
-            }]
+            }],
         },
         comments: [{
             userId: {
@@ -37,6 +38,7 @@ const postschema = new mongoose.Schema(
             },
             text: {
                 type: String,
+                trim: true,
             },
             createdAt: {
                 type: Date,
@@ -49,6 +51,7 @@ const postschema = new mongoose.Schema(
                 },
                 text: {
                     type: String,
+                    trim: true,
                 },
                 createdAt: {
                     type: Date,

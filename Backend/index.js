@@ -19,13 +19,12 @@ const PORT = process.env.PORT;
 
 
 // All middleware
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://creativethread-c3a89.web.app",
-  "https://creativethreads.vercel.app",
+  "https://creative-theards.vercel.app",
 ];
 app.use(
   cors({

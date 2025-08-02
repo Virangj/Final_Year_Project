@@ -14,24 +14,32 @@ import io from "socket.io-client"
 
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "../store/useAuthStore";
+import { Link, useNavigate } from "react-router-dom";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 const Navbar = () => {
   const { authUser } = useAuthStore();
-  const SOCKET_URL = "http://localhost:5001";
-  const socket = io.connect(SOCKET_URL, {
+  const socketUrl = process.env.NODE_ENV === "production"
+    ? import.meta.env.VITE_BACKEND_URL // Use your production URL here
+    : "http://localhost:5001";  // Local development URL
+  const socket = io.connect(socketUrl, {
     // transport:["websocket"]
   })
 
   const handleLogout = async () => {
     try {
+      NProgress.start();
       await axiosInstance.post("/auth/logout");
       socket.disconnect()
       sessionStorage.clear();
+      NProgress.done();
       window.location.href = "/login";
       toast.success("Logout successfully");
     } catch (err) {
-      console.error("Logout failed", err);
+      console.log("Logout failed", err);
     }
+    NProgress.done();
   };
 
   return (
@@ -46,60 +54,60 @@ const Navbar = () => {
 
           {/* Navigation Links */}
           <div className="flex-1 py-6 space-y-1">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all active"
             >
               <Home size={22} />
               <span>Feed</span>
-            </a>
-            <a
-              href="/Explore"
+            </Link>
+            <Link
+              to="/Explore"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Compass size={22} />
               <span>Explore</span>
-            </a>
-            <a
-              href={`/profile/${authUser?._id}`}
+            </Link>
+            <Link
+              to={`/profile/${authUser?._id}`}
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <User size={22} />
               <span>Profile</span>
-            </a>
-            <a
-              href="/Chat"
+            </Link>
+            <Link
+              to="/Chat"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <MessageCircle size={22} />
               <span>Chat</span>
-            </a>
-            {/* <a
-              href="/Notifications"
+            </Link>
+            {/* <Link
+              to="/Notifications"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Bell size={22} />
               <span>Notifications</span>
-            </a> */}
+            </Link> */}
 
             {/* 👇 Show Create Post only if user is an artist */}
             {authUser?.role === "artist" && (
-              <a
-                href="/createpost"
+              <Link
+                to="/createpost"
                 className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
               >
                 <Plus size={22} />
                 <span>Create Post</span>
-              </a>
+              </Link>
             )}
 
-            <a
-              href="/setting"
+            <Link
+              to="/setting"
               className="flex items-center gap-3 px-6 py-3 text-white text-xl rounded-2xl hover:bg-[#1A1A1A] transition-all"
             >
               <Settings size={22} />
               <span>Settings</span>
-            </a>
+            </Link>
           </div>
 
           {/* Logout Button */}
@@ -117,24 +125,26 @@ const Navbar = () => {
 
       {/* 📱 Bottom navbar for mobile */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-black border-t border-neutral-200/20 flex justify-around items-center h-16 px-4">
-        <a href="/">
+        <Link to="/">
           <Home className="text-white w-6 h-6" />
-        </a>
-        <a href="/Explore">
+        </Link>
+        <Link to="/Explore">
           <Compass className="text-white w-6 h-6" />
-        </a>
-        {authUser?.role == "artist" && <a href="/createpost">
-          <Plus className="text-white w-6 h-6" />
-        </a>}
-        <a href={`/profile/${authUser?._id}`}>
+        </Link>
+        {authUser?.role === "artist" && (
+          <Link to="/createpost">
+            <Plus className="text-white w-6 h-6" />
+          </Link>
+        )}
+        <Link to={`/profile/${authUser?._id}`}>
           <User className="text-white w-6 h-6" />
-        </a>
-        <a href="/Chat">
+        </Link>
+        <Link to="/Chat">
           <MessageCircle className="text-white w-6 h-6" />
-        </a>
-        <a href="/Setting">
+        </Link>
+        <Link to="/Setting">
           <Settings className="text-white w-6 h-6" />
-        </a>
+        </Link>
       </div>
     </>
   );

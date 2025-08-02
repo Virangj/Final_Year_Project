@@ -4,6 +4,8 @@ import { axiosInstance } from '../lib/axios'
 import { useAuthStore } from '../store/useAuthStore'
 import { validate } from "email-validator"
 import toast from 'react-hot-toast' // ✅ toast import
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 const Email_address = () => {
   const [email, setemail] = useState("")
@@ -28,15 +30,18 @@ const Email_address = () => {
     localStorage.setItem("email", email)
 
     try {
+      NProgress.start();
       const res = await axiosInstance.post("/auth/emailaddress", { email })
-      await user(res.data)
+      await user(res.data.safeUser)
       toast.success("Email sent successfully!")
       setemail("")
+      NProgress.done();
       navigate("/emailverification")
     } catch (error) {
       console.log(error?.response?.data?.message)
       toast.error(error?.response?.data?.message || "Something went wrong")
     }
+    NProgress.done();
   }
 
   return (
@@ -47,7 +52,7 @@ const Email_address = () => {
           <h4 className='mt-3 text-center font-medium text-xl'>Find your Account</h4>
           <p className='mt-3 mb-4 font-normal'>Enter your email address</p>
           <div className='relative mb-1'>
-            <span className='fixed -mt-3 ml-1.5 bg-slate-300 w-20 text-center text-blue-700'>Enter Email</span>
+            <span className='fixed -mt-3 ml-1.5 bg-slate-300 px-2  text-blue-700'>Enter Email</span>
             <input
               type="text"
               value={email}

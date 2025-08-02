@@ -2,21 +2,25 @@ import React, { useEffect } from "react";
 import Sidebarskeleton from "../skeletons/SideBarSkeleton";
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 const ChatSideBar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUserLoading } = useChatStore()
-  const {onlineUsers} = useAuthStore();
-    useEffect(() => {
+  const { onlineUsers } = useAuthStore();
+  useEffect(() => {
+    NProgress.start()
     getUsers();
+    NProgress.done()
   }, [getUsers]);
 
   if (isUserLoading) return <Sidebarskeleton />;
   // console.log(selectedUser);
-  
+
   return (
     <>
       <div
-        className={`w-96 border-r border-neutral-200/20 flex flex-col md:block`}
+        className={`w-full border-r border-neutral-200/20 flex flex-col md:block h-full overflow-auto `}
       >
         <div className="p-4 border-b border-neutral-200/20">
           <input
@@ -30,9 +34,8 @@ const ChatSideBar = () => {
             <button
               key={user._id}
               onClick={() => setSelectedUser(user)}
-              className={`p-4 border-b border-neutral-200/20 cursor-pointer hover:bg-neutral-800 ${
-                selectedUser?._id === user._id ? "bg-neutral-900" : ""
-              }`}
+              className={`p-4 border-b border-neutral-200/20 cursor-pointer hover:bg-neutral-800 ${selectedUser?._id === user._id ? "bg-neutral-900" : ""
+                }`}
             >
               <div className="flex items-center">
                 <img
