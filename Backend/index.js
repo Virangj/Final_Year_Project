@@ -24,9 +24,7 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://creative-theards.vercel.app",
   "https://creativethreads.vercel.app",
-  "https://creativethreads.netlify.app",
 ];
 app.use(
   cors({
